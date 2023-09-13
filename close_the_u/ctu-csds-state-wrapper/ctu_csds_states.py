@@ -6,8 +6,6 @@ import os
 import pandas as pd
 import re
 
-import util
-
 from datetime import datetime
 from close_the_u import state_data_store
 
@@ -18,6 +16,8 @@ def _get_file_type(filename):
 
 
 def _write_file_type(response, output):
+    print(f'Writing states to {output} file for CSDS')
+
     current_time = datetime.now()
     file_name = current_time.strftime('%Y-%m-%dT%H:%M:%S')
 
@@ -45,6 +45,8 @@ def _ensure_required_csds_keys(datum):
 
 
 def _validate_state_data(list_data, collection_name):
+    print(f'Validating {len(list_data)} states for CSDS')
+
     for datum in list_data:
         # handle required keys for create states
         datum = _ensure_required_csds_keys(datum)
@@ -53,7 +55,7 @@ def _validate_state_data(list_data, collection_name):
         datum['collectionName'] = collection_name
 
         # handle CSDS enums
-        for enum_key, enum_class in util.enum_classes.items():
+        for enum_key, enum_class in state_data_store.enum_classes.items():
             if enum_key in datum:
                 datum_value = datum[enum_key]
                 datum[enum_key] = enum_class[datum_value].name
@@ -86,18 +88,26 @@ def _json_to_list(filename):
 
 
 def _create_csds_states(states, output):
+    print(f'Inserting {len(states)} states for CSDS')
     response = state_data_store.create_states(states, env='dev')
 
-    if response['data']['createStates']['success'] == True:
-        print(f'Successfully inserted {len(states)} in CSDS and wrote {output} response')
+    try:
+        if response['data']['createStates']['success'] == True:
+            print(f'Successfully inserted {len(states)} in CSDS and wrote {output} response')
+    except Exception as e:
+        print(e)
 
 
 def _get_csds_states(collection_name, output):
+    print(f'Quering {collection_name} in states for CSDS')
     response = state_data_store.get_states(collection_name, env='dev')
 
-    if response['data']['states']:
-        _write_file_type(response['data']['states'], output)
-        print(f'Successfully retrieved states in CSDS and wrote {output} response')
+    try:
+        if response['data']['states']:
+            _write_file_type(response['data']['states'], output)
+            print(f'Successfully retrieved states in CSDS and wrote {output} response')
+    except Exception as e:
+        print(e)
 
 
 def setup():
