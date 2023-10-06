@@ -54,11 +54,15 @@ def _validate_state_data(list_data, collection_name):
         # set collection name
         datum['collectionName'] = collection_name
 
+        # remove id before insertion
+        if 'id' in datum:
+            del datum['id']
+
         # handle CSDS enums
         for enum_key, enum_class in state_data_store.enum_classes.items():
             if enum_key in datum:
                 datum_value = datum[enum_key]
-                datum[enum_key] = enum_class[datum_value].name
+                datum[enum_key] = enum_class[datum_value.upper()].name
 
     return list_data
 
