@@ -1,6 +1,7 @@
 from eurc_vnv.command import Command
 from io import StringIO
 
+import argparse
 import socket
 import ocs
 import json
@@ -117,9 +118,12 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
     response = client.describe_all_packages(SessionToken=session_token)
     package_id = [item['package_id'] for item in response['data'] if item['name'] == ocs_package_name][0]
 
+    #todo: create new object type
+    object_type = 'eurc-idms-ampcs-dp'
+
     response = client.index_local_object(
         PackageId=package_id,
-        ObjectTypeName='eurc-idms-ampcs-dp',
+        ObjectTypeName=object_type,
         OcsPath=ocs_path,
         OcsName=ocs_filename,
         Metadata=ocs_metadata,
@@ -159,7 +163,19 @@ def main():
     hostname = socket.gethostname()
     print("Start of dp100ocs script, running on host {}".format(hostname))
 
-    data_products = find_data_products(session=620, apid=100)
+    parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
+    parser.add_argument('-p', '--apid', default=100, help='apid to query(only supports apid 100 atm)')
+    parser.add_argument('-K', '--session', required=True, help='session number to query on')
+    parser.add_argument('-t', '--ocs_path', default='/playground/fhy-sandbox', help='The ocs directory to publish to')
+    parser.add_argument('-g', '--ocs_package', default='eurc-dev-general', help='The ocs package to publish as')
+    args = parser.parse_args()
+
+    session = args.session
+    apid = args.apid
+    ocs_path = args.ocs_path
+    ocs_package_name = args.ocs_package
+
+    data_products = find_data_products(session=session, apid=apid)
 
     if not data_products:
         print("No data products found")
@@ -179,8 +195,8 @@ def main():
         filename = filename.replace(".dat", ".json")
 
         push_to_ocs(data=data,
-                    ocs_package_name="eurc-dev-general",
-                    ocs_path="/playground/fhy-sandbox",
+                    ocs_package_name=ocs_package_name,
+                    ocs_path=ocs_path,
                     ocs_filename=filename,
                     ocs_metadata=metadata)
 
