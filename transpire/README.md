@@ -15,7 +15,7 @@ In case the vnv .cshrc file is not available there is a copy of it named ec_ve_c
 
 # Script Usage Instructions
 
-#### Load States into Clipper State Data Store
+#### Load Data Products into OCS
 
 Query out data products for session and push to OCS
 ```shell
