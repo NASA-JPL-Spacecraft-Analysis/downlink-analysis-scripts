@@ -206,7 +206,7 @@ def build_ocs_metadata_from_emd(emd_file):
     emd_dict = xmltodict.parse(read_emd)
     print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
-
+    product_metadata = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:ProductMetadata"]
     session_id = session_info["mpcs:SessionId"]["mpcs:Number"]
     #venue = session_info["mpcs:Venue"]["mpcs:VenueType"]
     host = session_info["mpcs:Venue"]["mpcs:Host"]
@@ -214,18 +214,18 @@ def build_ocs_metadata_from_emd(emd_file):
     session_name = session_info["mpcs:SessionId"]["mpcs:Name"]
     fsw_ver = session_info["mpcs:SessionId"]["mpcs:FswDictionaryVersion"]
 
-    sclk_str_split = session_info["mm-emd:ProductMetadata"]["mm-emd:FirstPartSclk"].split(".")
+    sclk_str_split = product_metadata["mm-emd:FirstPartSclk"].split(".")
     sclk_coarse = int(sclk_str_split[0])
     sclk_fine = 0
 
     if len(sclk_str_split) == 2:
         sclk_fine = int(sclk_str_split[1])
 
-    scet = session_info["mm-emd:ProductMetadata"]["mm-emd:FirstPartScet"]
-    ert = session_info["mm-emd:ProductMetadata"]["mm-emd:FirstPartErt"]
-    vcid = int(session_info["mm-emd:ProductMetadata"]["mm-emd:Vcid"])
-    apid = int(session_info["mm-emd:ProductMetadata"]["mm-emd:Apid"])
-    dat_file_name = session_info["mm-emd:ProductMetadata"]["mm-emd:DataFilePath"]
+    scet = product_metadata["mm-emd:FirstPartScet"]
+    ert = product_metadata["mm-emd:FirstPartErt"]
+    vcid = int(product_metadata["mm-emd:Vcid"])
+    apid = int(product_metadata["mm-emd:Apid"])
+    dat_file_name = product_metadata["mm-emd:DataFilePath"]
 
     # meta = {
     #     "session_id": session_id,
