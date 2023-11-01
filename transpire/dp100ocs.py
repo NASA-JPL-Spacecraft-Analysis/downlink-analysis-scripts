@@ -121,6 +121,7 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
 
     #todo: create new object type
     object_type = 'eurc-fspa-dp-parsed'
+    #object_type = 'eurc-idms-ampcs-dp'
 
     response = client.index_local_object(
         PackageId=package_id,
@@ -138,7 +139,66 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
 
 def build_ocs_metadata_from_emd(emd_file):
     print("Building ocs metadata from emd file {}".format(emd_file))
-
+    """
+    Sample EMD converted json
+    {
+        "mm-emd:EarthProductMetadata": {
+            "@xmlns:mpcs": "http://dsms.jpl.nasa.gov/mpcs",
+            "@xmlns:mm-emd": "http://dsms.jpl.nasa.gov/mpcs_mm-core_emd",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@xsi:schemaLocation": "http://dsms.jpl.nasa.gov/mpcs_mm-core_emd http://dsms.jpl.nasa.gov/mpcs/MM_Core_Session.xsd",
+            "@EmdSchemaVersion": "CFDP-1",
+            "mm-emd:SessionInformation": {
+                "mpcs:SessionId": {
+                    "mpcs:Number": "620",
+                    "mpcs:Name": "ST1_AR13705_reproc",
+                    "mpcs:FswDictionaryDir": "/dict",
+                    "mpcs:FswDictionaryVersion": "EURC_R10_2_0_0"
+                },
+                "mpcs:Venue": {
+                    "mpcs:VenueType": "TESTSET",
+                    "mpcs:TestbedName": null,
+                    "mpcs:User": "dan",
+                    "mpcs:Host": "eurcits001"
+                },
+                "mpcs:OutputDirectory": "/ammos/ampcs/mpcs/eurc/current/test/2023/164/ampcs/eurcits001/dan_ST1_AR13705_reproc_2023_164T21_10_59_967"
+            },
+            "mm-emd:ProductMetadata": {
+                "mm-emd:GroundCreationTime": "2023-164T22:06:44.327",
+                "mm-emd:Scid": "159",
+                "mm-emd:Apid": "100",
+                "mm-emd:ProductType": "DP_CMD_COMMAND_HISTORY",
+                "mm-emd:Vcid": "1",
+                "mm-emd:GroundStatus": "COMPLETE_CHECKSUM_PASS",
+                "mm-emd:DataFilePath": "/ammos/ampcs/mpcs/eurc/current/test/2023/164/ampcs/eurcits001/dan_ST1_AR13705_reproc_2023_164T21_10_59_967/products/0100/0100_0498009603-0073007-1.dat",
+                "mm-emd:SequenceId": "0",
+                "mm-emd:SequenceVersion": "0",
+                "mm-emd:CommandNumber": "0",
+                "mm-emd:DvtCoarse": "498009603",
+                "mm-emd:DvtFine": "73007",
+                "mm-emd:FirstPartSclk": "0498009603.06961",
+                "mm-emd:FirstPartScet": "2025-286T00:00:00.06961",
+                "mm-emd:FirstPartErt": "2023-164T22:06:42.753",
+                "mm-emd:ExpectedProductChecksum": "-364933742",
+                "mm-emd:ActualProductChecksum": "-364933742",
+                "mm-emd:ExpectedProductFileSize": "2320",
+                "mm-emd:ActualProductFileSize": "2320",
+                "mm-emd:CfdpTransactionSequenceNumber": "2138934958277980360",
+                "mm-emd:PartList": {
+                    "@TotalReceived": "1",
+                    "mm-emd:Part": {
+                        "@Offset": "0",
+                        "@Length": "2320",
+                        "mm-emd:Sclk": "0498009603.06961",
+                        "mm-emd:Scet": "2025-286T00:00:00.06961",
+                        "mm-emd:Ert": "2023-164T22:06:42.753",
+                        "mm-emd:SourcePacketSeqCount": "25"
+                    }
+                }
+            }
+        }
+    }
+    """
     with open(emd_file, 'r') as the_emd_file:
         read_emd = the_emd_file.read()
 
@@ -148,26 +208,47 @@ def build_ocs_metadata_from_emd(emd_file):
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
 
     session_id = session_info["mpcs:SessionId"]["mpcs:Number"]
-    venue = session_info["mpcs:Venue"]["mpcs:VenueType"]
+    #venue = session_info["mpcs:Venue"]["mpcs:VenueType"]
     host = session_info["mpcs:Venue"]["mpcs:Host"]
-    user = session_info["mpcs:Venue"]["mpcs:User"]
+    #user = session_info["mpcs:Venue"]["mpcs:User"]
+    session_name = session_info["mpcs:SessionId"]["mpcs:Name"]
+    fsw_ver = session_info["mpcs:SessionId"]["mpcs:FswDictionaryVersion"]
+
+    sclk_str_split = session_info["mm-emd:ProductMetadata"]["mm-emd:FirstPartSclk"].split(".")
+    sclk_coarse = int(sclk_str_split[0])
+    sclk_fine = 0
+
+    if len(sclk_str_split) == 2:
+        sclk_fine = int(sclk_str_split[1])
+
+    scet = session_info["mm-emd:ProductMetadata"]["mm-emd:FirstPartScet"]
+    ert = session_info["mm-emd:ProductMetadata"]["mm-emd:FirstPartErt"]
+    vcid = int(session_info["mm-emd:ProductMetadata"]["mm-emd:Vcid"])
+    apid = int(session_info["mm-emd:ProductMetadata"]["mm-emd:Apid"])
+    dat_file_name = session_info["mm-emd:ProductMetadata"]["mm-emd:DataFilePath"]
+
+    # meta = {
+    #     "session_id": session_id,
+    #     "session_venue_type": venue,
+    #     "session_testbed_name": host,
+    #     "session_user": user
+    # }
 
     meta = {
         "session_id": session_id,
-        #"session_venue_type": venue,
         "session_host": host,
-        #"session_user": user
-        "session_name": "todo",
-        "session_fsw_dictionary_version": "todo",
-        "sclk_coarse": 123456,
-        "sclk_fine": 12345678,
-        "scet": "2022-120T00:00:00",
-        "ert": "2022-121T01:23:45",
-        "vcid": 1337,
-        "apid": 100,
-        "dat_file_name": "todo"
+        "session_name": session_name,
+        "session_fsw_dictionary_version": fsw_ver,
+        "sclk_coarse": sclk_coarse,
+        "sclk_fine": sclk_fine,
+        "scet": scet,
+        "ert": ert,
+        "vcid": vcid,
+        "apid": apid,
+        "dat_file_name": dat_file_name
     }
 
+    print("ocs metadata is {}".format(meta))
     return meta
 
 def main():
