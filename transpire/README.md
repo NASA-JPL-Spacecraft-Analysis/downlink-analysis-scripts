@@ -2,7 +2,7 @@
 Python script for querying out Data Products, run vnv tools to convert command history and then push to OCS
 
 # Installation Instructions
-Need to be on a flight machine where chill tools and vnv librarires are setup
+Need to be on a flight machine where chill tools and vnv librarires are setup(e.g. eurcits001)
 
 Inside the `transpire-dps` folder:
 ```shell
