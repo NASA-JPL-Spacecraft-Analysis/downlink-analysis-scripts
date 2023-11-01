@@ -183,8 +183,8 @@ def build_ocs_metadata_from_emd(emd_file):
         "session_fsw_dictionary_version": fsw_ver,
         "sclk_coarse": sclk_coarse,
         "sclk_fine": sclk_fine,
-        "scet": scet.split(".")[0],
-        "ert": ert.split(".")[0],
+        "scet": scet,
+        "ert": ert,
         "vcid": vcid,
         "apid": apid,
         "dat_file_name": dat_file_name
