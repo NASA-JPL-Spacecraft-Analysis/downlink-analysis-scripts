@@ -168,7 +168,7 @@ def build_ocs_metadata_from_emd(emd_file):
     scet_millis = "00000"
     if len(scet_str_split) == 2:
         scet_millis = scet_str_split[1]
-        scet_millis.ljust(5, '0') # zero pad in case it is shorter than 5 millis
+        scet_millis = scet_millis.ljust(5, '0') # zero pad in case it is shorter than 5 millis
         scet_millis = scet_millis[:5] #grab first 5 incase it is longer than 5 millis
 
     scet = "{}.{}".format(scet_str_split[0], scet_millis)
@@ -177,7 +177,7 @@ def build_ocs_metadata_from_emd(emd_file):
     ert_millis = "00000"
     if len(ert_str_split) == 2:
         ert_millis = ert_str_split[1]
-        ert_millis.ljust(5, '0') # zero pad in case it is shorter than 5 millis
+        ert_millis = ert_millis.ljust(5, '0') # zero pad in case it is shorter than 5 millis
         ert_millis = ert_millis[:5] #grab first 5 incase it is longer than 5 millis
 
     ert = "{}.{}".format(ert_str_split[0], ert_millis)
