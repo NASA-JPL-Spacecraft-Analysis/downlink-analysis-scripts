@@ -163,8 +163,25 @@ def build_ocs_metadata_from_emd(emd_file):
     if len(sclk_str_split) == 2:
         sclk_fine = int(sclk_str_split[1])
 
-    scet = product_metadata["mm-emd:FirstPartScet"]
-    ert = product_metadata["mm-emd:FirstPartErt"]
+    #ocs is picky and wants us to have 5 decimal precision in our milliseconds
+    scet_str_split = product_metadata["mm-emd:FirstPartScet"].split(".")
+    scet_millis = "00000"
+    if len(scet_str_split) == 2:
+        scet_millis = scet_str_split[1]
+        scet_millis.ljust(5, '0') # zero pad in case it is shorter than 5 millis
+        scet_millis = scet_millis[:5] #grab first 5 incase it is longer than 5 millis
+
+    scet = "{}.{}".format(scet_str_split[0], scet_millis)
+
+    ert_str_split = product_metadata["mm-emd:FirstPartErt"].split(".")
+    ert_millis = "00000"
+    if len(ert_str_split) == 2:
+        ert_millis = ert_str_split[1]
+        ert_millis.ljust(5, '0') # zero pad in case it is shorter than 5 millis
+        ert_millis = ert_millis[:5] #grab first 5 incase it is longer than 5 millis
+
+    ert = "{}.{}".format(ert_str_split[0], ert_millis)
+
     vcid = int(product_metadata["mm-emd:Vcid"])
     apid = int(product_metadata["mm-emd:Apid"])
     dat_file_name = product_metadata["mm-emd:DataFilePath"]
