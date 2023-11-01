@@ -4,7 +4,7 @@ Python script for querying out Data Products, run vnv tools to convert command h
 # Installation Instructions
 Need to be on a flight machine where chill tools and vnv librarires are setup(e.g. eurcits001)
 
-Inside the `transpire-dps` folder:
+Inside the `transpire` folder:
 ```shell
 $ source /proj/europa/fs/tools/europa-fs-vnv/environment/.cshrc
 $ activate-ec-ve
@@ -23,8 +23,12 @@ If not already autenticated with SSO, run `credss` and then:
 
 $ python dp100ocs.py -K 620 -p 100
 
+This should query out the data products using chill_get_products
+Then it should parse the data product out using the eurc_vnv libraries
+Then it should push the parsed data product into OCS
+
 Sample url to view data prodcuts in browser:
-https://dd.eurc-dev.jpl.nasa.gov/eurc-dev-general/playground/fhy-sandbox
+https://dd.eurc-dev.jpl.nasa.gov/eurc-dev-general/transpire
 ```
 
 
