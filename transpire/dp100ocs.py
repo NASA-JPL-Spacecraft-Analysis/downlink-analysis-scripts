@@ -116,11 +116,11 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
 
     # describe_all_packages to find the package_id
     response = client.describe_all_packages(SessionToken=session_token)
-    print(json.dumps(response, indent=4))
+    #print(json.dumps(response, indent=4))
     package_id = [item['package_id'] for item in response['data'] if item['name'] == ocs_package_name][0]
 
     #todo: create new object type
-    object_type = 'eurc-idms-ampcs-dp'
+    object_type = 'eurc-fspa-dp-parsed'
 
     response = client.index_local_object(
         PackageId=package_id,
@@ -144,6 +144,7 @@ def build_ocs_metadata_from_emd(emd_file):
 
     # turn it into a Dict
     emd_dict = xmltodict.parse(read_emd)
+    print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
 
     session_id = session_info["mpcs:SessionId"]["mpcs:Number"]
@@ -153,9 +154,18 @@ def build_ocs_metadata_from_emd(emd_file):
 
     meta = {
         "session_id": session_id,
-        "session_venue_type": venue,
-        "session_testbed_name": host,
-        "session_user": user
+        #"session_venue_type": venue,
+        "session_host": host,
+        #"session_user": user
+        "session_name": "todo",
+        "session_fsw_dictionary_version": "todo",
+        "sclk_coarse": 123456,
+        "sclk_fine": 12345678,
+        "scet": "2022-120T00:00:00",
+        "ert": "2022-121T01:23:45",
+        "vcid": 1337,
+        "apid": 100,
+        "dat_file_name": "todo"
     }
 
     return meta
