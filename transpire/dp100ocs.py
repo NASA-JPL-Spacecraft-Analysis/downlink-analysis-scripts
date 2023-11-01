@@ -217,8 +217,8 @@ def main():
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
     parser.add_argument('-p', '--apid', default=100, help='apid to query(only supports apid 100 atm)')
     parser.add_argument('-K', '--session', required=True, help='session number to query on')
-    parser.add_argument('-t', '--ocs_path', default='/playground/fhy-sandbox', help='The ocs directory to publish to')
-    parser.add_argument('-g', '--ocs_package', default='eurc-dev-general', help='The ocs package to publish as')
+    parser.add_argument('-t', '--ocs_path', default='/transpire', help='The ocs directory to publish to')
+    parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
     args = parser.parse_args()
 
     session = args.session
