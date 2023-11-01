@@ -116,6 +116,7 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
 
     # describe_all_packages to find the package_id
     response = client.describe_all_packages(SessionToken=session_token)
+    print(json.dumps(response, indent=4))
     package_id = [item['package_id'] for item in response['data'] if item['name'] == ocs_package_name][0]
 
     #todo: create new object type
