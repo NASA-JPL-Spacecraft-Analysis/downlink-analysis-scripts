@@ -239,11 +239,11 @@ def query_from_ocs(session_host, session_id):
     ocs_type = "eurc-fspa-dp-parsed"
 
     #searching with type name by itself works...
-    expression = "ocs_type_name: {}".format(ocs_type)
+    #expression = "ocs_type_name: {}".format(ocs_type)
 
     #queries below with session host and id do not work...blah
     #expression = "ocs_type_name: {} AND session_host={}".format(ocs_type, session_host)
-    #expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
+    expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
 
     query_ocs(expression)
 
