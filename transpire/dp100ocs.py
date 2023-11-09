@@ -232,10 +232,12 @@ def query_ocs(expression, sort="scet:desc", max_results=1):
     except ocs.exceptions.RequestError as r:
         print(r)
 
-def query_from_ocs(filename):
+def query_from_ocs(host):
     # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
     #     ocs_type, pcfg_name, start_scet, end_scet)
-    expression = "ocs_name: {}".format(filename)
+    #expression = "ocs_name: {}".format(filename)
+    ocs_type = "eurc-fspa-dp-parsed"
+    expression = "ocs_type_name: {}".format(ocs_type)
     query_ocs(expression)
 
 def main():
