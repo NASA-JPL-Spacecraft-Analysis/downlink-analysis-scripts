@@ -220,7 +220,7 @@ def query_ocs(expression, sort="scet:desc", max_results=1):
     try:
         found_records = client.search_by_expression(expression, session_token,
                                                              Sort=[sort], MaxResults=max_results)
-        print(found_records)
+        print(json.dumps(found_records, indent=4))
         return found_records
     except ocs.exceptions.HTTPError as e:
         print(e)
