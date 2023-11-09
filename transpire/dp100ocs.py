@@ -284,5 +284,7 @@ def main():
         # try to query out the data we just pushed to make sure it got in
         query_from_ocs(metadata['session_host'], metadata['session_id'])
 
-if __name__ == "main":
+
+if __name__ == "__main__":
     main()
+    
