@@ -238,7 +238,9 @@ def query_from_ocs(session_host, session_id):
     #expression = "ocs_name: {}".format(filename)
     ocs_type = "eurc-fspa-dp-parsed"
 
+    #searching with type name by itself works...
     expression = "ocs_type_name: {}".format(ocs_type)
+
     #queries below with session host and id do not work...blah
     #expression = "ocs_type_name: {} AND session_host={}".format(ocs_type, session_host)
     #expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
@@ -287,7 +289,7 @@ def main():
                     ocs_metadata=metadata)
 
         # try to query out the data we just pushed to make sure it got in
-        query_from_ocs(metadata['session_host'], metadata['session_id'])
+        # query_from_ocs(metadata['session_host'], metadata['session_id'])
 
 
 if __name__ == "__main__":
