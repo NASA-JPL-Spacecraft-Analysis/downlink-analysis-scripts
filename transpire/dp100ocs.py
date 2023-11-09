@@ -232,12 +232,12 @@ def query_ocs(expression, sort="scet:desc", max_results=1):
     except ocs.exceptions.RequestError as r:
         print(r)
 
-def query_from_ocs(host):
+def query_from_ocs(session_host, session_id):
     # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
     #     ocs_type, pcfg_name, start_scet, end_scet)
     #expression = "ocs_name: {}".format(filename)
     ocs_type = "eurc-fspa-dp-parsed"
-    expression = "ocs_type_name: {}".format(ocs_type)
+    expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
     query_ocs(expression)
 
 def main():
@@ -282,7 +282,7 @@ def main():
                     ocs_metadata=metadata)
 
         # try to query out the data we just pushed to make sure it got in
-        query_from_ocs(filename)
+        query_from_ocs(metadata['session_host'], metadata['session_id'])
 
-if __name__ == "__main__":
+if __name__ == "main":
     main()
