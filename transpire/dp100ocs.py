@@ -237,7 +237,8 @@ def query_from_ocs(session_host, session_id):
     #     ocs_type, pcfg_name, start_scet, end_scet)
     #expression = "ocs_name: {}".format(filename)
     ocs_type = "eurc-fspa-dp-parsed"
-    expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
+    expression = "ocs_type_name: {} AND session_host={}".format(ocs_type, session_host)
+    #expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
     query_ocs(expression)
 
 def main():
@@ -287,4 +288,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
