@@ -4,6 +4,7 @@ from io import StringIO
 import argparse
 import socket
 import ocs
+import ocs.exceptions
 import json
 import xmltodict
 import os
@@ -210,6 +211,33 @@ def build_ocs_metadata_from_emd(emd_file):
     print("ocs metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
+def query_ocs(expression, sort="scet:desc", max_results=1):
+    print("Querying OCS with search expression: {}".format(expression))
+    client = build_ocs_client()
+
+    session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
+
+    try:
+        found_records = client.search_by_expression(expression, session_token,
+                                                             Sort=[sort], MaxResults=max_results)
+        print(found_records)
+        return found_records
+    except ocs.exceptions.HTTPError as e:
+        print(e)
+
+        if 'HTTP Error: 403' in e.args[0]:
+            raise Exception('User is forbidden from accessing OCS resources.')
+        elif 'HTTP Error: 401' in e.args[0]:
+            raise Exception('User is not authorized to access OCS resources.')
+    except ocs.exceptions.RequestError as r:
+        print(r)
+
+def query_from_ocs(filename):
+    # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
+    #     ocs_type, pcfg_name, start_scet, end_scet)
+    expression = "ocs_name: {}".format(filename)
+    query_ocs(expression)
+
 def main():
     hostname = socket.gethostname()
     print("Start of dp100ocs script, running on host {}".format(hostname))
@@ -250,6 +278,9 @@ def main():
                     ocs_path=ocs_path,
                     ocs_filename=filename,
                     ocs_metadata=metadata)
+
+        # try to query out the data we just pushed to make sure it got in
+        query_from_ocs(filename)
 
 if __name__ == "__main__":
     main()
