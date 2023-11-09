@@ -213,7 +213,7 @@ def build_ocs_metadata_from_emd(emd_file):
 
 def query_ocs(expression, sort="scet:desc", max_results=1):
     print("Querying OCS with search expression: {}".format(expression))
-    client = build_ocs_client()
+    client = build_ocs_client("dev")
 
     session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
 
