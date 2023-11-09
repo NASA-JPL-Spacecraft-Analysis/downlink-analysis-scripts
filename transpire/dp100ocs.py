@@ -243,7 +243,7 @@ def query_from_ocs(session_host, session_id):
 
     #queries below with session host and id do not work...blah
     #expression = "ocs_type_name: {} AND session_host={}".format(ocs_type, session_host)
-    expression = "ocs_type_name: {} AND session_host={} AND session_id={}".format(ocs_type, session_host, session_id)
+    expression = "ocs_type_name: {} AND session_host: {} AND session_id: {}".format(ocs_type, session_host, session_id)
 
     query_ocs(expression)
 
