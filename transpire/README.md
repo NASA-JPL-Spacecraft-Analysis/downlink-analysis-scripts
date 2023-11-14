@@ -8,7 +8,7 @@ Inside the `transpire` folder:
 ```shell
 $ source /proj/europa/fs/tools/europa-fs-vnv/environment/.cshrc
 $ activate-ec-ve
-$ pip install -r requirements.
+$ pip install -r requirements.txt
 
 In case the vnv .cshrc file is not available there is a copy of it named ec_ve_cshrc
 ```
