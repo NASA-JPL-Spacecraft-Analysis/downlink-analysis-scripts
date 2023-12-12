@@ -14,24 +14,39 @@ def convert_xml(input_file: str) -> dict:
 def parse_channel(data: dict) -> list:
     top_level_key = 'telemetry_dictionary'
     group_key = 'telemetry_groups'
-    groups = parse_dict(data, top_level_key, group_key)
-    group_list = []
-    # build a hashmap between group_channel IDs and name
-    for key in groups['group']:
-        group_dict = {
-            'group': None,
-            'group_channels': []
-        }
+    telemetry_key = 'telemetry_definitions'
+    groups = parse_dict(data, top_level_key, group_key, telemetry_key)
+    telemetry_list = []
     
+    # add telemetry mapping of short name and name
+    for key in groups['telemetry']:
+        telemetry_definition = {
+            'abbreviation': None,
+            'name': None
+        }
+        if isinstance(key, dict):
+                for sub_key, value in key.items():
+                    if sub_key == '@abbreviation':
+                        telemetry_definition['abbreviation'] = value
+                    elif sub_key == '@name':
+                        telemetry_definition['name'] = value
+        telemetry_list.append(telemetry_definition)
+         
+    # build a hashmap between group_channel IDs and name 
+    for key in groups['group']:
+        telemetry_group = {
+            'group': None,
+            'group_channels': [],
+        }
         for sub_key, value in key.items():
             if sub_key == '@group_name':
-                group_dict['group'] = value
+                telemetry_group['group'] = value
             elif sub_key == 'group_channel':
                 if isinstance(value, list):
-                    group_dict['group_channels'].extend(value)
+                    telemetry_group['group_channels'].extend(value)
             
-        group_list.append(group_dict)
-    return group_list
+        telemetry_list.append(telemetry_group)
+    return telemetry_list
     
     
 def parse_param(data: dict) -> list:
@@ -58,12 +73,14 @@ def parse_param(data: dict) -> list:
     return group_list
     
     
-def parse_dict(data: dict, top_key: str, main_key: str) -> dict:
+def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None) -> dict:
     parsed_dict = {}
     if top_key in data:
         for key, value in data[top_key][main_key].items():
             parsed_dict[key] = value
-                
+    if optional_key is not None:
+        for key, value in data[top_key][optional_key].items():
+            parsed_dict[key] = value
     return parsed_dict
 
 
