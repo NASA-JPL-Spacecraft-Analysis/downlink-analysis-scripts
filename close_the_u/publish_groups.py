@@ -6,36 +6,36 @@ import json
 def convert_xml(input_file: str) -> dict:
     with open(input_file, 'r') as file:
         xml_data = file.read()
-        
         data_dict = xmltodict.parse(xml_data)
         return data_dict
 
 
 def parse_channel(data: dict) -> list:
     top_level_key = 'telemetry_dictionary'
-    group_key = 'telemetry_groups'
     telemetry_key = 'telemetry_definitions'
     enum_key = 'enum_definitions'
-    groups = parse_dict(data, top_level_key, group_key, telemetry_key, enum_key)
-    telemetry_list = []
+    groups = parse_dict(data, top_level_key, telemetry_key, enum_key)
+    enum_list = []
     
-    # add telemetry mapping of short name and name
+    # create mapping of channel definitions and channel enums
     for key in groups['telemetry']:
-        telemetry_definition = {
+        channel_mapping = {
             'abbreviation': None,
             'name': None,
             'enum_name': None,
             'enum_symbols': []
         }
+        # derive definition first to obtain enum name
         if isinstance(key, dict):
                 for sub_key, value in key.items():
                     if sub_key == '@abbreviation':
-                        telemetry_definition['abbreviation'] = value
+                        channel_mapping['abbreviation'] = value
                     elif sub_key == '@name':
-                        telemetry_definition['name'] = value
+                        channel_mapping['name'] = value
                     elif sub_key == 'enum_format':
-                        telemetry_definition['enum_name'] = value['@enum_name']
-                        enum_name = telemetry_definition['enum_name']
+                        channel_mapping['enum_name'] = value['@enum_name']
+                        enum_name = channel_mapping['enum_name']
+                        # derive enums from enum name
                         for key in groups['enum_table']:
                             if isinstance(key, dict):
                                 for sub_key, value in key.items():
@@ -48,52 +48,56 @@ def parse_channel(data: dict) -> list:
                                                 for sub_key, value in item.items():
                                                     if sub_key == '@symbol':
                                                         enum_symbols.append(value)
-                                        telemetry_definition['enum_symbols'] = enum_symbols
+                                        channel_mapping['enum_symbols'] = enum_symbols
                                         
-        telemetry_list.append(telemetry_definition)
-         
-    # build a hashmap between group_channel IDs and name 
-    for key in groups['group']:
-        telemetry_group = {
-            'group': None,
-            'group_channels': [],
-        }
-        for sub_key, value in key.items():
-            if sub_key == '@group_name':
-                telemetry_group['group'] = value
-            elif sub_key == 'group_channel':
-                if isinstance(value, list):
-                    telemetry_group['group_channels'].extend(value)
-            
-        telemetry_list.append(telemetry_group)
-    return telemetry_list
+        enum_list.append(channel_mapping)
+    return enum_list
     
     
 def parse_param(data: dict) -> list:
     top_level_key = 'param-def'
-    group_key = 'parameter_groups' 
-    groups = parse_dict(data, top_level_key, group_key)
-    group_list = []
-    # build a hashmap between group_parameters and name
-    for key in groups['parameter_group']:
-        group_dict = {
-            'group': None,
-            'group_parameters': []
+    parameter_group = 'param'
+    enum_key = 'enum_definitions'
+    groups = parse_dict(data, top_level_key, parameter_group, enum_key)
+    enum_list = []
+    # derive definition first to obtain enum name
+    for item in groups['list']:
+        parameter_mapping = {
+            'param_id': None,
+            'param_name': None,
+            'enum_name': None,
+            'enum_symbols': []
         }
-    
-        for sub_key, value in key.items():
-            if sub_key == '@param_group_name':
-                group_dict['group'] = value
-            elif sub_key == 'group_params':
-                if isinstance(value, dict):
-                    params = value['group_param']
-                    group_dict['group_parameters'].extend(params)
-            
-        group_list.append(group_dict)
-    return group_list
+        if isinstance(item, dict):
+            for key, value in item.items():
+                if key == '@param_id':
+                    parameter_mapping['param_id'] = value
+                elif key == '@param_name':
+                    parameter_mapping['param_name'] = value
+                elif key == 'parameter_type':
+                    if isinstance(value, dict):
+                        enum_name = value.get('enum_param', {}).get('@enum_name', '')
+                        parameter_mapping['enum_name'] = enum_name
+                        # derive enums from enum name
+                        for key in groups['enum_table']:
+                            if isinstance(key, dict):
+                                for sub_key, value in key.items():
+                                    if sub_key == '@name' and value == enum_name:
+                                        # access values from the inner dictionary
+                                        inner_values = key.get('values', {}).get('enum', [])
+                                        enum_symbols = []
+                                        for item in inner_values:
+                                            if isinstance(item, dict):
+                                                for sub_key, value in item.items():
+                                                    if sub_key == '@symbol':
+                                                        enum_symbols.append(value)
+                                        parameter_mapping['enum_symbols'] = enum_symbols
+                                        
+        enum_list.append(parameter_mapping)
+    return enum_list
     
 
-def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None, optional_key2: str = None) -> dict:
+def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None) -> dict:
     """ Parse specified keys in the given data dictionary
         
         Args:
@@ -101,20 +105,21 @@ def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None
         top_key (str): **[REQUIRED]** the top most key of the data dictionary
         main_key (str): **[REQUIRED]** the primary key nested within the top most key
         optional_key (str): any additional key nested within the top most key (default: none)
-        optional_key2 (str): any additional key nested within the top most key (default: none)
 
     Returns:
        A dictionary with the requested parsed items from the given input data
     """
     parsed_dict = {}
     if top_key in data:
-        for key, value in data[top_key][main_key].items():
-            parsed_dict[key] = value
+        if isinstance(data[top_key][main_key], dict):
+            for key, value in data[top_key][main_key].items():
+                parsed_dict[key] = value
+        elif isinstance(data[top_key][main_key], list):
+            parsed_dict['list'] = []
+            for item in data[top_key][main_key]:
+                parsed_dict['list'].append(item)
     if optional_key is not None:
         for key, value in data[top_key][optional_key].items():
-            parsed_dict[key] = value
-    if optional_key2 is not None:
-        for key, value in data[top_key][optional_key2].items():
             parsed_dict[key] = value
     return parsed_dict
 
