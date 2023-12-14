@@ -22,8 +22,7 @@ def parse_channel(data: dict) -> list:
         channel_mapping = {
             'abbreviation': None,
             'name': None,
-            'enum_name': None,
-            'enum_symbols': []
+            'enumerations': {}
         }
         # derive definition first to obtain enum name
         if isinstance(key, dict):
@@ -42,13 +41,13 @@ def parse_channel(data: dict) -> list:
                                     if sub_key == '@name' and value == enum_name:
                                         # access values from the inner dictionary
                                         inner_values = key.get('values', {}).get('enum', [])
-                                        enum_symbols = []
                                         for item in inner_values:
                                             if isinstance(item, dict):
-                                                for sub_key, value in item.items():
-                                                    if sub_key == '@symbol':
-                                                        enum_symbols.append(value)
-                                        channel_mapping['enum_symbols'] = enum_symbols
+                                                enum_member = item['@symbol']
+                                                enum_value = item['@numeric']
+                                                channel_mapping['enumerations'][enum_member] = enum_value
+                                                
+                                                    
                                         
         enum_list.append(channel_mapping)
     return enum_list
@@ -65,8 +64,7 @@ def parse_param(data: dict) -> list:
         parameter_mapping = {
             'param_id': None,
             'param_name': None,
-            'enum_name': None,
-            'enum_symbols': []
+            'enumerations': {}
         }
         if isinstance(item, dict):
             for key, value in item.items():
@@ -85,13 +83,11 @@ def parse_param(data: dict) -> list:
                                     if sub_key == '@name' and value == enum_name:
                                         # access values from the inner dictionary
                                         inner_values = key.get('values', {}).get('enum', [])
-                                        enum_symbols = []
                                         for item in inner_values:
                                             if isinstance(item, dict):
-                                                for sub_key, value in item.items():
-                                                    if sub_key == '@symbol':
-                                                        enum_symbols.append(value)
-                                        parameter_mapping['enum_symbols'] = enum_symbols
+                                                enum_member = item['@symbol']
+                                                enum_value = item['@numeric']
+                                                parameter_mapping['enumerations'][enum_member] = enum_value
                                         
         enum_list.append(parameter_mapping)
     return enum_list
