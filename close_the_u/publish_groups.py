@@ -22,6 +22,8 @@ def parse_channel(data: dict) -> list:
         channel_mapping = {
             'abbreviation': None,
             'name': None,
+            'type': None,
+            'ops_category': None,
             'enumerations': {}
         }
         # derive definition first to obtain enum name
@@ -31,9 +33,13 @@ def parse_channel(data: dict) -> list:
                         channel_mapping['abbreviation'] = value
                     elif sub_key == '@name':
                         channel_mapping['name'] = value
+                    elif sub_key == '@type':
+                        channel_mapping['type'] = value
+                    elif sub_key == 'categories':
+                        category = value.get('ops_category', '')
+                        channel_mapping['ops_category'] = category
                     elif sub_key == 'enum_format':
-                        channel_mapping['enum_name'] = value['@enum_name']
-                        enum_name = channel_mapping['enum_name']
+                        enum_name = value['@enum_name']
                         # derive enums from enum name
                         for key in groups['enum_table']:
                             if isinstance(key, dict):
@@ -46,9 +52,7 @@ def parse_channel(data: dict) -> list:
                                                 enum_member = item['@symbol']
                                                 enum_value = item['@numeric']
                                                 channel_mapping['enumerations'][enum_member] = enum_value
-                                                
-                                                    
-                                        
+                                                                
         enum_list.append(channel_mapping)
     return enum_list
     
@@ -64,6 +68,8 @@ def parse_param(data: dict) -> list:
         parameter_mapping = {
             'param_id': None,
             'param_name': None,
+            'type': None,
+            'ops_category': None,
             'enumerations': {}
         }
         if isinstance(item, dict):
@@ -72,10 +78,21 @@ def parse_param(data: dict) -> list:
                     parameter_mapping['param_id'] = value
                 elif key == '@param_name':
                     parameter_mapping['param_name'] = value
+                elif key == '@type':
+                    parameter_mapping['type'] = value
+                elif key == 'categories':
+                    category = value.get('ops_category', '')
+                    parameter_mapping['ops_category'] = category
                 elif key == 'parameter_type':
                     if isinstance(value, dict):
+                        for index, (sub_key, _) in enumerate(value.items()):
+                            if index == 0:
+                                type_name = sub_key
+                                # slice the param suffix
+                                type = type_name[:-len('_param')]
+                                parameter_mapping['type'] = type
+                    if isinstance(value, dict):
                         enum_name = value.get('enum_param', {}).get('@enum_name', '')
-                        parameter_mapping['enum_name'] = enum_name
                         # derive enums from enum name
                         for key in groups['enum_table']:
                             if isinstance(key, dict):
