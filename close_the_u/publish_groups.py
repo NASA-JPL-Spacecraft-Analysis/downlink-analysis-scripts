@@ -157,7 +157,7 @@ def main(mode, input_file, output_file) -> None:
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description="close-the-u wrapper script")
     arg_parser.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter'], required=True, help='run mode')
-    arg_parser.add_argument('-i', '--input', dest= 'input_file', required=False, help='input file')
-    arg_parser.add_argument('-o', '--output', dest='output_file', required=False, help='output file')
+    arg_parser.add_argument('-i', '--input', dest= 'input_file', required=True, help='input file')
+    arg_parser.add_argument('-o', '--output', dest='output_file', default='output.json', required=False, help='output file')
     args = arg_parser.parse_args()
     main(args.mode, args.input_file, args.output_file)
