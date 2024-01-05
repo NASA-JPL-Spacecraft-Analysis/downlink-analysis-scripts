@@ -51,7 +51,7 @@ def _composeState(args, parameter_name, volatility, data):
 
 
 def getParameterValues(args):
-    filename = './parsol_params/{}_{}_{}_{}.json'.format(args.host, args.session, args.scet, args.vcid)
+    filename = './parasol_responses/{}_{}_{}_{}.json'.format(args.host, args.session, args.scet, args.vcid)
 
     if os.path.exists(filename):
         print('Using saved response for Parasol for parameter values')
