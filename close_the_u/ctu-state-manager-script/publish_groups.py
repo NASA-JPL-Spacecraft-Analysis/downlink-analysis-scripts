@@ -2,7 +2,9 @@ import xmltodict
 import argparse
 import json
 import close_the_u
-        
+ENVIRONMENT = 'dev'
+
+
 def convert_xml(input_file: str) -> dict:
     with open(input_file, 'r') as file:
         xml_data = file.read()
@@ -20,24 +22,30 @@ def parse_channel(data: dict) -> list:
     # create mapping of channel definitions and channel enums
     for key in groups['telemetry']:
         channel_mapping = {
-            'abbreviation': None,
-            'name': None,
+            'channeID': None,
+            'groupName': None,
             'type': None,
             'ops_category': None,
+            'description': None,
+            'units': None,
             'enumerations': {}
         }
         # derive definition first to obtain enum name
         if isinstance(key, dict):
                 for sub_key, value in key.items():
                     if sub_key == '@abbreviation':
-                        channel_mapping['abbreviation'] = value
+                        channel_mapping['channeID'] = value
                     elif sub_key == '@name':
-                        channel_mapping['name'] = value
+                        channel_mapping['groupName'] = value
                     elif sub_key == '@type':
                         channel_mapping['type'] = value
                     elif sub_key == 'categories':
                         category = value.get('ops_category', '')
                         channel_mapping['ops_category'] = category
+                    elif sub_key == 'description':
+                        channel_mapping['description'] = value
+                    elif sub_key == 'raw_units':
+                        channel_mapping['units'] = value
                     elif sub_key == 'enum_format':
                         enum_name = value['@enum_name']
                         # derive enums from enum name
@@ -66,23 +74,29 @@ def parse_param(data: dict) -> list:
     # derive definition first to obtain enum name
     for item in groups['list']:
         parameter_mapping = {
-            'param_id': None,
-            'param_name': None,
+            'channeID': None,
+            'groupName': None,
             'type': None,
             'ops_category': None,
+            'description': None,
+            'units': None,
             'enumerations': {}
         }
         if isinstance(item, dict):
             for key, value in item.items():
                 if key == '@param_id':
-                    parameter_mapping['param_id'] = value
+                    parameter_mapping['channeID'] = value
                 elif key == '@param_name':
-                    parameter_mapping['param_name'] = value
+                    parameter_mapping['groupName'] = value
                 elif key == '@type':
                     parameter_mapping['type'] = value
                 elif key == 'categories':
                     category = value.get('ops_category', '')
                     parameter_mapping['ops_category'] = category
+                elif key == 'sysdesc':
+                    parameter_mapping['description'] = value
+                elif key == '@units':
+                    parameter_mapping['units'] = value
                 elif key == 'parameter_type':
                     if isinstance(value, dict):
                         for index, (sub_key, _) in enumerate(value.items()):
@@ -148,22 +162,38 @@ def read_from_json(filename: str) -> dict:
     return data
 
 
-def create_state():
-    # TODO
-    pass
-
+def create_states(collection_id: str, state_records: dict, valueType: str):
+    new_states = state_records['data']
+    states = []
+    for state in new_states:
+        if isinstance(state, dict):
+            record = {}
+            record['channelId'] = state['channeID']
+            record['restricted'] = False
+            record['identifier'] = state['groupName']
+            record['type'] = valueType
+            record['dataType'] = state['type']
+            record['subsystem'] = state['ops_category']
+            record['source'] = 'flight'
+            states.append(record)
+    close_the_u.state_manager.create_states(collection_id, states, ENVIRONMENT)
+            
 
 def main(mode: str, input_file: str, output_file: str, collection_id: str) -> None:
     # currently script will simply parse channel or param files
     data = convert_xml(input_file)
+    valueType = ''
     if mode == 'channel':
         output = parse_channel(data)
+        valueType = 'channel'
     if mode == 'parameter':
         output = parse_param(data)
+        valueType = 'fsw_parameter'
         
     group_dict = {'data': output}
     write_to_output_file(group_dict, output_file)
-    read_from_json(output_file)
+    json_data = read_from_json(output_file)
+    create_states(collection_id, json_data, valueType)
         
         
 if __name__ == "__main__":
