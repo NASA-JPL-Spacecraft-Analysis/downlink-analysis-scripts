@@ -1,7 +1,7 @@
 import xmltodict
 import argparse
 import json
-
+import close_the_u
         
 def convert_xml(input_file: str) -> dict:
     with open(input_file, 'r') as file:
@@ -141,8 +141,19 @@ def write_to_output_file(data: dict, output_file: str):
     with open(output_file, 'w') as json_file:
             json.dump(data, json_file)
 
-    
-def main(mode, input_file, output_file) -> None:
+
+def read_from_json(filename: str) -> dict:
+    with open(filename) as f:
+        data = json.load(f)
+    return data
+
+
+def create_state():
+    # TODO
+    pass
+
+
+def main(mode: str, input_file: str, output_file: str, collection_id: str) -> None:
     # currently script will simply parse channel or param files
     data = convert_xml(input_file)
     if mode == 'channel':
@@ -152,12 +163,14 @@ def main(mode, input_file, output_file) -> None:
         
     group_dict = {'data': output}
     write_to_output_file(group_dict, output_file)
+    read_from_json(output_file)
         
         
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description="close-the-u wrapper script")
     arg_parser.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter'], required=True, help='run mode')
-    arg_parser.add_argument('-i', '--input', dest= 'input_file', required=True, help='input file')
+    arg_parser.add_argument('-i', '--input', dest='input_file', required=True, help='input file')
     arg_parser.add_argument('-o', '--output', dest='output_file', default='output.json', required=False, help='output file')
+    arg_parser.add_argument('-c', '--collectionId', dest='collection_id', required=True, help='collection id to be used')
     args = arg_parser.parse_args()
-    main(args.mode, args.input_file, args.output_file)
+    main(args.mode, args.input_file, args.output_file, args.collection_id)
