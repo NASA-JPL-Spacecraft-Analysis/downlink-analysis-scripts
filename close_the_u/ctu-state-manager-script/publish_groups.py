@@ -30,6 +30,9 @@ def parse_channel(data: dict) -> list:
             'units': None,
             'enumerations': {}
         }
+        raw_to_eng = False
+        if 'raw_to_eng' in key:
+            raw_to_eng = True
         # derive definition first to obtain enum name
         if isinstance(key, dict):
                 for sub_key, value in key.items():
@@ -44,8 +47,10 @@ def parse_channel(data: dict) -> list:
                         channel_mapping['ops_category'] = category
                     elif sub_key == 'description':
                         channel_mapping['description'] = value
-                    elif sub_key == 'raw_units':
+                    elif sub_key == 'raw_units' and raw_to_eng == False:
                         channel_mapping['units'] = value
+                    elif sub_key == 'raw_to_eng':
+                        channel_mapping['units'] = key[sub_key]['eng_units']
                     elif sub_key == 'enum_format':
                         enum_name = value['@enum_name']
                         # derive enums from enum name
