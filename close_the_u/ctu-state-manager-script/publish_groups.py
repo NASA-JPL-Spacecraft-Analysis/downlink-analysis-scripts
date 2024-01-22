@@ -35,37 +35,37 @@ def parse_channel(data: dict) -> list:
             raw_to_eng = True
         # derive definition first to obtain enum name
         if isinstance(key, dict):
-                for sub_key, value in key.items():
-                    if sub_key == '@abbreviation':
-                        channel_mapping['channeID'] = value
-                    elif sub_key == '@name':
-                        channel_mapping['groupName'] = value
-                    elif sub_key == '@type':
-                        channel_mapping['type'] = value
-                    elif sub_key == 'categories':
-                        category = value.get('ops_category', '')
-                        channel_mapping['ops_category'] = category
-                    elif sub_key == 'description':
-                        channel_mapping['description'] = value
-                    elif sub_key == 'raw_units' and raw_to_eng == False:
-                        channel_mapping['units'] = value
-                    elif sub_key == 'raw_to_eng':
-                        channel_mapping['units'] = key[sub_key]['eng_units']
-                    elif sub_key == 'enum_format':
-                        enum_name = value['@enum_name']
-                        # derive enums from enum name
-                        for key in groups['enum_table']:
-                            if isinstance(key, dict):
-                                for sub_key, value in key.items():
-                                    if sub_key == '@name' and value == enum_name:
-                                        # access values from the inner dictionary
-                                        inner_values = key.get('values', {}).get('enum', [])
-                                        for item in inner_values:
-                                            if isinstance(item, dict):
-                                                enum_member = item['@symbol']
-                                                enum_value = item['@numeric']
-                                                channel_mapping['enumerations'][enum_member] = enum_value
-                                                                
+            for sub_key, value in key.items():
+                if sub_key == '@abbreviation':
+                    channel_mapping['channeID'] = value
+                elif sub_key == '@name':
+                    channel_mapping['groupName'] = value
+                elif sub_key == '@type':
+                    channel_mapping['type'] = value
+                elif sub_key == 'categories':
+                    category = value.get('ops_category', '')
+                    channel_mapping['ops_category'] = category
+                elif sub_key == 'description':
+                    channel_mapping['description'] = value
+                elif sub_key == 'raw_units' and raw_to_eng == False:
+                    channel_mapping['units'] = value
+                elif sub_key == 'raw_to_eng':
+                    channel_mapping['units'] = key[sub_key]['eng_units']
+                elif sub_key == 'enum_format':
+                    enum_name = value['@enum_name']
+                    # derive enums from enum name
+                    for key in groups['enum_table']:
+                        if isinstance(key, dict):
+                            for sub_key, value in key.items():
+                                if sub_key == '@name' and value == enum_name:
+                                    # access values from the inner dictionary
+                                    inner_values = key.get('values', {}).get('enum', [])
+                                    for item in inner_values:
+                                        if isinstance(item, dict):
+                                            enum_member = item['@symbol']
+                                            enum_value = item['@numeric']
+                                            channel_mapping['enumerations'][enum_member] = enum_value
+
         enum_list.append(channel_mapping)
     return enum_list
     
@@ -156,7 +156,7 @@ def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None
     return parsed_dict
 
 
-def write_to_output_file(data: dict, output_file: str):
+def write_to_output_file(data: dict, output_file: str) -> None:
     with open(output_file, 'w') as json_file:
             json.dump(data, json_file)
 
@@ -167,7 +167,7 @@ def read_from_json(filename: str) -> dict:
     return data
 
 
-def create_states(collection_id: str, state_records: dict, valueType: str):
+def create_states(collection_id: str, state_records: dict, valueType: str) -> None:
     new_states = state_records['data']
     states = []
     for state in new_states:
@@ -181,6 +181,15 @@ def create_states(collection_id: str, state_records: dict, valueType: str):
             record['subsystem'] = state['ops_category']
             record['source'] = 'flight'
             states.append(record)
+        if record['dataType'] == 'enum':
+            # create state enumerations
+            record['enumerations'] = []
+            for key, value in state['enumerations'].items():
+                enum_name_value = {}
+                enum_name_value['label'] = key
+                enum_name_value['value'] = value
+                record['enumerations'].append(enum_name_value)
+        
     close_the_u.state_manager.create_states(collection_id, states, ENVIRONMENT)
             
 
