@@ -3,7 +3,7 @@ Python script for publishing CSV or JSON state data to Clipper State Data Store 
 
 
 # Installation Instructions
-Inside the `ctu-lib-wrapper` folder:
+Inside the `ctu-csds-state-wrapper/` folder:
 ```shell
 $ python -m venv .venv --upgrade-deps && source ./.venv/bin/activate
 $ pip install -r requirements.txt

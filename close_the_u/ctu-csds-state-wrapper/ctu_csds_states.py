@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import json
-import numbers
+
 import os
 import pandas as pd
 import re
@@ -35,7 +35,12 @@ def _write_file_type(response, output):
 
 
 def _ensure_required_csds_keys(datum):
-    CSDS_DEFAULTS = {'name': None, 'scet': None, 'value': -9999, 'valueType': 'PREDICTED'}
+    CSDS_DEFAULTS = {
+        'name': None,
+        'scet': None,
+        'value': -99999,
+        'valueType': 'PREDICTED',
+    }
 
     for key, value in CSDS_DEFAULTS.items():
         if key not in datum:
@@ -58,18 +63,18 @@ def _validate_state_data(list_data, collection_name):
         if 'id' in datum:
             del datum['id']
 
-        # handle CSDS enums
-        for enum_key, enum_class in state_data_store.enum_classes.items():
-            if enum_key in datum:
-                datum_value = datum[enum_key]
-                datum[enum_key] = enum_class[datum_value.upper()].name
+        # TODO handle CSDS enums
 
     return list_data
 
 
 def _csv_to_list(filename):
     try:
-        data_frame = pd.read_csv(filename, skipinitialspace=True, usecols=lambda x: not x.startswith('Unnamed'))
+        data_frame = pd.read_csv(
+            filename,
+            skipinitialspace=True,
+            usecols=lambda x: not x.startswith('Unnamed'),
+        )
         data = data_frame.to_dict(orient='records')
 
         return data
@@ -126,10 +131,30 @@ def main():
     setup()
 
     parser = argparse.ArgumentParser(description='Publish or Query States from Clipper State Data Store')
-    parser.add_argument('-a', '--action', required=True, help='session id on parasol (ex: LOAD_STATES or QUERY_STATES)')
-    parser.add_argument('-c', '--collection', required=True, help='name of the collection in csds (ex: mast-fsw-params)')
-    parser.add_argument('-i', '--input', help='path to the csv or json input file (ex: ./sample.csv)')
-    parser.add_argument('-o', '--output', default='JSON', help='format to write output response (ex: CSV or JSON')
+    parser.add_argument(
+        '-a',
+        '--action',
+        required=True,
+        help='session id on parasol (ex: LOAD_STATES or QUERY_STATES)',
+    )
+    parser.add_argument(
+        '-c',
+        '--collection',
+        required=True,
+        help='name of the collection in csds (ex: mast-fsw-params)',
+    )
+    parser.add_argument(
+        '-i',
+        '--input',
+        help='path to the csv or json input file (ex: ./sample.csv)'
+    )
+
+    parser.add_argument(
+        '-o',
+        '--output',
+        default='JSON',
+        help='format to write output response (ex: CSV or JSON',
+    )
 
     args = parser.parse_args()
 
@@ -141,7 +166,6 @@ def main():
         if not os.path.exists(args.input):
             print(f'File {args.input} could not be found. Please check the file path.')
             return
-
 
         filetype = _get_file_type(args.input)
 
@@ -158,15 +182,12 @@ def main():
             print(f'Please provide a valid .csv or .json file.')
             return
 
-
         if data is not None:
             _create_csds_states(data, args.output)
-
 
     if args.action == 'QUERY_STATES':
         _get_csds_states(args.collection, args.output)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
-
