@@ -281,6 +281,7 @@ def main():
 
         filename = dp['dat_file'].split("/")[-1]
         filename = filename.replace(".dat", ".json")
+        filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
 
         push_to_ocs(data=data,
                     ocs_package_name=ocs_package_name,
