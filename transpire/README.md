@@ -21,7 +21,7 @@ Query out data products for session and push to OCS
 ```shell
 If not already autenticated with SSO, run `credss` and then:
 
-$ python dp100ocs.py -K 620 -p 100
+$ python transpire_process_dps.py -K 620 
 
 This should query out the data products using chill_get_products
 Then it should parse the data product out using the eurc_vnv libraries
