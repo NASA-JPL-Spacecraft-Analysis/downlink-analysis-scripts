@@ -1,4 +1,4 @@
-# dp100ocs
+# transpire_process_dps.py
 Python script for querying out Data Products, run vnv tools to convert command history and then push to OCS
 
 # Installation Instructions
