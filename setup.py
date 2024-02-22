@@ -10,16 +10,21 @@ setuptools.setup(
         "m20-operational-cloud-store==7.7.1",
         "close-the-u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git",
         "eas-parasol @ git+https://github.jpl.nasa.gov/397/parasol-py.git@feature/cam-auth-support",
-        "pandas"
+        "pandas",
+        "aerie_cli @ git+https://github.com/NASA-AMMOS/aerie-cli.git@main",
+        "dataclasses-json"
     ],
-    py_modules=["aerie", "close_the_u", "conversions", "parasol", "transpire"],
+    py_modules=["ctu_merlin", "close_the_u", "conversions", "parasol", "transpire"],
     entry_points={
         "console_scripts": [
             "radmon_to_ctu = fspa_scripts.conversions.radmon_to_ctu:main",
             "chill_to_ctu = fspa_scripts.conversions.chill_to_ctu:main",
             "transpire_process_dps = fspa_scripts.transpire.transpire_process_dps:main",
             "publish_fsw_params = fspa_scripts.parasol.publish_fsw_params:main",
-            "ctu_csds_states = fspa_scripts.close_the_u.ctu_csds_states:main"
+            "ctu_csds_states = fspa_scripts.close_the_u.ctu_csds_states:main",
+            "merlin_to_ctu_tools = fspa_scripts.ctu_merlin.merlin_to_ctu_tools:main",
+            "merlin_to_sm = fspa_scripts.ctu_merlin.merlin_to_sm:main",
+            "javadoc_to_sm = fspa_scripts.ctu_merlin.javadoc_to_sm:main"
         ]
     }
 )

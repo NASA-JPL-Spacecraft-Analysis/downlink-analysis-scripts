@@ -2,8 +2,11 @@
 Repo for scripts to be delivered through the GDS.
 
 ## Modules
-### aerie
-TODO
+### ctu_merlin
+#### merlin_to_sm.py
+Connect state definitions and resource timelines from Merlin to the State Manager and State Data Store
+#### merlin_to_ctu_tools.py
+Connect state definitions and resource timelines from Merlin to the State Manager and State Data Store
 ### close_the_u
 #### ctu_csds_states.py
 Publish CSV or JSON state data to Clipper State Data Store (CSDS)
