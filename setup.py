@@ -1,0 +1,25 @@
+import setuptools
+
+setuptools.setup(
+    name="eurc-gds-fspa-scripts",
+    version="1.0",
+    url="https://github.jpl.nasa.gov/Europa-PESS/fspa-scripts",
+    packages=setuptools.find_packages(),
+    python_requires=">=3.8",
+    install_requires=[
+        "m20-operational-cloud-store==7.7.1",
+        "close-the-u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git",
+        "eas-parasol @ git+https://github.jpl.nasa.gov/397/parasol-py.git@feature/cam-auth-support",
+        "pandas"
+    ],
+    py_modules=["aerie", "close_the_u", "conversions", "parasol", "transpire"],
+    entry_points={
+        "console_scripts": [
+            "radmon_to_ctu = fspa_scripts.conversions.radmon_to_ctu:main",
+            "chill_to_ctu = fspa_scripts.conversions.chill_to_ctu:main",
+            "transpire_process_dps = fspa_scripts.transpire.transpire_process_dps:main",
+            "publish_fsw_params = fspa_scripts.parasol.publish_fsw_params:main",
+            "ctu_csds_states = fspa_scripts.close_the_u.ctu_csds_states:main"
+        ]
+    }
+)
