@@ -1,0 +1,1612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="404" fsw_id="DP_ACS_IO_DUMP" title="DP_ACS_IO_DUMP">
+      <sysdesc>Data Product to capture input/output structures (MDP sensor data/CDP actuator command) between GNC device managers and GNC algorithms.</sysdesc>
+      <categories>
+        <module>acs_ctl</module>
+        <ops_category>GNC</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>GNC_ACS_IO_DUMP</command>
+    <viewer name="default"/>
+    <fields>
+      <repeat_block>
+        <array fsw_name="32hz_fields" num_items="4">
+          <sysdesc>This array contains the 32Hz MDP, CDP data and is repeated 4 times per 8Hz</sysdesc>
+          <field fsw_name="32hz_timetag" datatype="FLOAT" length="8">
+            <sysdesc>Time tag associated with the 32 Hz RTI</sysdesc>
+            <units>sec</units>
+          </field>
+          <field fsw_name="pot_mdp_timetag" datatype="FLOAT" length="8">
+            <sysdesc>pot mdp timetag</sysdesc>
+            <units>sec</units>
+          </field>
+          <field fsw_name="ready_px" datatype="SIGNED_INT" length="4">
+            <sysdesc>tells sac to send a new command, or not. PX</sysdesc>
+          </field>
+          <field fsw_name="ready_mx" datatype="SIGNED_INT" length="4">
+            <sysdesc>tells sac to send a new command, or not. MX</sysdesc>
+          </field>
+          <field fsw_name="px_pot_meas_a_0" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas A0 PX</sysdesc>
+          </field>
+          <field fsw_name="px_pot_meas_a_1" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas A1 PX</sysdesc>
+          </field>
+          <field fsw_name="px_pot_meas_b_0" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas B0 PX</sysdesc>
+          </field>
+          <field fsw_name="px_pot_meas_b_1" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas B1 PX</sysdesc>
+          </field>
+          <field fsw_name="mx_pot_meas_a_0" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas A0 MX</sysdesc>
+          </field>
+          <field fsw_name="mx_pot_meas_a_1" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas A1 MX</sysdesc>
+          </field>
+          <field fsw_name="mx_pot_meas_b_0" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas B0 MX</sysdesc>
+          </field>
+          <field fsw_name="mx_pot_meas_b_1" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>pot meas B1 MX</sysdesc>
+          </field>
+          <field fsw_name="px_valid_a" datatype="SIGNED_INT" length="4">
+            <sysdesc>valid A PX</sysdesc>
+          </field>
+          <field fsw_name="px_valid_b" datatype="SIGNED_INT" length="4">
+            <sysdesc>valid B PX</sysdesc>
+          </field>
+          <field fsw_name="mx_valid_a" datatype="SIGNED_INT" length="4">
+            <sysdesc>valid A MX</sysdesc>
+          </field>
+          <field fsw_name="mx_valid_b" datatype="SIGNED_INT" length="4">
+            <sysdesc>valid B MX</sysdesc>
+          </field>
+          <field fsw_name="step_cnt_a" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>step cnt A</sysdesc>
+          </field>
+          <field fsw_name="step_cnt_b" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>step cnt B</sysdesc>
+          </field>
+          <field fsw_name="cal_1k_a" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>cal 1k A</sysdesc>
+          </field>
+          <field fsw_name="cal_1k_b" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>cal 1k B</sysdesc>
+          </field>
+          <field fsw_name="cal_5k_a" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>cal 5k A</sysdesc>
+          </field>
+          <field fsw_name="cal_5k_b" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>cal 5k B</sysdesc>
+          </field>
+          <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PADDING</sysdesc>
+          </field>
+          <field fsw_name="imua_accel_timetag" datatype="FLOAT" length="8">
+            <sysdesc>IMUA accel timetag</sysdesc>
+          </field>
+          <field fsw_name="imua_accel_pkt_valid_a" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUA pkt valid accel a</sysdesc>
+          </field>
+          <field fsw_name="imua_accel_pkt_valid_b" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUA pkt valid accel b</sysdesc>
+          </field>
+          <field fsw_name="imua_accel_pkt_valid_c" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUA pkt valid accel c</sysdesc>
+          </field>
+          <field fsw_name="imua_accel_pkt_valid_d" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUA pkt valid accel d</sysdesc>
+          </field>
+          <field fsw_name="imua_vel_accum_a" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUA velocity a, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imua_vel_accum_b" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUA velocity b, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imua_vel_accum_c" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUA velocity c, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imua_vel_accum_d" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUA velocity d, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imua_imu_accel_cfg" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>IMUA 16 bits of configuration from 1553 TSA16 W7, same src as accl data</sysdesc>
+          </field>
+          <field fsw_name="imua_samp_strobe" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>IMUA 16 bit strobe counter from 1553 TSA16 W16</sysdesc>
+          </field>
+          <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PADDING</sysdesc>
+          </field>
+          <field fsw_name="imua_ready_state" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUA ready state</sysdesc>
+          </field>
+          <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PADDING</sysdesc>
+          </field>
+          <field fsw_name="imub_accel_timetag" datatype="FLOAT" length="8">
+            <sysdesc>IMUB accel timetag</sysdesc>
+          </field>
+          <field fsw_name="imub_accel_pkt_valid_a" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUB pkt valid accel a</sysdesc>
+          </field>
+          <field fsw_name="imub_accel_pkt_valid_b" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUB pkt valid accel b</sysdesc>
+          </field>
+          <field fsw_name="imub_accel_pkt_valid_c" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUB pkt valid accel c</sysdesc>
+          </field>
+          <field fsw_name="imub_accel_pkt_valid_d" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUB pkt valid accel_d</sysdesc>
+          </field>
+          <field fsw_name="imub_vel_accum_a" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUB velocity a, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imub_vel_accum_b" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUB velocity b, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imub_vel_accum_c" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUB velocity c, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imub_vel_accum_d" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>IMUB velocity d, iru frame</sysdesc>
+          </field>
+          <field fsw_name="imub_imu_accel_cfg" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>IMUB 16 bits of configuration from 1553 TSA16 W7, same src as accl data</sysdesc>
+          </field>
+          <field fsw_name="imub_samp_strobe" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>IMUB 16 bit strobe counter from 1553 TSA16 W16</sysdesc>
+          </field>
+          <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PADDING</sysdesc>
+          </field>
+          <field fsw_name="imub_ready_state" datatype="SIGNED_INT" length="4">
+            <sysdesc>IMUB ready state</sysdesc>
+          </field>
+          <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PADDING</sysdesc>
+          </field>
+          <field fsw_name="send_cmd" datatype="SIGNED_INT" length="4">
+            <sysdesc>Thruster validity flag (FALSE=don't send, TRUE=send)</sysdesc>
+          </field>
+          <field fsw_name="fire_duration_thr1" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR1</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr2" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR2</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr3" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR3</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr4" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR4</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr5" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR5</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr6" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR6</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr7" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR7</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr8" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR8</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr9" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR9</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr10" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR10</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr11" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR11</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="fire_duration_thr12" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>fire duration THR12</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr1" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR1</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr2" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR2</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr3" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR3</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr4" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR4</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr5" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR5</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr6" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR6</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr7" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR7</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr8" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR8</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr9" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR9</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr10" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR10</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr11" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR11</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="delay_duration_thr12" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>delay duration THR12</sysdesc>
+            <units>dn</units>
+          </field>
+          <field fsw_name="cmd_type_px" datatype="SIGNED_INT" length="4">
+            <sysdesc>cmd type PX</sysdesc>
+          </field>
+          <field fsw_name="cmd_type_mx" datatype="SIGNED_INT" length="4">
+            <sysdesc>cmd type MX</sysdesc>
+          </field>
+          <field fsw_name="stepper_cmd_px" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PME_MGR_SADA_POS_X_GIMBAL</sysdesc>
+          </field>
+          <field fsw_name="stepper_cmd_mx" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>PME_MGR_SADA_NEG_X_GIMBAL</sysdesc>
+          </field>
+          <field fsw_name="direction_px" datatype="SIGNED_INT" length="4">
+            <sysdesc>PME_MGR_SADA_POS_DIR</sysdesc>
+          </field>
+          <field fsw_name="direction_mx" datatype="SIGNED_INT" length="4">
+            <sysdesc>PME_MGR_SADA_NEG_DIR</sysdesc>
+          </field>
+        </array>
+        <field fsw_name="8hz_timetag" datatype="FLOAT" length="8">
+          <sysdesc>Time tag associated with the 8 Hz RTI</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_mdp_timetag" datatype="FLOAT" length="8">
+          <sysdesc>Time tag associated with the mdp</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_id" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMU ID</sysdesc>
+        </field>
+        <field fsw_name="imua_ready_state" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMU power status state</sysdesc>
+        </field>
+        <field fsw_name="imua_num_measurements" datatype="SIGNED_INT" length="4">
+          <sysdesc>number of IMU measurements in the 8Hz RTI</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_0" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 0 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_0_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 0 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_0_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 0 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_0_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 0 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_0_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 0 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_0_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 0 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_0_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 0 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_0_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 0 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_0_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 0 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_0" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 0 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_1" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 1 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_1_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 1 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_1_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 1 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_1_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 1 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_1_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 1 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_1_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 1 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_1_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 1 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_1_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 1 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_1_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 1 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_1" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 1 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_2" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 2 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_2_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 2 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_2_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 2 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_2_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 2 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_2_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 2 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_2_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 2 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_2_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 2 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_2_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 2 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_2_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 2 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_2" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 2 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_3" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 3 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_3_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 3 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_3_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 3 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_3_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 3 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_3_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 3 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_3_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 3 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_3_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 3 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_3_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 3 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_3_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 3 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_3" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 3 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_4" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 4 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_4_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 4 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_4_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 4 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_4_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 4 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_4_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 4 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_4_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 4 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_4_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 4 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_4_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 4 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_4_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 4 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_4" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 4 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_5" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 5 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_5_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 5 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_5_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 5 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_5_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 5 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_5_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 5 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_5_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 5 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_5_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 5 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_5_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 5 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_5_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 5 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_5" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 5 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_6" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 6 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_6_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 6 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_6_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 6 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_6_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 6 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_6_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 6 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_6_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 6 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_6_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 6 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_6_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 6 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_6_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 6 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_6" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 6 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_7" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 7 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_7_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 7 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_7_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 7 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_7_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 7 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_7_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 7 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_7_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 7 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_7_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 7 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_7_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 7 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_7_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 7 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_7" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 7 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_8" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 8 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_8_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 8 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_8_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 8 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_8_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 8 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_8_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 8 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_8_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 8 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_8_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 8 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_8_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 8 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_8_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 8 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_8" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 8 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_9" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 9 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_9_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 9 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_9_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 9 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_9_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 9 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_9_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 9 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_9_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 9 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_9_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 9 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_9_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 9 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_9_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 9 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_9" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 9 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_10" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 10 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_10_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 10 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_10_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 10 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_10_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 10 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_10_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 10 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_10_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 10 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_10_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 10 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_10_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 10 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_10_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 10 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_10" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 10 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_11" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 11 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_11_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 11 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_11_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 11 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_11_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 11 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_11_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 11 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_11_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 11 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_11_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 11 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_11_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 11 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_11_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 11 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_11" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 11 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_timetag_12" datatype="FLOAT" length="8">
+          <sysdesc>IMUA 12 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_12_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 12 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_12_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 12 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_12_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 12 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_pkt_valid_12_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUA 12 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_12_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 12 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_12_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 12 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_12_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 12 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imua_theta_accum_12_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 12 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imua_gyro_config_12" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUA 12 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_mdp_timetag" datatype="FLOAT" length="8">
+          <sysdesc>Time tag associated with the mdp</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_id" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMU ID</sysdesc>
+        </field>
+        <field fsw_name="imub_ready_state" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMU power status state</sysdesc>
+        </field>
+        <field fsw_name="imub_num_measurements" datatype="SIGNED_INT" length="4">
+          <sysdesc>number of IMU measurements in the 8Hz RTI</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_0" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 0 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_0_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 0 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_0_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 0 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_0_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 0 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_0_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 0 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_0_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 0 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_0_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 0 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_0_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 0 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_0_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 0 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_0" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 0 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_1" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 1 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_1_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 1 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_1_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 1 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_1_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 1 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_1_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 1 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_1_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 1 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_1_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 1 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_1_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 1 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_1_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 1 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_1" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 1 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_2" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 2 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_2_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 2 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_2_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 2 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_2_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 2 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_2_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 2 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_2_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 2 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_2_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 2 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_2_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 2 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_2_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 2 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_2" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 2 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_3" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 3 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_3_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 3 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_3_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 3 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_3_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 3 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_3_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 3 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_3_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 3 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_3_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 3 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_3_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 3 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_3_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 3 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_3" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 3 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_4" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 4 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_4_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 4 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_4_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 4 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_4_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 4 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_4_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 4 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_4_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 4 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_4_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 4 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_4_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 4 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_4_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 4 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_4" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 4 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_5" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 5 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_5_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 5 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_5_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 5 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_5_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 5 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_5_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 5 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_5_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 5 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_5_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 5 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_5_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 5 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_5_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 5 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_5" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 5 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_6" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 6 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_6_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 6 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_6_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 6 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_6_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 6 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_6_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 6 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_6_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 6 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_6_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 6 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_6_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 6 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_6_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 6 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_6" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 6 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_7" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 7 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_7_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 7 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_7_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 7 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_7_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 7 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_7_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 7 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_7_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 7 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_7_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 7 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_7_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 7 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_7_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 7 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_7" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 7 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_8" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 8 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_8_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 8 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_8_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 8 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_8_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 8 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_8_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 8 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_8_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 8 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_8_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 8 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_8_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 8 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_8_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 8 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_8" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 8 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_9" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 9 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_9_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 9 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_9_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 9 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_9_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 9 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_9_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 9 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_9_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 9 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_9_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 9 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_9_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 9 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_9_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 9 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_9" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 9 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_10" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 10 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_10_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 10 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_10_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 10 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_10_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 10 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_10_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 10 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_10_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 10 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_10_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 10 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_10_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 10 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_10_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 10 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_10" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 10 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_11" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 11 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_11_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 11 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_11_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 11 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_11_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 11 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_11_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 11 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_11_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 11 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_11_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 11 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_11_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 11 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_11_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 11 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_11" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 11 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_timetag_12" datatype="FLOAT" length="8">
+          <sysdesc>IMUB 12 packet timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_12_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 12 packet validity for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_12_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 12 packet validity for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_12_c" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 12 packet validity for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_pkt_valid_12_d" datatype="SIGNED_INT" length="4">
+          <sysdesc>IMUB 12 packet validity for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_12_a" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 12 theta angle counts for gyros a</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_12_b" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 12 theta angle counts for gyros b</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_12_c" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 12 theta angle counts for gyros c</sysdesc>
+        </field>
+        <field fsw_name="imub_theta_accum_12_d" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 12 theta angle counts for gyros d</sysdesc>
+        </field>
+        <field fsw_name="imub_gyro_config_12" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>IMUB 12 gyro config word from rs-422, 24bits</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="srua_time" datatype="FLOAT" length="8">
+          <sysdesc>time</sysdesc>
+          <units>SEC</units>
+        </field>
+        <field fsw_name="srua_q1" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [1], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srua_q2" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [2], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srua_q3" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [3], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srua_q4" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [4], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srua_qual_index_0" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>quality index[0], scale factor 0.1 arcsec</sysdesc>
+        </field>
+        <field fsw_name="srua_qual_index_1" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>quality index[1], scale factor 0.1 arcsec</sysdesc>
+        </field>
+        <field fsw_name="srua_qual_index_2" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>quality index[2], scale factor 0.1 arcsec</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="srua_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>valid, based on h/w + pwr + qual_index</sysdesc>
+        </field>
+        <field fsw_name="srua_num_stars" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>number of stars tracked</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="srub_time" datatype="FLOAT" length="8">
+          <sysdesc>time</sysdesc>
+          <units>SEC</units>
+        </field>
+        <field fsw_name="srub_q1" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [1], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srub_q2" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [2], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srub_q3" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [3], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srub_q4" datatype="FLOAT" length="8">
+          <sysdesc>Quaternion [4], SRU_q_I, intertial-&gt;sru frame</sysdesc>
+        </field>
+        <field fsw_name="srub_qual_index_0" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>quality index[0], scale factor 0.1 arcsec</sysdesc>
+        </field>
+        <field fsw_name="srub_qual_index_1" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>quality index[1], scale factor 0.1 arcsec</sysdesc>
+        </field>
+        <field fsw_name="srub_qual_index_2" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>quality index[2], scale factor 0.1 arcsec</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="srub_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>valid, based on h/w + pwr + qual_index</sysdesc>
+        </field>
+        <field fsw_name="srub_num_stars" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>number of stars tracked</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="q1_srubf_sruaf" datatype="FLOAT" length="8">
+          <sysdesc>quaternion[1] for SRUAF to SRUBF</sysdesc>
+        </field>
+        <field fsw_name="q2_srubf_sruaf" datatype="FLOAT" length="8">
+          <sysdesc>quaternion[2] for SRUAF to SRUBF</sysdesc>
+        </field>
+        <field fsw_name="q3_srubf_sruaf" datatype="FLOAT" length="8">
+          <sysdesc>quaternion[3] for SRUAF to SRUBF</sysdesc>
+        </field>
+        <field fsw_name="q4_srubf_sruaf" datatype="FLOAT" length="8">
+          <sysdesc>quaternion[4] for SRUAF to SRUBF</sysdesc>
+        </field>
+        <field fsw_name="is_q_srubf_sruaf_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>is quaternion valid</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dss_mdp_timetag" datatype="FLOAT" length="8">
+          <sysdesc>DSS MDP timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="dssa_h1_alpha_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSAH1 Gray code of the alpha channel angle</sysdesc>
+        </field>
+        <field fsw_name="dssa_h1_beta_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSAH1 gray code of the beta channel angle</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssa_h1_sun_pres" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH1 sun presence</sysdesc>
+        </field>
+        <field fsw_name="dssa_h1_albedo_pres_alpha" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH1 albedo presence alpha</sysdesc>
+        </field>
+        <field fsw_name="dssa_h1_albedo_pres_beta" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH1 albedo presence beta</sysdesc>
+        </field>
+        <field fsw_name="dssa_h1_volt_alpha_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSAH1 alpha channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssa_h1_volt_beta_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSAH1 beta channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssa_h1_is_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH1 validity determined by AVS FSW</sysdesc>
+        </field>
+        <field fsw_name="dssa_h1_gain_setting" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSAH1 gain setting</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="3">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_alpha_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSAH2 Gray code of the alpha channel angle</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_beta_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSAH2 gray code of the beta channel angle</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_sun_pres" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH2 sun presence</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_albedo_pres_alpha" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH2 albedo presence alpha</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_albedo_pres_beta" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH2 albedo presence beta</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_volt_alpha_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSAH2 alpha channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssa_h2_volt_beta_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSAH2 beta channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssa_h2_is_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSAH2 validity determined by AVS FSW</sysdesc>
+        </field>
+        <field fsw_name="dssa_h2_gain_setting" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSAH2 gain setting</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="3">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_alpha_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSBH1 Gray code of the alpha channel angle</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_beta_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSBH1 gray code of the beta channel angle</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_sun_pres" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH1 sun presence</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_albedo_pres_alpha" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH1 albedo presence alpha</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_albedo_pres_beta" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH1 albedo presence beta</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_volt_alpha_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSBH1 alpha channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssb_h1_volt_beta_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSBH1 beta channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssb_h1_is_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH1 validity determined by AVS FSW</sysdesc>
+        </field>
+        <field fsw_name="dssb_h1_gain_setting" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSBH1 gain setting</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="3">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_alpha_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSBH2 Gray code of the alpha channel angle</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_beta_gray" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSBH2 gray code of the beta channel angle</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_sun_pres" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH2 sun presence</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_albedo_pres_alpha" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH2 albedo presence alpha</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_albedo_pres_beta" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH2 albedo presence beta</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_volt_alpha_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSBH2 alpha channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssb_h2_volt_beta_ata" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>DSSBH2 beta channel ATA current</sysdesc>
+          <units>DN</units>
+        </field>
+        <field fsw_name="dssb_h2_is_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>DSSBH2 validity determined by AVS FSW</sysdesc>
+        </field>
+        <field fsw_name="dssb_h2_gain_setting" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DSSBH2 gain setting</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="3">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="rwa_mdp_timetag" datatype="FLOAT" length="8">
+          <sysdesc>RWA MDP timetag</sysdesc>
+          <units>sec</units>
+        </field>
+        <field fsw_name="tach_counts_rwa1" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>tach counts reading for RWA1</sysdesc>
+        </field>
+        <field fsw_name="tach_counts_rwa2" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>tach counts reading for RWA2</sysdesc>
+        </field>
+        <field fsw_name="tach_counts_rwa3" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>tach counts reading for RWA3</sysdesc>
+        </field>
+        <field fsw_name="tach_counts_rwa4" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>tach counts reading for RWA4</sysdesc>
+        </field>
+        <field fsw_name="valid_rwa1" datatype="SIGNED_INT" length="4">
+          <sysdesc>validity flag for RWA1</sysdesc>
+        </field>
+        <field fsw_name="valid_rwa2" datatype="SIGNED_INT" length="4">
+          <sysdesc>validity flag for RWA2</sysdesc>
+        </field>
+        <field fsw_name="valid_rwa3" datatype="SIGNED_INT" length="4">
+          <sysdesc>validity flag for RWA3</sysdesc>
+        </field>
+        <field fsw_name="valid_rwa4" datatype="SIGNED_INT" length="4">
+          <sysdesc>validity flag for RWA4</sysdesc>
+        </field>
+        <field fsw_name="emt_ptr" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>pointer to ephemeris table data</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_exc" datatype="SIGNED_INT" length="4">
+          <sysdesc>will EXC parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_vcs" datatype="SIGNED_INT" length="4">
+          <sysdesc>will VCS parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_ivp" datatype="SIGNED_INT" length="4">
+          <sysdesc>will IVP parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_rwe" datatype="SIGNED_INT" length="4">
+          <sysdesc>will RWE parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_ate" datatype="SIGNED_INT" length="4">
+          <sysdesc>will ATE parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_mme" datatype="SIGNED_INT" length="4">
+          <sysdesc>will MME parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_sde" datatype="SIGNED_INT" length="4">
+          <sysdesc>will SDE parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_atc" datatype="SIGNED_INT" length="4">
+          <sysdesc>will ATC parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_cmt" datatype="SIGNED_INT" length="4">
+          <sysdesc>will CMT parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_rrc" datatype="SIGNED_INT" length="4">
+          <sysdesc>will RRC parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_rwc" datatype="SIGNED_INT" length="4">
+          <sysdesc>will RWC parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_rta" datatype="SIGNED_INT" length="4">
+          <sysdesc>will RTA parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_rcs" datatype="SIGNED_INT" length="4">
+          <sysdesc>will RCS parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_dvc" datatype="SIGNED_INT" length="4">
+          <sysdesc>will DVC parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_tal" datatype="SIGNED_INT" length="4">
+          <sysdesc>will TAL parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_sac" datatype="SIGNED_INT" length="4">
+          <sysdesc>will SAC parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_dve" datatype="SIGNED_INT" length="4">
+          <sysdesc>will DVE parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="params_updated_next_rti_tcd" datatype="SIGNED_INT" length="4">
+          <sysdesc>will TCD parameters be updated on the next major RTI</sysdesc>
+        </field>
+        <field fsw_name="eclipse_in_progress" datatype="SIGNED_INT" length="4">
+          <sysdesc>notification of whether an eclipse is in progress, derived from the eclipse table</sysdesc>
+        </field>
+        <field fsw_name="torq_word_rwa1" datatype="SIGNED_INT" length="4">
+          <sysdesc>torq command for RWA1</sysdesc>
+        </field>
+        <field fsw_name="torq_word_rwa2" datatype="SIGNED_INT" length="4">
+          <sysdesc>torq command for RWA2</sysdesc>
+        </field>
+        <field fsw_name="torq_word_rwa3" datatype="SIGNED_INT" length="4">
+          <sysdesc>torq command for RWA3</sysdesc>
+        </field>
+        <field fsw_name="torq_word_rwa4" datatype="SIGNED_INT" length="4">
+          <sysdesc>torq command for RWA4</sysdesc>
+        </field>
+        <field fsw_name="sru_cmd_time_tag" datatype="FLOAT" length="8">
+          <sysdesc>SRU command timetag</sysdesc>
+        </field>
+        <field fsw_name="vel_hel_if_x" datatype="SIGNED_INT" length="4">
+          <sysdesc>spacecraft heliocentric velocityX in J2000 m/s</sysdesc>
+        </field>
+        <field fsw_name="vel_hel_if_y" datatype="SIGNED_INT" length="4">
+          <sysdesc>spacecraft heliocentric velocityY in J2000 m/s</sysdesc>
+        </field>
+        <field fsw_name="vel_hel_if_z" datatype="SIGNED_INT" length="4">
+          <sysdesc>spacecraft heliocentric velocityZ in J2000 m/s</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="att_est_srursf_if_0" datatype="FLOAT" length="8">
+          <sysdesc>estimated attiutde from IF to SRU Rs 0</sysdesc>
+        </field>
+        <field fsw_name="att_est_srursf_if_1" datatype="FLOAT" length="8">
+          <sysdesc>estimated attiutde from IF to SRU Rs 1</sysdesc>
+        </field>
+        <field fsw_name="att_est_srursf_if_2" datatype="FLOAT" length="8">
+          <sysdesc>estimated attiutde from IF to SRU Rs 2</sysdesc>
+        </field>
+        <field fsw_name="att_est_srursf_if_3" datatype="FLOAT" length="8">
+          <sysdesc>estimated attiutde from IF to SRU Rs 3</sysdesc>
+        </field>
+        <field fsw_name="are_quats_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>are quats valid</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="rate_est_srursf_0" datatype="FLOAT" length="8">
+          <sysdesc>estimated rate in SRU Rs 0</sysdesc>
+          <units>rad sec-1</units>
+        </field>
+        <field fsw_name="rate_est_srursf_1" datatype="FLOAT" length="8">
+          <sysdesc>estimated rate in SRU Rs 1</sysdesc>
+        </field>
+        <field fsw_name="rate_est_srursf_2" datatype="FLOAT" length="8">
+          <sysdesc>estimated rate in SRU Rs 2</sysdesc>
+        </field>
+        <field fsw_name="are_rates_valid" datatype="SIGNED_INT" length="4">
+          <sysdesc>are rates valid</sysdesc>
+        </field>
+        <field fsw_name="exp_obsc_status_a" datatype="SIGNED_INT" length="4">
+          <sysdesc>expected obscuration status A</sysdesc>
+        </field>
+        <field fsw_name="exp_obsc_status_b" datatype="SIGNED_INT" length="4">
+          <sysdesc>expected obscuration status B</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+        <field fsw_name="okToSwitchEMT" datatype="SIGNED_INT" length="4">
+          <sysdesc>okay for ephemeris manager to switch tables</sysdesc>
+        </field>
+        <field fsw_name="padding" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>PADDING</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

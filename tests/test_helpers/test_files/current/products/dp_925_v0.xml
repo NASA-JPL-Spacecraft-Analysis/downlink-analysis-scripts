@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="0"/>
+  <table>
+    <name id="925" fsw_id="DP_AVS_SS_RAM_READOUT" title="DP_AVS_SS_RAM_READOUT">
+      <sysdesc>Contains a readout of the self-string RAM.</sysdesc>
+      <categories>
+        <module>plat_ptm</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_SS_READ_CHECKSUM_RAM</command>
+    <fields>
+      <field fsw_name="address_type" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Type of addressing</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="VIRTUAL"/>
+          <states enumerated_value="1" dict_value="KERNEL"/>
+          <states enumerated_value="2" dict_value="PHYSICAL"/>
+        </lookup>
+      </field>
+      <field fsw_name="start_address" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>Start address of data</sysdesc>
+      </field>
+      <field fsw_name="end_address" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>End address of data</sysdesc>
+      </field>
+      <field fsw_name="data_length" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Data length in byte</sysdesc>
+        <units>Byte</units>
+      </field>
+      <repeat_block>
+        <field fsw_name="data" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+          <sysdesc>data</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

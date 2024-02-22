@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1"/>
+  <table>
+    <name id="913" fsw_id="DP_RAD750_DDR2_BAD_MEM_MAP" title="DP_RAD750_DDR2_BAD_MEM_MAP">
+      <sysdesc>RAD750 DDR2 bad memory map, created by SUROM on boot, then captured to a DP by FSW.</sysdesc>
+      <categories>
+        <module>plat_ptm</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <fields>
+      <array fsw_name="ddr2_test_map_array" num_items="8192">
+        <sysdesc>Bad Page Bitmap Array</sysdesc>
+        <field fsw_name="ddr2_test_map" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+          <sysdesc>Bad Page Bitmap</sysdesc>
+        </field>
+      </array>
+    </fields>
+  </table>
+</data_product>

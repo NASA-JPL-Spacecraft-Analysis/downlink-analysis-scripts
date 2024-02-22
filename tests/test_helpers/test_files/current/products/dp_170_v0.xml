@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="170" fsw_id="DP_NPM_RECORD_DUMP" title="DP_NPM_RECORD_DUMP">
+      <sysdesc>Contents of FSW Record(s), each containing ID, version, size, starting chunk index, record raw data byte count, the primary copy of the record raw data, and the backup copy of the raw record data, for a total of 24+M+N bytes per record (typically M == N). If contents exceed max DP size, additional DP will be dumped starting from the last incomplete record.</sysdesc>
+      <categories>
+        <module>rec_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_NPM_DMP_RECORDS</command>
+    <viewer name="default"/>
+    <fields>
+      <repeat_block>
+        <field fsw_name="id" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>The record ID</sysdesc>
+        </field>
+        <field fsw_name="version" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>The NPM version number for this record instance</sysdesc>
+        </field>
+        <field fsw_name="size" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>The record byte size</sysdesc>
+          <units>bytes</units>
+        </field>
+        <field fsw_name="address" datatype="UNSIGNED_INT" length="4" format="&quot;0x%08x&quot;">
+          <sysdesc>Addressing: chunk index in NVDS</sysdesc>
+        </field>
+        <field fsw_name="primary_rec_size" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>Size (in bytes) of the of raw data record (including write count, record data, &amp; checksum) from the primary copy. If retrieving the record data fails, this will be 0.</sysdesc>
+          <units>bytes</units>
+        </field>
+        <dynamic_array fsw_name="primary_record" variable="primary_rec_size">
+          <sysdesc>primary data record raw data</sysdesc>
+          <field fsw_name="primrec_data" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>primary data record raw data byte</sysdesc>
+          </field>
+        </dynamic_array>
+        <field fsw_name="backup_rec_size" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>Size (in bytes) of the of raw data record (including write count, record data, &amp; checksum) from the primary copy. If retrieving the record data fails, this will be 0.</sysdesc>
+          <units>bytes</units>
+        </field>
+        <dynamic_array fsw_name="backup_record" variable="backup_rec_size">
+          <sysdesc>backup data record raw data</sysdesc>
+          <field fsw_name="backrec_data" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>backup data record raw data byte</sysdesc>
+          </field>
+        </dynamic_array>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

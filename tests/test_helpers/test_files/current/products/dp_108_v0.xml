@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="108" fsw_id="MEV_DP" title="MEV_DP">
+      <sysdesc>This data product contains the Multi EventLog (MEV) autopsy data.</sysdesc>
+      <categories>
+        <module>zfit_worker</module>
+        <ops_category>FSW</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="test_name_length" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Length of the file name</sysdesc>
+      </field>
+      <repeat_block>
+        <dynamic_array fsw_name="test_name" variable="test_name_length">
+          <sysdesc>Array of 1-byte chars for the test name (of length given above)</sysdesc>
+          <field fsw_name="test_name_char" datatype="ASCII" length="1">
+            <sysdesc>One character of the test name (dynamic array of file_name_length)</sysdesc>
+          </field>
+        </dynamic_array>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

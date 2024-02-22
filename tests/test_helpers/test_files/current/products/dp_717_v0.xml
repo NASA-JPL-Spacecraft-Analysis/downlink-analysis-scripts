@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="717" fsw_id="DP_FSW_PERFORMANCE_DATA" title="DP_FSW_PERFORMANCE_DATA">
+      <sysdesc>This data product contains the CPU Performance data.</sysdesc>
+      <categories>
+        <module>health_svc</module>
+        <ops_category>FSW</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>FSW_CAPTURE_PERF_DATA_DP</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="sclk" datatype="FLOAT" length="8">
+        <sysdesc>End SCLK time for data collection</sysdesc>
+      </field>
+      <field fsw_name="context_switches" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Number of context switches</sysdesc>
+      </field>
+      <array fsw_name="comp_array" num_items="20">
+        <sysdesc>Perf data for each component</sysdesc>
+        <array fsw_name="ctx_array" num_items="64">
+          <sysdesc>Perf data for each context</sysdesc>
+          <field fsw_name="instr_completed" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>CPU instructions completed</sysdesc>
+          </field>
+          <field fsw_name="load_store_instr_completed" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>CPU load/store instructions completed</sysdesc>
+          </field>
+          <field fsw_name="instr_cache_misses" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>CPU instruction cache misses</sysdesc>
+          </field>
+          <field fsw_name="data_cache_misses" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>CPU data cache misses</sysdesc>
+          </field>
+          <field fsw_name="stack_use" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>Stack use for the thread</sysdesc>
+          </field>
+        </array>
+      </array>
+    </fields>
+  </table>
+</data_product>

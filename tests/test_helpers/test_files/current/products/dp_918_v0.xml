@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="918" fsw_id="DP_AVS_EMEM_BAD_BLOCKS_LIST" title="DP_AVS_EMEM_BAD_BLOCKS_LIST">
+      <sysdesc>Contains a list of the bad blocks of EMEM NAND.</sysdesc>
+      <categories>
+        <module>file_svc</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DMP_EMEM_BAD_BLOCKS</command>
+    <viewer name="default"/>
+    <fields>
+      <repeat_block>
+        <field fsw_name="dmr_side" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>DMR side of this bad block</sysdesc>
+        </field>
+        <field fsw_name="lane" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Nand byte lane of this block</sysdesc>
+        </field>
+        <field fsw_name="block" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>Physical block within the lane.</sysdesc>
+        </field>
+        <field fsw_name="stripe_assignment" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>Stripe (logical block) this bad block is contained in.</sysdesc>
+        </field>
+        <field fsw_name="bad_block_code" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>The bad block code for this bad block.</sysdesc>
+        </field>
+        <field fsw_name="health_score" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+          <sysdesc>This contains the health score dword for the block.</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="76" fsw_id="DP_DMP_UNFILTERED_DATA" title="DP_DMP_UNFILTERED_DATA">
+      <sysdesc>A data product that contains Unfiltered data over the commanded specified time range.</sysdesc>
+      <categories>
+        <module>bds_exe</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_UNFILTERED_DATA</command>
+    <viewer name="default"/>
+  </table>
+</data_product>

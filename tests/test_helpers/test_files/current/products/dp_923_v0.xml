@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="923" fsw_id="DP_AVS_BDS_BAD_BLOCKS_LIST" title="DP_AVS_BDS_BAD_BLOCKS_LIST">
+      <sysdesc>Contains a list of the IDs of the bad blocks of BDS NAND as well as the bad block type.</sysdesc>
+      <categories>
+        <module>bds_physical_ctl</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DMP_BDS_BAD_BLOCKS</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="fsw_version" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>Running FSW Version</sysdesc>
+      </field>
+      <field fsw_name="nand_metadata_version" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>Running FSW Metadata Version</sysdesc>
+      </field>
+      <field fsw_name="nand_device_serial_number" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>HRC NAND Device Serial Number</sysdesc>
+      </field>
+      <field fsw_name="mram_fsw_version" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>FSW Version in MRAM (last factory restore)</sysdesc>
+      </field>
+      <field fsw_name="mram_metadata_version" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>FSW Metadata Version in MRAM (last factory restore)</sysdesc>
+      </field>
+      <field fsw_name="mram_device_serial_number" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+        <sysdesc>NAND Serial Number in MRAM (last factory restore)</sysdesc>
+      </field>
+      <repeat_block>
+        <field fsw_name="die_id" datatype="UNSIGNED_INT" length="1" format="0x%02x">
+          <sysdesc>die id of bad block</sysdesc>
+        </field>
+        <field fsw_name="block_id" datatype="UNSIGNED_INT" length="2" format="0x%04x">
+          <sysdesc>block id of bad block</sysdesc>
+        </field>
+        <field fsw_name="bad_block_type" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>bad block type</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="INVALID"/>
+            <states enumerated_value="1" dict_value="GOOD"/>
+            <states enumerated_value="2" dict_value="FACTORY_BAD"/>
+            <states enumerated_value="3" dict_value="MARKED_BAD"/>
+            <states enumerated_value="4" dict_value="SUSPECT"/>
+          </lookup>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

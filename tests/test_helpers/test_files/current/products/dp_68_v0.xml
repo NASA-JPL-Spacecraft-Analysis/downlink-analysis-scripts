@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="68" fsw_id="DP_DMP_METADATA_FILE" title="DP_DMP_METADATA_FILE">
+      <sysdesc>A data product that lists the following metadata fields for a single file: type (file or directory), size, creation time, and name.</sysdesc>
+      <categories>
+        <module>file_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_METADATA_FILE</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="type" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>The type of data (file or directory).</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="FILE"/>
+          <states enumerated_value="1" dict_value="DIRECTORY"/>
+        </lookup>
+      </field>
+      <field fsw_name="path_length" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Length of the path string in bytes.</sysdesc>
+        <units>bytes</units>
+      </field>
+      <dynamic_array fsw_name="path_name" variable="path_length">
+        <sysdesc>Full path and name of the file.</sysdesc>
+        <field fsw_name="path_char" datatype="ASCII" length="1" format="%s">
+          <sysdesc>Single character of the path.</sysdesc>
+        </field>
+      </dynamic_array>
+      <field fsw_name="size" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The size of the file or directory.</sysdesc>
+      </field>
+      <field fsw_name="creation_time_seconds" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The seconds portion of the creation time.</sysdesc>
+      </field>
+      <field fsw_name="creation_time_subseconds" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The sub-seconds portion of the creation time.</sysdesc>
+      </field>
+      <field fsw_name="crc32" datatype="UNSIGNED_INT" length="4" format="0x%x">
+        <sysdesc>32 bit checksum value stored in the file metadata.</sysdesc>
+      </field>
+    </fields>
+  </table>
+</data_product>

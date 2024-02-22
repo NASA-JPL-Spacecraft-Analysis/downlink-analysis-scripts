@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="41" fsw_id="DP_EHA_RECORDED_HIGH" title="DP_EHA_RECORDED_HIGH">
+      <sysdesc>Product containing packets of Recorded EHA data that are High Priority (Priority 2).</sysdesc>
+      <categories>
+        <module>eha_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <viewer name="default"/>
+  </table>
+</data_product>

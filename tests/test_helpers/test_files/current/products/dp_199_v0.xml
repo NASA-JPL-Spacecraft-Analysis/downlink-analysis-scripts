@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="199" fsw_id="DP_UPL_CFDP_TRANSACTIONS" title="DP_UPL_CFDP_TRANSACTIONS">
+      <sysdesc>Snapshot of active CFDP Uplink transactions.</sysdesc>
+      <categories>
+        <module>cfdp_svc</module>
+        <ops_category>UPL</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>UPL_DMP_CFDP_TRANSACTIONS</command>
+    <fields>
+      <field fsw_name="number_of_active_upl_transactions" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Number of currently active CFDP transactions</sysdesc>
+        <units>Number of CFDP transactions</units>
+      </field>
+      <dynamic_array fsw_name="active_upl_transactions" variable="number_of_active_upl_transactions">
+        <sysdesc>Array of transactions</sysdesc>
+        <field fsw_name="transaction_number" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>A unique number is among all open transactions.</sysdesc>
+        </field>
+        <field fsw_name="inactivity_timer" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The number of seconds left before the timer expires. A value of 0 means the timer is N/A.</sysdesc>
+        </field>
+        <field fsw_name="nak_timer" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The number of seconds left before the timer expires. A value of 0 means the timer is N/A.</sysdesc>
+        </field>
+        <field fsw_name="ack_timer" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The time, in seconds, when the timer is set to expire. A value of 0 indicates the timer is not active.</sysdesc>
+        </field>
+        <field fsw_name="canceled" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>values: cancelled=1; NOT-cancelled=0.</sysdesc>
+        </field>
+        <field fsw_name="frozen" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>values: Frozen=1; NOT-Frozen=0</sysdesc>
+        </field>
+        <field fsw_name="condition_code" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>One of 11 values defined in the CFDP spec Table 5-5.</sysdesc>
+        </field>
+        <field fsw_name="delivery_code" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Data Complete = 0;  Data Incomplete =1</sysdesc>
+        </field>
+        <field fsw_name="file_checksum" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>CRC-32 Checksum</sysdesc>
+        </field>
+        <field fsw_name="metadata_received" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Received=1; Not-Received=0.</sysdesc>
+        </field>
+        <field fsw_name="cfdp_phase" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>1, 2, 3 or 4.</sysdesc>
+        </field>
+        <field fsw_name="cfdp_class" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Class 1: 1; Class 2: 2</sysdesc>
+        </field>
+        <field fsw_name="start_time" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>time in seconds when transaction started</sysdesc>
+        </field>
+        <field fsw_name="staging_file_name" datatype="ASCII" length="32">
+          <sysdesc>Staging File Name is the File name assigned by FSW until a true CFDP name is provided by the MPDU. </sysdesc>
+        </field>
+        <field fsw_name="number_of_gaps" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>Number of Data Gaps </sysdesc>
+        </field>
+        <dynamic_array fsw_name="list_of_gaps" variable="number_of_gaps">
+          <sysdesc>List of Data Gaps (from NAKs)</sysdesc>
+          <field fsw_name="start_segment_gap" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>Starting position of gap</sysdesc>
+          </field>
+          <field fsw_name="end_segment_gap" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>Ending position of gap.</sysdesc>
+          </field>
+        </dynamic_array>
+      </dynamic_array>
+    </fields>
+  </table>
+</data_product>

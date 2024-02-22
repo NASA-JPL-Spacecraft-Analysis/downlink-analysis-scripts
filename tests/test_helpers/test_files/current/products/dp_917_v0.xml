@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="917" fsw_id="DP_AVS_EMEM_NAND_READOUT" title="DP_AVS_EMEM_NAND_READOUT">
+      <sysdesc>Contains a readout of the EMEM NAND. The data received should be divisible by the size of a nand page (data+spare)</sysdesc>
+      <categories>
+        <module>file_svc</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_SS_READ_CHECK_EMEM_NAND</command>
+    <viewer name="default"/>
+    <fields>
+      <repeat_block>
+        <array fsw_name="nand_page_data" num_items="4224" output_format="0x%08x">
+          <sysdesc>Contents of the nand page (data+spare).</sysdesc>
+          <field fsw_name="nand_dword" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>A single Dword (4 bytes) of the nand data.</sysdesc>
+          </field>
+        </array>
+        <field fsw_name="phy_pg_num" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Physical page number of the data prior to this number. This DP is formatted as page contents then page number.</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

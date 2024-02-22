@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="299" fsw_id="DP_SHARED_RECORD_STATS_DUMP" title="DP_SHARED_RECORD_STATS_DUMP">
+      <sysdesc>Dump of shared records stats</sysdesc>
+      <categories>
+        <module>sr_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_SHARED_RECORD_STATS</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="high_write_count" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Write count of record with highest write count</sysdesc>
+      </field>
+      <field fsw_name="high_write_count_id" datatype="UNSIGNED_INT" length="4" format="%08x">
+        <sysdesc>Record ID of record with highest write count</sysdesc>
+      </field>
+      <field fsw_name="high_write_count_ver" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Version ID of record with highest write count</sysdesc>
+      </field>
+      <field fsw_name="high_write_count_size" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Record size (in 16-bit words) of record with highest write count</sysdesc>
+      </field>
+      <field fsw_name="primary_metadata_reu" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>The REU that holds the selected primary metadata table selected during shared records init.  Prime = 0, Backup = 1.</sysdesc>
+      </field>
+      <field fsw_name="primary_metadata_mram" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>The MRAM bank that holds the selected primary metadata table selected during shared records init.  MRAM0 = 0, MRAM1 = 1.</sysdesc>
+      </field>
+      <field fsw_name="free_mram_in_words" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Number of free 16-bit words in the Primary REU MRAM selected during shared records init.</sysdesc>
+      </field>
+      <field fsw_name="num_recs_totals" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Total number of active and inactive records in the active metadata table</sysdesc>
+      </field>
+      <field fsw_name="num_recs_active" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Total number of active records in the active metadata table</sysdesc>
+      </field>
+      <field fsw_name="num_recs_inactive" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>Total number of inactive records in the active metadata table</sysdesc>
+      </field>
+      <field fsw_name="num_mram" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>The total number of MRAM from which statistics are collected.  4 if both REUs are powered and healthy.  2 if only the Prime REU is powered and healthy.</sysdesc>
+      </field>
+      <dynamic_array fsw_name="mram_array" variable="num_mram">
+        <sysdesc>The stats array from each powered healthy REU MRAM. (Prime REU MRAM0 = 0, Prime REU MRAM1 = 1, Backup REU MRAM0 = 2, Backup REU MRAM1 = 3)</sysdesc>
+        <field fsw_name="checksum" datatype="UNSIGNED_INT" length="4" format="%08x">
+          <sysdesc>The metadata checksum extracted from MRAM in this REU MRAM bank.</sysdesc>
+        </field>
+        <field fsw_name="num_retrieved_success" datatype="UNSIGNED_INT" length="4" format="%d">
+          <sysdesc>Total number of successfully retrieved active records from this REU MRAM bank.</sysdesc>
+        </field>
+        <field fsw_name="num_retrieved_fail" datatype="UNSIGNED_INT" length="4" format="%d">
+          <sysdesc>Total number of active records that failed to be retrieved from this REU MRAM bank.</sysdesc>
+        </field>
+        <field fsw_name="num_writes_success" datatype="UNSIGNED_INT" length="4" format="%d">
+          <sysdesc>Total number of successful FSW-commanded record updates to this REU MRAM bank.</sysdesc>
+        </field>
+        <field fsw_name="num_writes_fail" datatype="UNSIGNED_INT" length="4" format="%d">
+          <sysdesc>Total number of failed FSW-commanded record updates to this REU MRAM bank.</sysdesc>
+        </field>
+      </dynamic_array>
+    </fields>
+  </table>
+</data_product>

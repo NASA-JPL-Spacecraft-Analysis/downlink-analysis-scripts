@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="79" fsw_id="DP_AVS_BDS_HW_MONITOR_DATA" title="DP_AVS_BDS_HW_MONITOR_DATA">
+      <sysdesc>Contains a running 1hz sampled set of LRC and HRC registers 'over time' that is auto-DP'ed for specific BDS HW errors.</sysdesc>
+      <categories>
+        <module>bds_status_ctl</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <viewer name="default"/>
+  </table>
+</data_product>

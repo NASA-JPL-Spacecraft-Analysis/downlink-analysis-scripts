@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="0"/>
+  <table>
+    <name id="920" fsw_id="DP_AVS_EMEM_BLOCK_REMAP_TABLE" title="DP_AVS_EMEM_BLOCK_REMAP_TABLE">
+      <sysdesc>DP of the contents of the EMEM block remap table. This table is the physical block to logical block mapping (the stripes).
+</sysdesc>
+      <categories>
+        <module>file_svc</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DMP_EMEM_BLOCK_REMAP_TABLE</command>
+    <fields>
+      <field fsw_name="block_remap_table_source" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Source of this data.
+0-&gt;SFC RAM
+1-&gt;MRAM</sysdesc>
+      </field>
+      <field fsw_name="emem_sn" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>EMEM board id register value when this data product is generated.</sysdesc>
+      </field>
+      <field fsw_name="fsw_build_id" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Unique FSW build id number from the FSW build that this data product was generated.</sysdesc>
+      </field>
+      <repeat_block>
+        <array fsw_name="block_remap_chunk" num_items="32" output_format="0x%08X">
+          <sysdesc>Each entry in this table represent a single entry in the block remap table. Data in the block remap table is CRC'ed in block_remap_table_crc_size chunks. There will always be an integer number of remap_table_chunk entries (The number of blocks in each lane is evenly divisible by block_remap_table_crc_size)
+</sysdesc>
+          <field fsw_name="remap_table_data" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>remap table entry</sysdesc>
+          </field>
+        </array>
+        <field fsw_name="remap_table_data_crc" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+          <sysdesc>The CRC value for the preceding remap table data</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>
