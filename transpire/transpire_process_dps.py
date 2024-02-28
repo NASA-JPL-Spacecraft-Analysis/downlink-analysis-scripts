@@ -1,4 +1,9 @@
-from eurc_vnv.command import Command
+# todo, absorb the eurc_vnv libraries directly into this script so that it does not have the eurc_vnv install dependency
+# https://github.jpl.nasa.gov/pages/europa-fs-vnv/eurc-fs-vnv-tools/eurc_vnv/#module-eurc_vnv.command
+# https://github.jpl.nasa.gov/europa-fs-vnv/eurc-fs-vnv-tools
+# This should be fun...
+
+#from eurc_vnv.command import Command
 from io import StringIO
 
 import argparse
@@ -9,6 +14,8 @@ import json
 import xmltodict
 import os
 import sys
+
+from command import Command
 
 class DpOcsPusherException(Exception):
     pass
@@ -247,23 +254,55 @@ def query_from_ocs(session_host, session_id):
 
     query_ocs(expression)
 
+# franks function used to test with local emd/dat files
+def main_local():
+    dat_file = "0100_0498009603-0073007-1.dat"
+    emd_file = "0100_0498009603-0073007-1.emd"
+
+    build_ocs_metadata_from_emd(emd_file)
+    cmd_data = parse_command_dat(dat_file)
+    # print(json.dumps(cmd_data, indent=4))
+
+    print("\nFound {} commands from dat file: {}".format(len(cmd_data), dat_file))
+
 def main():
     hostname = socket.gethostname()
-    print("Start of dp100ocs script, running on host {}".format(hostname))
+    print("Start of transpire_process_dps script, running on host {}".format(hostname))
 
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
     parser.add_argument('-p', '--apid', default=100, help='apid to query(only supports apid 100 atm)')
-    parser.add_argument('-K', '--session', required=True, help='session number to query on')
+    parser.add_argument('-K', '--session', help='session number to query on')
     parser.add_argument('-t', '--ocs_path', default='/transpire', help='The ocs directory to publish to')
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
+    parser.add_argument('-d', '--dat_file', default=None, help='file path to dat file to parse')
+    parser.add_argument('-e', '--emd_file', default=None, help='file path to emd file to parse')
+
     args = parser.parse_args()
 
     session = args.session
     apid = args.apid
     ocs_path = args.ocs_path
     ocs_package_name = args.ocs_package
+    dat_file = args.dat_file
+    emd_file = args.emd_file
 
-    data_products = find_data_products(session=session, apid=apid)
+    if not session and (not dat_file or not emd_file):
+        print("You must pass in [ session(-K) ] OR a [ dat_file(-d) and emd_file(-e) ]")
+        sys.exit()
+
+    # we need to find the dat and emd files using chill and the session + apid
+    if session and apid:
+        data_products = find_data_products(session=session, apid=apid)
+    # we were given a dat file and emd file, just shove it in the data_products list for the loop below to handle
+    else:
+        # data_products from find_data_products() also has extra things like session, host, and apid, but we do not
+        # really need those anymore as those are actually provided in the EMD file
+        # we just need to shove the 'dat_file' key in there
+        data_products = [
+            {
+                'dat_file': dat_file
+            }
+        ]
 
     if not data_products:
         print("No data products found")
