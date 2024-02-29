@@ -103,7 +103,7 @@ class Command:
         self.log = rich_logger(level=log_level, logger_name='Command')
 
         # load the command dictionary
-        dictionary_path = "/Users/fhy/git/eas/clipper/fhy_sandbox/dp100ocs/fsw_dicts/eurc/EURC_R10_2_0_0"
+        #dictionary_path = "/Users/fhy/git/eas/clipper/fhy_sandbox/dp100ocs/fsw_dicts/eurc/EURC_R10_2_0_0"
         self.dictionary_path = dictionary_path
         self.Dictionary = Dictionary(dictionary_path=dictionary_path, ingest_all=False)
         self.Dictionary.ingest_command()

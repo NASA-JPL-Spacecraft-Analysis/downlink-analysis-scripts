@@ -3,7 +3,9 @@
 # https://github.jpl.nasa.gov/europa-fs-vnv/eurc-fs-vnv-tools
 # This should be fun...
 
-#from eurc_vnv.command import Command
+# sample test command to run WITHOUT ocs and chill calls:
+# python3 transpire_process_dps.py -d ./input_files/0100_0498009603-0073007-1.dat -e ./input_files/0100_0498009603-0073007-1.emd -o ./output_files
+
 from io import StringIO
 
 import argparse
@@ -21,8 +23,12 @@ class DpOcsPusherException(Exception):
     pass
 
 
-def parse_command_dat(dat_file, dict_loc="/dict/eurc/current/"):
-    cmd_util = Command(dict_loc)
+def parse_command_dat(dat_file, dict_loc=None):
+    if dict_loc:
+        cmd_util = Command(dict_loc)
+    else:
+        cmd_util = Command()
+
     commands = cmd_util.extract_command_history(dat_file)
 
     for cmd in commands:
@@ -146,7 +152,7 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
     print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
 
 def build_ocs_metadata_from_emd(emd_file):
-    print("Building ocs metadata from emd file {}".format(emd_file))
+    print("Building metadata from emd file {}".format(emd_file))
 
     with open(emd_file, 'r') as the_emd_file:
         read_emd = the_emd_file.read()
@@ -215,7 +221,7 @@ def build_ocs_metadata_from_emd(emd_file):
         "dat_file_name": dat_file_name
     }
 
-    print("ocs metadata is {}".format(json.dumps(meta, indent=4)))
+    print("metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
 def query_ocs(expression, sort="scet:desc", max_results=1):
@@ -254,17 +260,6 @@ def query_from_ocs(session_host, session_id):
 
     query_ocs(expression)
 
-# franks function used to test with local emd/dat files
-def main_local():
-    dat_file = "0100_0498009603-0073007-1.dat"
-    emd_file = "0100_0498009603-0073007-1.emd"
-
-    build_ocs_metadata_from_emd(emd_file)
-    cmd_data = parse_command_dat(dat_file)
-    # print(json.dumps(cmd_data, indent=4))
-
-    print("\nFound {} commands from dat file: {}".format(len(cmd_data), dat_file))
-
 def main():
     hostname = socket.gethostname()
     print("Start of transpire_process_dps script, running on host {}".format(hostname))
@@ -276,6 +271,7 @@ def main():
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
     parser.add_argument('-d', '--dat_file', default=None, help='file path to dat file to parse')
     parser.add_argument('-e', '--emd_file', default=None, help='file path to emd file to parse')
+    parser.add_argument('-o', '--output', default="ocs", help="Location to write json files OR 'ocs'(default) to push to ocs")
 
     args = parser.parse_args()
 
@@ -285,6 +281,7 @@ def main():
     ocs_package_name = args.ocs_package
     dat_file = args.dat_file
     emd_file = args.emd_file
+    output = args.output
 
     if not session and (not dat_file or not emd_file):
         print("You must pass in [ session(-K) ] OR a [ dat_file(-d) and emd_file(-e) ]")
@@ -322,15 +319,24 @@ def main():
         filename = filename.replace(".dat", ".json")
         filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
 
-        push_to_ocs(data=data,
-                    ocs_package_name=ocs_package_name,
-                    ocs_path=ocs_path,
-                    ocs_filename=filename,
-                    ocs_metadata=metadata)
+        # write files to ocs
+        if not output or output.lower() == "ocs":
+            push_to_ocs(data=data,
+                        ocs_package_name=ocs_package_name,
+                        ocs_path=ocs_path,
+                        ocs_filename=filename,
+                        ocs_metadata=metadata)
 
-        # try to query out the data we just pushed to make sure it got in
-        query_from_ocs(metadata['session_host'], metadata['session_id'])
+            # try to query out the data we just pushed to make sure it got in
+            print("Verifying data made it to OCS")
+            query_from_ocs(metadata['session_host'], metadata['session_id'])
 
+        # write json files to disk
+        else:
+            file_path = "{}/{}".format(output, filename)
+            with open(file_path, "w") as f:
+                f.write(data)
+                print("Wrote file to {}".format(file_path))
 
 if __name__ == "__main__":
     main()

@@ -1,12 +1,23 @@
 import os, logging, xmltodict, pickle, click, glob, re, sys, json
 from bs4 import BeautifulSoup
 
-#__dd = '/dict/eurc/current/'
+__dd = '/dict/eurc/current/'
 
-print("\n!!\n!!\n!! dictionary.py comment out __dd fhy stuff before commit !!\n!!\n!!\n")
-__dd = "/Users/fhy/git/eas/clipper/fhy_sandbox/dp100ocs/fsw_dicts/eurc/EURC_R10_2_0_0/"
+# print("\n!!\n!!\n!! dictionary.py comment out __dd fhy stuff before commit !!\n!!\n!!\n")
+# __dd = "/Users/fhy/git/eas/clipper/fhy_sandbox/dp100ocs/fsw_dicts/eurc/EURC_R10_2_0_0/"
 
-__DICTIONARY_LOCATION__ = __dd if os.path.exists(__dd) else os.path.join(os.environ['DICT'], 'current')
+__DICTIONARY_LOCATION__ = None # this needs to get populated below or it will blow up
+fspa_override = "FSPA_DICT_OVERRIDE"
+
+if fspa_override in os.environ:
+    __DICTIONARY_LOCATION__ = os.environ[fspa_override]
+elif os.path.exists(__dd):
+    __DICTIONARY_LOCATION__ = __dd
+elif 'DICT' in os.environ:
+    __DICTIONARY_LOCATION__ = os.path.join(os.environ['DICT'], 'current')
+
+
+
 __DICTIONARY_CACHE_LOCATION__ = '/proj/europa/fs/tools/.dictionary'
 __CACHE_FILENAME_TEMPLATE__ = '{}.Dictionary.pickle'
 
