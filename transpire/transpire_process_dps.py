@@ -1,4 +1,11 @@
-from eurc_vnv.command import Command
+# todo, absorb the eurc_vnv libraries directly into this script so that it does not have the eurc_vnv install dependency
+# https://github.jpl.nasa.gov/pages/europa-fs-vnv/eurc-fs-vnv-tools/eurc_vnv/#module-eurc_vnv.command
+# https://github.jpl.nasa.gov/europa-fs-vnv/eurc-fs-vnv-tools
+# This should be fun...
+
+# sample test command to run WITHOUT ocs and chill calls:
+# python3 transpire_process_dps.py -d ./input_files/0100_0498009603-0073007-1.dat -e ./input_files/0100_0498009603-0073007-1.emd -o ./output_files
+
 from io import StringIO
 
 import argparse
@@ -7,15 +14,22 @@ import ocs
 import ocs.exceptions
 import json
 import xmltodict
-import os
+#import os
 import sys
+import subprocess
+
+from command import Command
 
 class DpOcsPusherException(Exception):
     pass
 
 
-def parse_command_dat(dat_file, dict_loc="/dict/eurc/current/"):
-    cmd_util = Command(dict_loc)
+def parse_command_dat(dat_file, dict_loc=None):
+    if dict_loc:
+        cmd_util = Command(dict_loc)
+    else:
+        cmd_util = Command()
+
     commands = cmd_util.extract_command_history(dat_file)
 
     for cmd in commands:
@@ -26,32 +40,61 @@ def parse_command_dat(dat_file, dict_loc="/dict/eurc/current/"):
 #just an os system call to chill_get_products
 def find_data_products(session=None, apid=None, cmd_path=None):
     print("Attempting to find data products")
-
-    if cmd_path:
-        cmd = cmd_path
-    else:
-        cmd = "chill_get_products"
-
-    if session:
-        cmd += " -K {}".format(session)
-
-    if apid:
-        cmd += " -p {}".format(apid)
+    #
+    # if cmd_path:
+    #     cmd = cmd_path
+    # else:
+    #     cmd = "chill_get_products"
+    #
+    # if session:
+    #     cmd += " -K {}".format(session)
+    #
+    # if apid:
+    #     cmd += " -p {}".format(apid)
 
     # chill_get_products -K 620 -p 100
-    print("Running command: {}".format(cmd))
-    process = os.popen(cmd)
-    output = process.read()
-    process.close()
+    # print("Running command: {}".format(cmd))
+    # process = os.popen(cmd)
+    # output = process.read()
+    # print("output from chill command is: " + output)
+    # process.close()
 
-    #do some checks to see if we got valid output
-    if "command not found" in output:
+    cmd = []
+    if cmd_path:
+        cmd.append(cmd_path)
+    else:
+        cmd.append("chill_get_products")
+
+    if session:
+        cmd.append("-K")
+        cmd.append(session)
+
+    if apid:
+        cmd.append("-p")
+        cmd.append(str(apid))
+    print("running chill command {}".format(cmd))
+
+    output = None
+    try:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        if err:
+            output = err.decode()
+            print('--Error--\n', err.decode())
+            raise DpOcsPusherException("Error running chill_get_products: {}".format(output))
+        else:
+            output = out.decode()
+            # print('--No errors--\n', out.decode())
+    except FileNotFoundError as e:
         #if a hard command path was provided and we got nothing we should exit
         if cmd_path:
             raise DpOcsPusherException("Unable to execute chill_get_products command");
         else:
             # try this known location of chill_get_products in case the path got messed up
             default_cmd = "/ammos/ampcs/mpcs/eurc/current/bin/chill_get_products"
+            print("Unable to find chill_get_products, attempting to use: {}".format(default_cmd))
+
             return find_data_products(session, apid, default_cmd)
 
     print("Parsing output for dat files")
@@ -139,7 +182,7 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
     print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
 
 def build_ocs_metadata_from_emd(emd_file):
-    print("Building ocs metadata from emd file {}".format(emd_file))
+    print("Building metadata from emd file {}".format(emd_file))
 
     with open(emd_file, 'r') as the_emd_file:
         read_emd = the_emd_file.read()
@@ -208,7 +251,7 @@ def build_ocs_metadata_from_emd(emd_file):
         "dat_file_name": dat_file_name
     }
 
-    print("ocs metadata is {}".format(json.dumps(meta, indent=4)))
+    print("metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
 def query_ocs(expression, sort="scet:desc", max_results=1):
@@ -249,21 +292,44 @@ def query_from_ocs(session_host, session_id):
 
 def main():
     hostname = socket.gethostname()
-    print("Start of dp100ocs script, running on host {}".format(hostname))
+    print("Start of transpire_process_dps script, running on host {}".format(hostname))
 
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
     parser.add_argument('-p', '--apid', default=100, help='apid to query(only supports apid 100 atm)')
-    parser.add_argument('-K', '--session', required=True, help='session number to query on')
+    parser.add_argument('-K', '--session', help='session number to query on')
     parser.add_argument('-t', '--ocs_path', default='/transpire', help='The ocs directory to publish to')
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
+    parser.add_argument('-d', '--dat_file', default=None, help='file path to dat file to parse')
+    parser.add_argument('-e', '--emd_file', default=None, help='file path to emd file to parse')
+    parser.add_argument('-o', '--output', default="ocs", help="Location to write json files OR 'ocs'(default) to push to ocs")
+
     args = parser.parse_args()
 
     session = args.session
     apid = args.apid
     ocs_path = args.ocs_path
     ocs_package_name = args.ocs_package
+    dat_file = args.dat_file
+    emd_file = args.emd_file
+    output = args.output
 
-    data_products = find_data_products(session=session, apid=apid)
+    if not session and (not dat_file or not emd_file):
+        print("You must pass in [ session(-K) ] OR a [ dat_file(-d) and emd_file(-e) ]")
+        sys.exit()
+
+    # we need to find the dat and emd files using chill and the session + apid
+    if session and apid:
+        data_products = find_data_products(session=session, apid=apid)
+    # we were given a dat file and emd file, just shove it in the data_products list for the loop below to handle
+    else:
+        # data_products from find_data_products() also has extra things like session, host, and apid, but we do not
+        # really need those anymore as those are actually provided in the EMD file
+        # we just need to shove the 'dat_file' key in there
+        data_products = [
+            {
+                'dat_file': dat_file
+            }
+        ]
 
     if not data_products:
         print("No data products found")
@@ -283,15 +349,24 @@ def main():
         filename = filename.replace(".dat", ".json")
         filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
 
-        push_to_ocs(data=data,
-                    ocs_package_name=ocs_package_name,
-                    ocs_path=ocs_path,
-                    ocs_filename=filename,
-                    ocs_metadata=metadata)
+        # write files to ocs
+        if not output or output.lower() == "ocs":
+            push_to_ocs(data=data,
+                        ocs_package_name=ocs_package_name,
+                        ocs_path=ocs_path,
+                        ocs_filename=filename,
+                        ocs_metadata=metadata)
 
-        # try to query out the data we just pushed to make sure it got in
-        query_from_ocs(metadata['session_host'], metadata['session_id'])
+            # try to query out the data we just pushed to make sure it got in
+            print("Verifying data made it to OCS")
+            query_from_ocs(metadata['session_host'], metadata['session_id'])
 
+        # write json files to disk
+        else:
+            file_path = "{}/{}".format(output, filename)
+            with open(file_path, "w") as f:
+                f.write(data)
+                print("Wrote file to {}".format(file_path))
 
 if __name__ == "__main__":
     main()

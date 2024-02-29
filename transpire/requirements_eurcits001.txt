@@ -1,7 +1,7 @@
 xmltodict == 0.13.0
-click == 8.1.7
-bs4 == 0.0.2
-lxml==5.1.0
+click
+bs4
+lxml
 
 -i https://cae-artifactory.jpl.nasa.gov/artifactory/api/pypi/pypi-develop-virtual/simple
 m20-operational-cloud-store==7.7.1
