@@ -28,6 +28,10 @@ Parse a dat file + emd file and write the json to disk
 python transpire_process_dps.py -d 0100_0498009603-0073007-1.dat -e 0100_0498009603-0073007-1.emd -o ./output_files
 ```
 
+The Dockerfile and Makefile are not meant to be used on flight machines as it
+will not have access to the chill commands.  I made it to be used for local
+development to parse dat + emd files manually.
+
 ---
 #### Script Help Options
 ```
