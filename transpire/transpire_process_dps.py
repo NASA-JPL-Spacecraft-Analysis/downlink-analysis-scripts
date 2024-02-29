@@ -14,8 +14,9 @@ import ocs
 import ocs.exceptions
 import json
 import xmltodict
-import os
+#import os
 import sys
+import subprocess
 
 from command import Command
 
@@ -39,33 +40,60 @@ def parse_command_dat(dat_file, dict_loc=None):
 #just an os system call to chill_get_products
 def find_data_products(session=None, apid=None, cmd_path=None):
     print("Attempting to find data products")
-
-    if cmd_path:
-        cmd = cmd_path
-    else:
-        cmd = "chill_get_products"
-
-    if session:
-        cmd += " -K {}".format(session)
-
-    if apid:
-        cmd += " -p {}".format(apid)
+    #
+    # if cmd_path:
+    #     cmd = cmd_path
+    # else:
+    #     cmd = "chill_get_products"
+    #
+    # if session:
+    #     cmd += " -K {}".format(session)
+    #
+    # if apid:
+    #     cmd += " -p {}".format(apid)
 
     # chill_get_products -K 620 -p 100
-    print("Running command: {}".format(cmd))
-    process = os.popen(cmd)
-    output = process.read()
-    print("output from chill command is: " + output)
-    process.close()
+    # print("Running command: {}".format(cmd))
+    # process = os.popen(cmd)
+    # output = process.read()
+    # print("output from chill command is: " + output)
+    # process.close()
 
-    #do some checks to see if we got valid output
-    if "command not found" in output:
+    cmd = []
+    if cmd_path:
+        cmd.append(cmd_path)
+    else:
+        cmd.append("chill_get_products")
+
+    if session:
+        cmd.append("-K")
+        cmd.append(session)
+
+    if apid:
+        cmd.append("-p")
+        cmd.append(str(apid))
+    print("running chill command {}".format(cmd))
+
+    output = None
+    try:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        if err:
+            output = err.decode()
+            print('--Error--\n', err.decode())
+        # else:
+        #     output = out.decode()
+        #     print('--No errors--\n', out.decode())
+    except FileNotFoundError as e:
         #if a hard command path was provided and we got nothing we should exit
         if cmd_path:
             raise DpOcsPusherException("Unable to execute chill_get_products command");
         else:
             # try this known location of chill_get_products in case the path got messed up
             default_cmd = "/ammos/ampcs/mpcs/eurc/current/bin/chill_get_products"
+            print("Unable to find chill_get_products, attempting to use: {}".format(default_cmd))
+
             return find_data_products(session, apid, default_cmd)
 
     print("Parsing output for dat files")
