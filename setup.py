@@ -9,12 +9,18 @@ setuptools.setup(
     install_requires=[
         "m20-operational-cloud-store==7.7.1",
         "close-the-u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git",
-        "eas-parasol @ git+https://github.jpl.nasa.gov/397/parasol-py.git@feature/cam-auth-support",
+        "eas-parasol",
         "pandas",
         "aerie_cli @ git+https://github.com/NASA-AMMOS/aerie-cli.git@main",
-        "dataclasses-json"
+        "dataclasses-json",
+        "xmltodict == 0.13.0",
+        "click==8.0.4",
+        "bs4==0.0.2",
+        "lxml==5.1.0",
+        "m20-eas-dplib",
+        "jpl_time"
     ],
-    py_modules=["ctu_merlin", "close_the_u", "conversions", "parasol", "transpire"],
+    py_modules=["fspa_scripts"],
     entry_points={
         "console_scripts": [
             "radmon_to_ctu = fspa_scripts.conversions.radmon_to_ctu:main",
