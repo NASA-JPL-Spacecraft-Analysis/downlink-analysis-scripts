@@ -82,9 +82,10 @@ def find_data_products(session=None, apid=None, cmd_path=None):
         if err:
             output = err.decode()
             print('--Error--\n', err.decode())
-        # else:
-        #     output = out.decode()
-        #     print('--No errors--\n', out.decode())
+            raise DpOcsPusherException("Error running chill_get_products: {}".format(output))
+        else:
+            output = out.decode()
+            # print('--No errors--\n', out.decode())
     except FileNotFoundError as e:
         #if a hard command path was provided and we got nothing we should exit
         if cmd_path:
