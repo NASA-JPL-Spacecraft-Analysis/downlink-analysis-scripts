@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mm-emd:EarthProductMetadata xmlns:mpcs="http://dsms.jpl.nasa.gov/mpcs"
+    xmlns:mm-emd="http://dsms.jpl.nasa.gov/mpcs_mm-core_emd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://dsms.jpl.nasa.gov/mpcs_mm-core_emd http://dsms.jpl.nasa.gov/mpcs/MM_Core_Session.xsd"
+    EmdSchemaVersion="CFDP-1">
+    
+    <mm-emd:SessionInformation>
+        <mpcs:SessionId>
+            <mpcs:Number>620</mpcs:Number>
+            <mpcs:Name>ST1_AR13705_reproc</mpcs:Name>
+            <mpcs:FswDictionaryDir>/dict</mpcs:FswDictionaryDir>
+            <mpcs:FswDictionaryVersion>EURC_R10_2_0_0</mpcs:FswDictionaryVersion>
+        </mpcs:SessionId>
+        <mpcs:Venue>
+            <mpcs:VenueType>TESTSET</mpcs:VenueType>
+            <mpcs:TestbedName></mpcs:TestbedName>
+            <mpcs:User>dan</mpcs:User>
+            <mpcs:Host>eurcits001</mpcs:Host>
+        </mpcs:Venue>
+        <mpcs:OutputDirectory>/ammos/ampcs/mpcs/eurc/current/test/2023/164/ampcs/eurcits001/dan_ST1_AR13705_reproc_2023_164T21_10_59_967</mpcs:OutputDirectory>
+    </mm-emd:SessionInformation>
+    
+    <mm-emd:ProductMetadata>
+        <mm-emd:GroundCreationTime>2023-164T22:06:44.327</mm-emd:GroundCreationTime>
+        <mm-emd:Scid>159</mm-emd:Scid>
+        <mm-emd:Apid>100</mm-emd:Apid>
+        <mm-emd:ProductType>DP_CMD_COMMAND_HISTORY</mm-emd:ProductType>
+        <mm-emd:Vcid>1</mm-emd:Vcid>
+        <mm-emd:GroundStatus>COMPLETE_CHECKSUM_PASS</mm-emd:GroundStatus>
+        <mm-emd:DataFilePath>/ammos/ampcs/mpcs/eurc/current/test/2023/164/ampcs/eurcits001/dan_ST1_AR13705_reproc_2023_164T21_10_59_967/products/0100/0100_0498009603-0073007-1.dat</mm-emd:DataFilePath>
+        <mm-emd:SequenceId>0</mm-emd:SequenceId>
+        <mm-emd:SequenceVersion>0</mm-emd:SequenceVersion>
+        <mm-emd:CommandNumber>0</mm-emd:CommandNumber>
+        <mm-emd:DvtCoarse>498009603</mm-emd:DvtCoarse>
+        <mm-emd:DvtFine>73007</mm-emd:DvtFine>
+        <mm-emd:FirstPartSclk>0498009603.06961</mm-emd:FirstPartSclk>
+        <mm-emd:FirstPartScet>2025-286T00:00:00.06961</mm-emd:FirstPartScet>
+        <mm-emd:FirstPartErt>2023-164T22:06:42.753</mm-emd:FirstPartErt>
+        <mm-emd:ExpectedProductChecksum>-364933742</mm-emd:ExpectedProductChecksum>
+        <mm-emd:ActualProductChecksum>-364933742</mm-emd:ActualProductChecksum>
+        <mm-emd:ExpectedProductFileSize>2320</mm-emd:ExpectedProductFileSize>
+        <mm-emd:ActualProductFileSize>2320</mm-emd:ActualProductFileSize>
+        <mm-emd:CfdpTransactionSequenceNumber>2138934958277980360</mm-emd:CfdpTransactionSequenceNumber>
+                <mm-emd:PartList TotalReceived="1">
+
+                        <mm-emd:Part Offset="0" Length="2320">
+                <mm-emd:Sclk>0498009603.06961</mm-emd:Sclk>
+                <mm-emd:Scet>2025-286T00:00:00.06961</mm-emd:Scet>
+                <mm-emd:Ert>2023-164T22:06:42.753</mm-emd:Ert>
+                <mm-emd:SourcePacketSeqCount>25</mm-emd:SourcePacketSeqCount>
+            </mm-emd:Part>
+        </mm-emd:PartList>
+           
+    </mm-emd:ProductMetadata>
+
+</mm-emd:EarthProductMetadata>
