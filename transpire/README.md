@@ -2,17 +2,9 @@
 Python script for querying out Data Products, run vnv tools to convert command history and then push to OCS
 
 # Installation Instructions
-Need to be on a flight machine where chill tools and vnv librarires are setup(e.g. eurcits001)
+Need to be on a flight machine where chill tools(chill_get_products), chronos, and fsw dictionaries exist
 
 Inside the `transpire` folder:
-```shell
-$ source /proj/europa/fs/tools/europa-fs-vnv/environment/.cshrc
-$ activate-ec-ve
-$ pip install -r requirements.txt
-
-In case the vnv .cshrc file is not available there is a copy of it named ec_ve_cshrc
-```
-
 # Script Usage Instructions
 
 #### Load Data Products into OCS
@@ -31,10 +23,15 @@ Sample url to view data prodcuts in browser:
 https://dd.eurc-dev.jpl.nasa.gov/eurc-dev-general/transpire
 ```
 
+Parse a dat file + emd file and write the json to disk
+```
+python transpire_process_dps.py -d 0100_0498009603-0073007-1.dat -e 0100_0498009603-0073007-1.emd -o ./output_files
+```
 
 ---
 #### Script Help Options
 ```
+  -h, --help            show this help message and exit
   -p APID, --apid APID  apid to query(only supports apid 100 atm)
   -K SESSION, --session SESSION
                         session number to query on
@@ -42,6 +39,13 @@ https://dd.eurc-dev.jpl.nasa.gov/eurc-dev-general/transpire
                         The ocs directory to publish to
   -g OCS_PACKAGE, --ocs_package OCS_PACKAGE
                         The ocs package to publish as
+  -d DAT_FILE, --dat_file DAT_FILE
+                        file path to dat file to parse
+  -e EMD_FILE, --emd_file EMD_FILE
+                        file path to emd file to parse
+  -o OUTPUT, --output OUTPUT
+                        Location to write json files OR 'ocs'(default) to push to ocs
+
 
 ```
 

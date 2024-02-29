@@ -213,9 +213,9 @@ class Command:
 
             # print("!!\n!!\n!! Todo: Figure out why jpltime/chronos/spice is not happy with converting scet to sclk!!\n!!\n!!\n")
             # I am guessing I need some kind of chronos file setup
-            # this.setdefault('scet', self.Time.from_sclkd(t).to_scet())
+            this.setdefault('scet', self.Time.from_sclkd(t).to_scet())
             # this.setdefault('scet', self.Time.from_sclkd(t, spacecraft_id=-159).to_scet()) #passing in spacecraft id manually does not work either
-            this.setdefault('scet', "!!! *** ^^^ TODO: SEARCH_FOR_from_sclkd_IN_command.py  ^^^ *** !!!")
+            # this.setdefault('scet', "!!! *** ^^^ TODO: SEARCH_FOR_from_sclkd_IN_command.py  ^^^ *** !!!")
 
             # extract the list of bytes from the Arguments field
             argument_data = [ _['argument_bytes'] for _ in c['Arguments'] ]
