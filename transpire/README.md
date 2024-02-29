@@ -5,6 +5,17 @@ Python script for querying out Data Products, run vnv tools to convert command h
 Need to be on a flight machine where chill tools(chill_get_products), chronos, and fsw dictionaries exist
 
 Inside the `transpire` folder:
+
+If on a flight machine(e.g. eurcits001):
+
+pip install -r requirements_eurcits001.txt
+
+During development locally I kept track of the specific versions of packages
+in the requirements.txt, but eurcits001 did not seem happy with those (probably
+because its running python 3.6) so I removed the version numbers and it was happy.
+Not sure what the official python version on those machines are supposed to be
+so I left it as is for someone else to fill out :).
+
 # Script Usage Instructions
 
 #### Load Data Products into OCS
