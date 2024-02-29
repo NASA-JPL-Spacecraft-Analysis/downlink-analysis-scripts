@@ -55,6 +55,7 @@ def find_data_products(session=None, apid=None, cmd_path=None):
     print("Running command: {}".format(cmd))
     process = os.popen(cmd)
     output = process.read()
+    print("output from chill command is: " + output)
     process.close()
 
     #do some checks to see if we got valid output
