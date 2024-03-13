@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="522" fsw_id="DP_ECE_RT_STATS" title="DP_ECE_RT_STATS">
+      <sysdesc>A data product which reports operational statistics of the ECE remote terminal.</sysdesc>
+      <categories>
+        <module>rt_svc</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DUMP_RT_STATS</command>
+    <viewer name="default"/>
+    <fields>
+      <array fsw_name="rt_svc_service_requests" num_items="64">
+        <sysdesc>The state of every client service request slot maintained by rt_svc. This information describes the set of RT service requests currently requested (and not requested) of rt_svc by cstr_mgr.</sysdesc>
+        <field fsw_name="direction" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>1553 service direction (either XMIT or RECV)</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="RECV"/>
+            <states enumerated_value="1" dict_value="RECV"/>
+          </lookup>
+        </field>
+        <field fsw_name="subaddress" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>1553 service subaddress (0-31)</sysdesc>
+        </field>
+        <field fsw_name="data_size_total" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The size, in number of 16-bit data words, of the client request buffer</sysdesc>
+        </field>
+        <field fsw_name="data_size_xferred" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The number of 16-bit data words which have already been transferred over the 1553 bus for this service request</sysdesc>
+        </field>
+        <field fsw_name="request_status" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>The overall success/failure status of the service request.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="FAILURE"/>
+            <states enumerated_value="1" dict_value="SUCCESS"/>
+          </lookup>
+        </field>
+        <field fsw_name="is_critical" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Boolean flag. 0 implies that this service request is opportunistic. 1 implies that this service request is critical.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="OPPORTUNISTIC"/>
+            <states enumerated_value="1" dict_value="CRITICAL"/>
+          </lookup>
+        </field>
+      </array>
+      <field fsw_name="error_not_in_config_mode_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of NOT_IN_CONFIG_MODE errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_already_in_config_mode_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of ALREADY_IN_CONFIG_MODE errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_sync_not_allowed_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of SYNC_NOT_ALLOWED errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_sa_invalid_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of SA_INVALID errors encounted.</sysdesc>
+      </field>
+      <field fsw_name="error_mc_invalid_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of MC_INVALID errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_sa_already_config_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of SA_ALREADY_CONFIG errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_mc_already_config_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of MC_ALREADY_CONFIG_COUNT errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_invalid_buf_len_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of INVALID_BUF_LEN errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_invalid_buf_addr_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of INVALID_BUF_ADDR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_msgerr_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of MSGERR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_subsys_fail_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of SUBSYS_FAIL errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_ill_cmd_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of ILL_CMD errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_ill_bcst_cmd_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of ILL_BCST_CMD errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_new_config_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of NEW_CONFIG errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_out_of_mem_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of OUT_OF_MEM errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_sa_autoinit_reserved_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of SA_AUTOINIT_RESERVED errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_mc_autoinit_reserved_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of MC_AUTOINIT_RESERVED errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_in_configuring_rt_sa_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of IN_CONFIGURING_RT_SA errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_device_is_down_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of DEVICE_IS_DOWN errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_wrong_cmd_type_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of WRONG_CMD_TYPE errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_auto_init_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of AUTO_INIT errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_dma_error_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of DMA_ERROR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_rtram_edac_dbl_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of RTRAM_EDAC_DBL errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_rtram_edac_corr_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of RTRAM_EDAC_CORR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_decoder_err_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of DECODER_ERR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_unexpected_int_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of UNEXPECTED_INT errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_while_copying_data_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of WHILE_COPYING_DATA errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_watchdog_expired_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of WATCHDOG_EXPIRED errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_empty_cmd_ptr_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of EMPTY_CMD_PTR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_parsing_interrupts_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of PARSING_INTERRUPTS errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_zero_length_x_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of ZERO_LENGTH_X errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_himem_edac_dbl_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of HIMEM_EDAC_DBL errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_himem_edac_corr_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of HIMEM_EDAC_CORR errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_xrti_missed_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of XRTI_MISSED errors encountered.</sysdesc>
+      </field>
+      <field fsw_name="error_dtstart_missed_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field reports the total number of DTSTART_MISSED errors encountered.</sysdesc>
+      </field>
+      <array fsw_name="stm_data" num_items="8">
+        <sysdesc>This array reports the data words in the STM which was last received by the ECE RT.</sysdesc>
+        <field fsw_name="stm_word_val" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>One U16 word value. The index of the 1553 data word corresponds to the index within this DP array (e.g., index 0 is data word 0, index 1 is data word 1, etc.)</sysdesc>
+        </field>
+      </array>
+      <field fsw_name="num_stm_words" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>The number of 1553 words in the most recent STM received by the ECE RT</sysdesc>
+      </field>
+      <field fsw_name="rt_svc_state" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>The current service state of rt_svc. Client requests cannot be serviced until rt_svc is in the READY state.</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="UNUSED"/>
+          <states enumerated_value="1" dict_value="NOT_READY"/>
+          <states enumerated_value="2" dict_value="PROCESS_STM"/>
+          <states enumerated_value="3" dict_value="READY"/>
+        </lookup>
+      </field>
+      <field fsw_name="is_client_registered" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Boolean field indicating TRUE if a client is currently registered with rt_svc and FALSE otherwise.</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="FALSE"/>
+          <states enumerated_value="1" dict_value="TRUE"/>
+        </lookup>
+      </field>
+      <field fsw_name="num_cycles_not_ready" datatype="UNSIGNED_INT" length="8">
+        <sysdesc>This count indicates the number of 32hz cycles during which rt_svc was in the NOT_READY state during the most recent initialization. This gives an indication of how long it took to initialize the service. The 64-bit uint can report a maximum count of about 1553.45 days before rolling over.</sysdesc>
+      </field>
+      <field fsw_name="num_cycles_process_stm" datatype="UNSIGNED_INT" length="8">
+        <sysdesc>This count indicates the number of 32hz cycles during which rt_svc was in the PROCESS_STM state during the most recent initialization. This gives an indication of how much time elapsed before time was established and rt_svc began servicing client requests. The 64-bit uint can report a maximum count of about 1553.45 days before rolling over.</sysdesc>
+      </field>
+      <field fsw_name="bad_stm_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This count indicates the number of bad STMs that have been received by the ECE RT.</sysdesc>
+      </field>
+      <field fsw_name="rt_address" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>This field reports the 1553 address of the ECE RT.</sysdesc>
+      </field>
+      <field fsw_name="commands_received" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of 1553 commands received</sysdesc>
+      </field>
+      <field fsw_name="interrupt_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of interrupts</sysdesc>
+      </field>
+      <field fsw_name="spurious_int_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of unexpected interrupts</sysdesc>
+      </field>
+      <field fsw_name="recv_byte_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of data bytes received</sysdesc>
+      </field>
+      <field fsw_name="xmit_byte_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of data bytes transmitted</sysdesc>
+      </field>
+      <field fsw_name="recv_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This is the number of receive data messages</sysdesc>
+      </field>
+      <field fsw_name="xmit_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of transmit messages</sysdesc>
+      </field>
+      <field fsw_name="mode_code_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of mode codes received</sysdesc>
+      </field>
+      <field fsw_name="mode_code_dw_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of mode codes w/data word received</sysdesc>
+      </field>
+      <field fsw_name="bcst_cmd_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of broadcast messages recevied</sysdesc>
+      </field>
+      <field fsw_name="rtram_edac_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of broadcast messages recevied</sysdesc>
+      </field>
+      <field fsw_name="rtram_edac_addr" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the address of EDAC error reported on RTRAM</sysdesc>
+      </field>
+      <field fsw_name="himem_edac_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of EDAC errors reported on HIMEM</sysdesc>
+      </field>
+      <field fsw_name="himem_edac_addr" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the address of EDAC error reported on HIMEM</sysdesc>
+      </field>
+      <field fsw_name="msgerr_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of 1553 message errors reported</sysdesc>
+      </field>
+      <field fsw_name="subsysfail_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of RT subsystem fail errors reported</sysdesc>
+      </field>
+      <field fsw_name="zero_length_x_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of zero length transactions reported</sysdesc>
+      </field>
+      <field fsw_name="inv_cmd_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of invalid commands reported</sysdesc>
+      </field>
+      <field fsw_name="ill_cmd_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of illegal commands reported</sysdesc>
+      </field>
+      <field fsw_name="ill_bcst_cmd_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of invalid broadcast commands reported</sysdesc>
+      </field>
+      <field fsw_name="rt_dma_error_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of RT DMA errors</sysdesc>
+      </field>
+      <field fsw_name="decoder_a_b_err_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of Decoder A/B errors reported</sysdesc>
+      </field>
+      <field fsw_name="ill_mode_code_cnt" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of illegal mode code commands</sysdesc>
+      </field>
+      <field fsw_name="no_callback" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of transaction attempts with no callbacks</sysdesc>
+      </field>
+      <field fsw_name="not_initialized" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of requests prior to initialization</sysdesc>
+      </field>
+      <field fsw_name="dt_il_mismatch_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This is the number of mismatches between D.T. and I.L. prior to time establishment</sysdesc>
+      </field>
+      <field fsw_name="dt_il_mismatch_desc_addr" datatype="UNSIGNED_INT" length="2">
+        <sysdesc>Last interrupted xfer on descriptor address</sysdesc>
+      </field>
+      <field fsw_name="dt_il_mismatch_tbl_idx" datatype="UNSIGNED_INT" length="2">
+        <sysdesc>Last interrupted xfer on table index</sysdesc>
+      </field>
+      <field fsw_name="no_cmd_block_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This field is the number of logged transactions with no command block</sysdesc>
+      </field>
+      <field fsw_name="no_cmd_block_sa" datatype="UNSIGNED_INT" length="2">
+        <sysdesc>This field is the last subaddress for transaction with no command block</sysdesc>
+      </field>
+      <field fsw_name="no_cmd_block_dir" datatype="UNSIGNED_INT" length="2">
+        <sysdesc>This field is the last direction for transaction with no command block</sysdesc>
+      </field>
+    </fields>
+  </table>
+</data_product>

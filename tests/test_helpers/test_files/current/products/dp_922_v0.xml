@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="0"/>
+  <table>
+    <name id="922" fsw_id="DP_AVS_XS_RAM_READOUT" title="DP_AVS_XS_RAM_READOUT">
+      <sysdesc>Contains a readout of the cross-string RAM, per command.</sysdesc>
+      <categories>
+        <module>cstr_mgr</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_XS_READ_CHECKSUM_RAM</command>
+  </table>
+</data_product>

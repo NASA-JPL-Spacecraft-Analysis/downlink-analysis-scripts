@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="66" fsw_id="DP_DMP_FILE" title="DP_DMP_FILE">
+      <sysdesc>This data product represents a range of bytes from a file.</sysdesc>
+      <categories>
+        <module>file_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_FILE</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="file_name_length" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Length of the file name</sysdesc>
+      </field>
+      <dynamic_array fsw_name="filename" variable="file_name_length">
+        <sysdesc>Array of 1-byte chars for the filename (of length given above)</sysdesc>
+        <field fsw_name="file_name_char" datatype="ASCII" length="1" format="%s">
+          <sysdesc>One character of the file name (dynamic array of file_name_length)</sysdesc>
+        </field>
+      </dynamic_array>
+      <repeat_block>
+        <field fsw_name="data" datatype="UNSIGNED_INT" length="1" format="0x%02x">
+          <sysdesc>data bytes</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

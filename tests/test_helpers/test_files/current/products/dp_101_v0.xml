@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="101" fsw_id="DP_TIME_CLOCKS_HISTORY_DUMP" title="DP_TIME_CLOCKS_HISTORY_DUMP">
+      <sysdesc>A dump of the clock values (seconds and subseconds) and drift values. Includes full MCLK and MCLK to SCLK drift from REU. Includes SCLK drift between ECE strings (EIO SCTDC register).</sysdesc>
+      <categories>
+        <module>time_svc</module>
+        <ops_category>TIME</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>TIME_DMP_CLOCKS_HISTORY</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="time_seconds" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>SCLK seconds of command dispatch</sysdesc>
+        <units>seconds</units>
+      </field>
+      <field fsw_name="time_subseconds" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>SCLK subseconds of command dispatch</sysdesc>
+        <units>subseconds</units>
+      </field>
+      <repeat_block>
+        <field fsw_name="sclk1_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The SCLK seconds (from EIO TU) just before capturing the remaining items in this DP entry.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="sclk1_subseconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The SCLK subseconds (from EIO TU) just before capturing the remaining items in this DP entry (this is captured together with sclk1_seconds)</sysdesc>
+          <units>subseconds</units>
+        </field>
+        <field fsw_name="bds_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The seconds value read from the BDS.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="bds_subseconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The subseconds value read from the BDS.</sysdesc>
+          <units>subseconds</units>
+        </field>
+        <field fsw_name="xstr_drift" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The drift count from the EIO SCTDC register.</sysdesc>
+          <units>counts</units>
+        </field>
+        <field fsw_name="clk_adjust" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The clock adjust count from the EIO SCTAR register.</sysdesc>
+          <units>counts</units>
+        </field>
+        <field fsw_name="met_a_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The latest Radio A MET seconds channel value.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="met_a_subseconds" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The latest Radio A MET subseconds channel value (low 16 bits of MET STAT).
+
+The MET A subseconds units differ from the sclk subseconds units. This value has units of 20 microseconds per count and should be converted to seconds before use. Convert to seconds with the following formula (met_a_subseconds*20/10^6)
+</sysdesc>
+          <units>subseconds</units>
+        </field>
+        <field fsw_name="met_a_meas_sclk_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The seconds from the SCLK timestamp when met_a_seconds was captured (assumed to apply to met_a_subseconds too).
+
+An offset of negative 46.5 RTIs/1.453125 seconds should be applied to the met_a_meas_sclk_seconds/met_a_meas_sclk_subseconds. 
+The rational for this is that these values are recorded after the radio generates the status packet which contains the MET seconds value. 
+The radio MET value is generated between RTI 23 and 26 of the previous major frame. The SCLK value for radio A is then recorded in RTI 7 of the current major frame.
+Taking the midpoint of 23 and 26 this results in a 14.5 RTI delay between when the MET value is created and when the value is recorded. An additional
+32 RTIs are added because the radio status is always 1 second delayed per design.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="met_a_meas_sclk_subseconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The subseconds from the SCLK timestamp when met_a_seconds was captured (assumed to apply to met_a_subseconds too). Sclk subseconds can be converted to seconds with the following formula (sclk_subseconds &gt;&gt; 12)/10^6. '&gt;&gt;' is a right bit shift operator. 
+
+An offset of negative 46.5 RTIs/1.453125 seconds should be applied to the met_a_meas_sclk_seconds/met_a_meas_sclk_subseconds. 
+The rational for this is that these values are recorded after the radio generates the status packet which contains the MET seconds value. 
+The radio MET value is generated between RTI 23 and 26 of the previous major frame. The SCLK value for radio A is then recorded in RTI 7 of the current major frame.
+Taking the midpoint of 23 and 26 this results in a 14.5 RTI delay between when the MET value is created and when the value is recorded. An additional
+32 RTIs are added because the radio status is always 1 second delayed per design.</sysdesc>
+          <units>subseconds</units>
+        </field>
+        <field fsw_name="met_b_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The latest Radio B MET seconds channel value.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="met_b_subseconds" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The latest Radio B MET subseconds channel value (low 16 bits of MET STAT).
+
+The MET B subseconds units differ from the sclk subseconds units. This value has units of 20 microseconds per count and should be converted to seconds before use. Convert to seconds with the following formula (met_a_subseconds*20/10^6)
+</sysdesc>
+          <units>subseconds</units>
+        </field>
+        <field fsw_name="met_b_meas_sclk_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The seconds from the SCLK timestamp when met_b_seconds was captured (assumed to apply to met_b_subseconds too).
+
+
+An offset of negative 50.5 RTIs/1.578125 seconds should be applied to the met_b_meas_sclk_seconds/met_b_meas_sclk_subseconds. 
+The rational for this is that these values are recorded after the radio generates the status packet which contains the MET seconds value. 
+The radio MET value is generated between RTI 23 and 26 of the previous major frame. The SCLK value for radio B is then recorded in RTI 11 of the current major frame.
+Taking the midpoint of 23 and 26 this results in a 18.5 RTI delay between when the MET value is created and when the value is recorded. An additional
+32 RTIs are added because the radio status is always 1 second delayed per design.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="met_b_meas_sclk_subseconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The subseconds from the SCLK timestamp when met_b_seconds was captured (assumed to apply to met_b_subseconds too).Sclk subseconds can be converted to seconds with the following formula (sclk_subseconds &gt;&gt; 12)/10^6. '&gt;&gt;' is a right bit shift operator. 
+
+An offset of negative 50.5 RTIs/1.578125 seconds should be applied to the met_b_meas_sclk_seconds/met_b_meas_sclk_subseconds. 
+The rational for this is that these values are recorded after the radio generates the status packet which contains the MET seconds value. 
+The radio MET value is generated between RTI 23 and 26 of the previous major frame. The SCLK value for radio B is then recorded in RTI 11 of the current major frame.
+Taking the midpoint of 23 and 26 this results in a 18.5 RTI delay between when the MET value is created and when the value is recorded. An additional
+32 RTIs are added because the radio status is always 1 second delayed per design.</sysdesc>
+          <units>subseconds</units>
+        </field>
+        <field fsw_name="reu_reg_a_adjust" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The current REU A clock adjust value (only populated on prime string).</sysdesc>
+        </field>
+        <field fsw_name="reu_reg_a_drift" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The current REU A clock drift accumulation value (only populated on prime string).</sysdesc>
+        </field>
+        <field fsw_name="reu_reg_b_adjust" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The current REU B clock adjust value (only populated on prime string).</sysdesc>
+        </field>
+        <field fsw_name="reu_reg_b_drift" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The current REU B clock drift accumulation value (only populated on prime string).</sysdesc>
+        </field>
+        <field fsw_name="sclk2_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The SCLK seconds (from EIO TU) just after capturing the previous items in this DP entry.</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="sclk2_subseconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The SCLK subseconds (from EIO TU) just after capturing the previous items in this DP entry (this is captured together with sclk2_seconds).</sysdesc>
+          <units>subseconds</units>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

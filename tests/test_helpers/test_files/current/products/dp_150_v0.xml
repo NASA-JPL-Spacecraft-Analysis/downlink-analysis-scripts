@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="150" fsw_id="DP_DDM_EVR_FILTER_TBL" title="DP_DDM_EVR_FILTER_TBL">
+      <sysdesc>The contents of the EVR Filter Table, consisting of which EVRs and how many times those EVRs are supposed to be "skipped" (not included in the real-time downlink).</sysdesc>
+      <categories>
+        <module>evr_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_EVR_FILTER_TBL</command>
+    <viewer name="default"/>
+    <fields>
+      <repeat_block>
+        <field fsw_name="filter_table_index" datatype="UNSIGNED_INT" length="2" format="%u">
+          <sysdesc>index of particular EVR in the filter table.</sysdesc>
+        </field>
+        <field fsw_name="evr_id" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>The EVR ID</sysdesc>
+        </field>
+        <field fsw_name="skip_count" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>The number of EVR to skip.</sysdesc>
+        </field>
+        <field fsw_name="running_count" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>The current number of EVRs that have been skipped. This value is reset to 0 each time it reaches the skip_count.</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1"/>
+  <table>
+    <name id="411" fsw_id="DP_GNC_DVE_ONTIME_OUTPUT" title="DP_GNC_DVE_ONTIME_OUTPUT">
+      <sysdesc>Data product to capture GNC commanded accumulated thruster on-times from the prime PME branch and accelerometer based delta-V estimates for a specified length of time. Intended use cases are Frequency-ID and delta-V reconstruction.</sysdesc>
+      <categories>
+        <module>acs_ctl</module>
+        <ops_category>GNC</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>GNC_ACS_DVE_ONTIME_OUTPUT_RECORD</command>
+    <fields>
+      <repeat_block>
+        <array fsw_name="32hz_data" num_items="4">
+          <sysdesc>Delta-V accelerometer based estimates w/thruster commands to now (32Hz) collected per 8Hz RTI </sysdesc>
+          <field fsw_name="32hz_sclk_time" datatype="FLOAT" length="8">
+            <sysdesc>(seconds.subseconds) 32Hz.  This was added to eliminate the need to calculate and sync update timestamps with data</sysdesc>
+          </field>
+          <field fsw_name="dv_est_last_meas_BF_0" datatype="FLOAT" length="8">
+            <sysdesc>Delta-V accelerometer based estimate w/thruster commands to now (1 of 3). Data source is same as used to generate tlm channel GNC_DVE_DV_EST_LAST_MEAS_BF_0 (32Hz).</sysdesc>
+          </field>
+          <field fsw_name="dv_est_last_meas_BF_1" datatype="FLOAT" length="8">
+            <sysdesc>Delta-V accelerometer based estimate w/thruster commands to now (2 of 3). Data source is same as used to generate tlm channel GNC_DVE_DV_EST_LAST_MEAS_BF_1 (32Hz)</sysdesc>
+          </field>
+          <field fsw_name="dv_est_last_meas_BF_2" datatype="FLOAT" length="8">
+            <sysdesc>Delta-V accelerometer based estimate w/thruster commands to now (3 of 3). Data source is same as used to generate tlm channel GNC_DVE_DV_EST_LAST_MEAS_BF_2 (32Hz)</sysdesc>
+          </field>
+        </array>
+        <field fsw_name="8hz_sclk_time" datatype="FLOAT" length="8">
+          <sysdesc>(seconds.subseconds) 8Hz</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_0" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (1 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[0]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_1" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (2 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[1]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_2" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (3 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[2]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_3" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (4 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[3]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_4" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (5 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[4]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_5" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (6 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[5]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_6" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (7 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[6]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_zptd_7" datatype="FLOAT" length="8">
+          <sysdesc>Prime Z-ptd accum ontime (8 of 8) [[FSW variable F64, 'accum_ontime_prime_zptd[7]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_yptd_0" datatype="FLOAT" length="8">
+          <sysdesc>Prime Y-ptd accum ontime (1 of 4) [[FSW variable F64, 'accum_ontime_prime_yptd[0]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_yptd_1" datatype="FLOAT" length="8">
+          <sysdesc>Prime Y-ptd accum ontime (2 of 4) [[FSW variable F64, 'accum_ontime_prime_yptd[1]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_yptd_2" datatype="FLOAT" length="8">
+          <sysdesc>Prime Y-ptd accum ontime (3 of 4) [[FSW variable F64, 'accum_ontime_prime_yptd[2]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+        <field fsw_name="accum_ontime_prime_yptd_3" datatype="FLOAT" length="8">
+          <sysdesc>Prime Y-ptd accum ontime (4 of 4) [[FSW variable F64, 'accum_ontime_prime_yptd[3]', from GNC algorithm 'gnc_tal']]</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

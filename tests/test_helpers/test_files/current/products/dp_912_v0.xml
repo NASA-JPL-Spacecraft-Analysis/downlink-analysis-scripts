@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="912" fsw_id="DP_RAD750_DDR2_ERROR_LOG" title="DP_RAD750_DDR2_ERROR_LOG">
+      <sysdesc>This data product contains data scrubber errors from the RAD750 DDR scrub activity, including error addresses.  Note that this will also include errors due to FSW direct access to memory.
+
+Please note that data will be written to this data product only if a scrub error occurs.</sysdesc>
+      <categories>
+        <module>plat_ptm</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DMP_RAD750_DDR2_ERRORS</command>
+    <fields>
+      <repeat_block>
+        <field fsw_name="sclk" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Spacecraft Time (SCLK)</sysdesc>
+          <units>Seconds</units>
+        </field>
+        <field fsw_name="new_scrub" datatype="SIGNED_INT" length="1">
+          <sysdesc>A complete scrub of RAD750 DDR-2 memory occurs approximately every 55 minutes.  This indicates whether a new scrub started this second.  This can be used to see which error addresses are persistent between scrub cycles.  Even if no errors are detected by the scrubber, an entry will be written to the data product every time this is true.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="FALSE"/>
+            <states enumerated_value="1" dict_value="TRUE"/>
+          </lookup>
+        </field>
+        <field fsw_name="num_corr_errors" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Number of correctable errors (0-8). The hardware can track up to 8 correctable error addresses, so for each 1Hz cycle, anywhere from 0 to 8 correctable errors may be included.</sysdesc>
+        </field>
+        <field fsw_name="num_uncorr_errors" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Number of uncorrectable errors (0-8).  The hardware can track up to 8 uncorrectable error addresses, so for each 1Hz cycle, anywhere from 0 to 8 uncorrectable errors may be included.</sysdesc>
+        </field>
+        <field fsw_name="num_verify_errors" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Number of verification errors (0-1).  The hardware can track a single scrub verify error address, so for each 1Hz cycle, either 0 or 1 verify errors may be included.</sysdesc>
+        </field>
+        <dynamic_array fsw_name="correctable_error_address" variable="num_corr_errors">
+          <sysdesc>Address of a correctable error.  Note it is currently TBD how to translate this information to a physical address.</sysdesc>
+          <field fsw_name="corr_err_add_A" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Correctable Error Log (A)
+
+Bits 31:03  Address presented to the PHY for the access with an error
+Bits 02:01 Reserved
+Bits 00      The data beat of the error (0 = beat 1, 1 = beat 2)</sysdesc>
+          </field>
+          <field fsw_name="corr_err_add_B" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Correctable Error Log (B) - contains error information for the upper half of the 128-bit MCTL data bus: even nibbles.
+
+Bits 31      1 = This region had a correctable error
+Bits 30:28 Reserved
+Bits 27:16 Indicates the nibble in error.  Upper 4 bits indicate an ECC nibble, lower 8 bits indicate a data nibble.
+Bits 15:00 Reserved</sysdesc>
+          </field>
+          <field fsw_name="corr_err_add_C" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Correctable Error Log (C) - contains error information for the upper half of the 128-bit MCTL data bus: odd nibbles.
+
+Bits 31      1 = This region had a correctable error
+Bits 30:28 Reserved
+Bits 27:16 Indicates the nibble in error.  Upper 4 bits indicate an ECC nibble, lower 8 bits indicate a data nibble.
+Bits 15:00 Reserved</sysdesc>
+          </field>
+          <field fsw_name="corr_err_add_D" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Correctable Error Log (D) - contains error information for the lower half of the 128-bit MCTL data bus: even nibbles.
+
+Bits 31      1 = This region had a correctable error
+Bits 30:28 Reserved
+Bits 27:16 Indicates the nibble in error.  Upper 4 bits indicate an ECC nibble, lower 8 bits indicate a data nibble.
+Bits 15:00 Reserved</sysdesc>
+          </field>
+          <field fsw_name="corr_err_add_E" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Correctable Error Log (E) - contains error information for the lower half of the 128-bit MCTL data bus: odd nibbles.
+
+Bits 31      1 = This region had a correctable error
+Bits 30:28 Reserved
+Bits 27:16 Indicates the nibble in error.  Upper 4 bits indicate an ECC nibble, lower 8 bits indicate a data nibble.
+Bits 15:00 Reserved</sysdesc>
+          </field>
+        </dynamic_array>
+        <dynamic_array fsw_name="uncorrectable_error_address" variable="num_uncorr_errors">
+          <sysdesc>Address of a uncorrectable error.  Note it is currently TBD how to translate this information to a physical address.</sysdesc>
+          <field fsw_name="uncorr_err_add_A" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Uncorrectable Error Log (A)
+
+Bits 31:03  Address presented to the PHY for the access with an error
+Bits 02:01 Reserved
+Bits 00      The data beat of the error (0 = beat 1, 1 = beat 2)</sysdesc>
+          </field>
+          <field fsw_name="uncorr_err_add_B" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Uncorrectable Error Log (B)
+
+Bits 31:04 Reserved
+Bits 03      Upper half odd nibble contained an error
+Bits 02      Upper half even nibble contained an error
+Bits 01      Lower half odd nibble contained an error
+Bits 00      Lower half even nibble contained an error
+</sysdesc>
+          </field>
+        </dynamic_array>
+        <dynamic_array fsw_name="verify_error_address" variable="num_verify_errors">
+          <sysdesc>Address of Scrub Verify error
+
+Bits 31:03  Address presented to the PHY for the access with an error
+Bits 02:01 Reserved
+Bits 00      The data beat of the error (0 = beat 1, 1 = beat 2)</sysdesc>
+          <field fsw_name="verify_err_add_0" datatype="UNSIGNED_INT" length="4" format="0x%08X">
+            <sysdesc>Scrub Verify Error Address
+
+Bits 31:03  Address presented to the PHY for the access with an error
+Bits 02:01 Reserved
+Bits 00      The data beat of the error (0 = beat 1, 1 = beat 2)</sysdesc>
+          </field>
+        </dynamic_array>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

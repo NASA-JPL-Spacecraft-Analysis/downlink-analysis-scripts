@@ -1,0 +1,6 @@
+value,dont_care,name,scet,also_dont_care
+1,foo,UPL-0009,2020-001T12:01:00,foofoo
+2,baz,UPL-0009,2020-001T12:02:00,foobaz
+3,bar,UPL-0009,2020-001T12:03:00,foobar
+4,qux,UPL-0009,2020-001T12:04:00,fooqux
+5,fred,UPL-0009,2020-001T12:05:00,foofred

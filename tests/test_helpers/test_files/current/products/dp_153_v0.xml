@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="157"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="153" fsw_id="DP_AVS_1553_TRAFFIC_DUMP" title="DP_AVS_1553_TRAFFIC_DUMP">
+      <sysdesc>This data product contains a filtered dump of 1553 bus traffic.</sysdesc>
+      <categories>
+        <module>bc_mgr</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DMP_1553_BUS_TRAFFIC</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="filter_rt" datatype="SIGNED_INT" length="1">
+        <sysdesc>Indicates the remote terminal filter setting for the dump. A negative -1 means no filter applied.</sysdesc>
+      </field>
+      <field fsw_name="filter_tr" datatype="SIGNED_INT" length="1">
+        <sysdesc>Whether to filter on transmit or receive transactions (or both)</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="RECV"/>
+          <states enumerated_value="1" dict_value="XMIT"/>
+          <states enumerated_value="2" dict_value="BOTH_XMIT_AND_RECV"/>
+        </lookup>
+      </field>
+      <field fsw_name="filter_sa" datatype="SIGNED_INT" length="1">
+        <sysdesc>Indicates the sub address filter setting for the dump. A negative -1 means no filter applied.</sysdesc>
+      </field>
+      <repeat_block>
+        <field fsw_name="sclk_seconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>SCLK time in seconds for the transaction</sysdesc>
+        </field>
+        <field fsw_name="sclk_subseconds" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>SCLK time in seconds for the transaction</sysdesc>
+        </field>
+        <field fsw_name="which_bus" datatype="SIGNED_INT" length="1">
+          <sysdesc>Which 1553 bus did this transaction occur on?</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="BUS_A"/>
+            <states enumerated_value="1" dict_value="BUS_B"/>
+          </lookup>
+        </field>
+        <field fsw_name="remote_terminal" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Remote Terminal involved with the transaction</sysdesc>
+        </field>
+        <field fsw_name="transmit_receive" datatype="SIGNED_INT" length="1">
+          <sysdesc>Whether the transaction </sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="RECV"/>
+            <states enumerated_value="1" dict_value="XMIT"/>
+          </lookup>
+        </field>
+        <field fsw_name="rti" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Which RTI did this transaction occur on.</sysdesc>
+          <units>RTI</units>
+        </field>
+        <field fsw_name="sub_address" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Which subaddress did this transaction involve</sysdesc>
+        </field>
+        <field fsw_name="error_code" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>Error code for the transaction.</sysdesc>
+        </field>
+        <field fsw_name="word_count" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Number of 2 byte words in this transaction. </sysdesc>
+        </field>
+        <dynamic_array fsw_name="words" variable="word_count">
+          <sysdesc>Array of words for the specific transaction</sysdesc>
+          <field fsw_name="word" datatype="UNSIGNED_INT" length="2">
+            <sysdesc>Data contained in each word of the transaction</sysdesc>
+          </field>
+        </dynamic_array>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

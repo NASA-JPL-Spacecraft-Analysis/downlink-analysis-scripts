@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="301" fsw_id="DP_PARAM_DUMP" title="DP_PARAM_DUMP">
+      <sysdesc>This data product contains a dump of parameters from either volatile or non-volatile memory.</sysdesc>
+      <categories>
+        <module>param_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_SYS_PARAM</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="param_storage_type" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Flag to indicate whether parameters in the data product are from volatile or non-volatile storage.</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="NON-VOLATILE"/>
+          <states enumerated_value="1" dict_value="VOLATILE"/>
+        </lookup>
+      </field>
+      <field fsw_name="dp_initiated_by" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Flag to indicate whether parameters in the data product are from a parameter transaction sequence or by the param dump command.</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="FROM_PARAM_DMP_CMD"/>
+          <states enumerated_value="1" dict_value="FROM_PARAM_TXN"/>
+        </lookup>
+      </field>
+      <field fsw_name="num_params" datatype="UNSIGNED_INT" length="2" format="%u">
+        <sysdesc>Number of parameters in this data product.</sysdesc>
+      </field>
+      <dynamic_array fsw_name="num_params" variable="num_params">
+        <sysdesc>The array of parameters</sysdesc>
+        <field fsw_name="param_id" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+          <sysdesc>Parameter ID</sysdesc>
+        </field>
+        <field fsw_name="param_version" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>Parameter Version</sysdesc>
+        </field>
+        <field fsw_name="set_counter" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>Number of times this parameter version was SET in volatile storage.</sysdesc>
+        </field>
+        <field fsw_name="save_counter" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>Number of times this parameter version was SAVED in non-volatile storage.</sysdesc>
+        </field>
+        <field fsw_name="param_type" datatype="UNSIGNED_INT" length="1" format="%u">
+          <sysdesc>Parameter type</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="U8"/>
+            <states enumerated_value="1" dict_value="I8"/>
+            <states enumerated_value="2" dict_value="U16"/>
+            <states enumerated_value="3" dict_value="I16"/>
+            <states enumerated_value="4" dict_value="U32"/>
+            <states enumerated_value="5" dict_value="I32"/>
+            <states enumerated_value="6" dict_value="F64"/>
+            <states enumerated_value="7" dict_value="STRING"/>
+          </lookup>
+        </field>
+        <field fsw_name="value_bytes" datatype="UNSIGNED_INT" length="1" format="%u">
+          <sysdesc>The number of bytes representing the parameter value based on its type.</sysdesc>
+        </field>
+        <dynamic_array fsw_name="value_bytes" variable="value_bytes">
+          <sysdesc>Buffer to hold a param value of different sized numericals U8-F64 and to include a string of max bytes (128).</sysdesc>
+          <field fsw_name="bytes_of_value" datatype="UNSIGNED_INT" length="1" format="0x%x">
+            <sysdesc>byte</sysdesc>
+          </field>
+        </dynamic_array>
+      </dynamic_array>
+    </fields>
+  </table>
+</data_product>

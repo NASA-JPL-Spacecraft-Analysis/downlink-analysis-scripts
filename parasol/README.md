@@ -1,1 +1,0 @@
-# fspa-scripts/parasol

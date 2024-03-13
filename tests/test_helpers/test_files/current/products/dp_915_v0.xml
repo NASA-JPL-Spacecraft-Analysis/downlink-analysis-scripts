@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="0"/>
+  <table>
+    <name id="915" fsw_id="DP_REU_MEMORY_DMP" title="DP_REU_MEMORY_DMP">
+      <sysdesc>This data product contains a snapshot of the REU memory of a specified size and starting address.</sysdesc>
+      <categories>
+        <module>reu_mgr</module>
+        <ops_category>REU</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>REU_DMP_MEMORY</command>
+    <fields>
+      <field fsw_name="REU_ID" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>The REU from which the register data originated.  REU-A (0) or REU-B (1).</sysdesc>
+      </field>
+      <field fsw_name="number_of_words" datatype="UNSIGNED_INT" length="4" format="%d">
+        <sysdesc>number of words in the memory dump.</sysdesc>
+        <units>words</units>
+      </field>
+      <dynamic_array fsw_name="memory_dump" variable="number_of_words">
+        <sysdesc>Array of content of memory words.</sysdesc>
+        <field fsw_name="word_content" datatype="UNSIGNED_INT" length="2" format="0x%04x">
+          <sysdesc>Content of each memory word.</sysdesc>
+        </field>
+      </dynamic_array>
+    </fields>
+  </table>
+</data_product>

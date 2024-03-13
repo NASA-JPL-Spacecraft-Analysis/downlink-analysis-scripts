@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version=".01"/>
+  <table>
+    <name id="921" fsw_id="DP_AVS_BDS_DIAGNOSTIC_NAND_READOUT" title="DP_AVS_BDS_DIAGNOSTIC_NAND_READOUT">
+      <sysdesc>Contains a readout of the BDS NAND stripe pages, per command.</sysdesc>
+      <categories>
+        <module>bds_physical_ctl</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_BDS_DIAGNOSTIC_READ_STRIPE</command>
+  </table>
+</data_product>

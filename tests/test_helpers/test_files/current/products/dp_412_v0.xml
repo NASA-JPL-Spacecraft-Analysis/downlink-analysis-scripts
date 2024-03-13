@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1"/>
+  <table>
+    <name id="412" fsw_id="DP_ACCEL_HIGH_RATE" title="DP_ACCEL_HIGH_RATE">
+      <sysdesc>Data Product to collect high rate (32Hz), 1553 decoded accelerometer data. Intended use cases are the following GNC activities: Frequency-ID and Accelerometer Characterization.</sysdesc>
+      <categories>
+        <module>imu_mgr</module>
+        <ops_category>GNC</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>GNC_ACCEL_HIGH_RATE_RECORD</command>
+    <fields>
+      <field fsw_name="source_imu" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Source of the data</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="IMU_A"/>
+          <states enumerated_value="1" dict_value="IMU_B"/>
+        </lookup>
+      </field>
+      <repeat_block>
+        <field fsw_name="SCLK" datatype="FLOAT" length="8">
+          <sysdesc>(seconds, subseconds) 1Hz</sysdesc>
+          <units>seconds</units>
+        </field>
+        <field fsw_name="num_rtis" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Number of 32Hz frames collected for this time stamp. (32Hz)</sysdesc>
+        </field>
+        <dynamic_array fsw_name="data_per_rti" variable="num_rtis">
+          <sysdesc>1553 decoded accelerometer data collected per time stamp. (32Hz)</sysdesc>
+          <field fsw_name="GNC_IMU_PRIME_ACC_A_LIN_ACC" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>This is the decoded accelerometer A data from the prime IMU. The data source should be the same that is used to generate the tlm channel that is the same as the FSW Name, where PRIME = A (or) B.</sysdesc>
+          </field>
+          <field fsw_name="GNC_IMU_PRIME_ACC_B_LIN_ACC" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>This is the decoded accelerometer B data from the prime IMU. The data source should be the same that is used to generate the tlm channel that is the same as the FSW Name, where PRIME = A (or) B.</sysdesc>
+          </field>
+          <field fsw_name="GNC_IMU_PRIME_ACC_C_LIN_ACC" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>This is the decoded accelerometer C data from the prime IMU. The data source should be the same that is used to generate the tlm channel that is the same as the FSW Name, where PRIME = A (or) B.</sysdesc>
+          </field>
+          <field fsw_name="GNC_IMU_PRIME_ACC_D_LIN_ACC" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>This is the decoded accelerometer D data from the prime IMU. The data source should be the same that is used to generate the tlm channel that is the same as the FSW Name, where PRIME = A (or) B.</sysdesc>
+          </field>
+          <field fsw_name="bit_packed_validity_flags" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Validity flags for all four accelerometers + IMU ready (MSB0)</sysdesc>
+          </field>
+        </dynamic_array>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

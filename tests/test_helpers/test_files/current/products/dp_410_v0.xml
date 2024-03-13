@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1"/>
+  <table>
+    <name id="410" fsw_id="DP_GNC_QUATS_FOR_RECON" title="DP_GNC_QUATS_FOR_RECON">
+      <sysdesc>dump high rate quaternions and S/C rates for use in reconstructed attitude knowledge</sysdesc>
+      <categories>
+        <module>acs_ctl</module>
+        <ops_category>GNC</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>GNC_ACS_QUATS_DUMP</command>
+    <fields>
+      <repeat_block>
+        <field fsw_name="SCLK" datatype="FLOAT" length="8">
+          <sysdesc>Time in seconds.  This time should match the time tagged with the Quaternion variable that is filling this data product</sysdesc>
+        </field>
+        <field fsw_name="QUAT_0" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE quaternion the data source should be the same that is used to generate the following tlm channel GNC_ATE_Q_EST_OPT_PREV_BF_IF_0</sysdesc>
+        </field>
+        <field fsw_name="QUAT_1" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE quaternion the data source should be the same that is used to generate the following tlm channel GNC_ATE_Q_EST_OPT_PREV_BF_IF_1</sysdesc>
+        </field>
+        <field fsw_name="QUAT_2" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE quaternion the data source should be the same that is used to generate the following tlm channel GNC_ATE_Q_EST_OPT_PREV_BF_IF_2</sysdesc>
+        </field>
+        <field fsw_name="QUAT_3" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE quaternion the data source should be the same that is used to generate the following tlm channel GNC_ATE_Q_EST_OPT_PREV_BF_IF_3</sysdesc>
+        </field>
+        <field fsw_name="RATE_0" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE body rate, the data source should be the same that is used to generate the following tlm channel GNC_ATE_RATE_EST_BF_0</sysdesc>
+        </field>
+        <field fsw_name="RATE_1" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE body rate, the data source should be the same that is used to generate the following tlm channel GNC_ATE_RATE_EST_BF_1</sysdesc>
+        </field>
+        <field fsw_name="RATE_2" datatype="FLOAT" length="4">
+          <sysdesc>This is the GNC ATE body rate, the data source should be the same that is used to generate the following tlm channel GNC_ATE_RATE_EST_BF_2</sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

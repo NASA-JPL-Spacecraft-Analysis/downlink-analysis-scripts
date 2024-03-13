@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="500" fsw_id="DP_SEQ_VAR_DUMP" title="DP_SEQ_VAR_DUMP">
+      <sysdesc>This data product contains a snapshot of all sequence variables and their assignment status.</sysdesc>
+      <categories>
+        <module>seq_svc</module>
+        <ops_category>SEQ</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>SEQ_VAR_DUMP</command>
+    <fields>
+      <field fsw_name="gv_dump_time_sec" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This is SCLK (seconds)  when the GVs were dumped</sysdesc>
+      </field>
+      <field fsw_name="gv_dump_time_subsec" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>This is SCLK (seconds)  when the GVs were dumped</sysdesc>
+      </field>
+      <array fsw_name="global_var_uint" num_items="64">
+        <sysdesc>This array holds all the global variable UINT values and status.</sysdesc>
+        <field fsw_name="gvuint_value" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>The current value of the global variable.</sysdesc>
+        </field>
+        <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Whether the variable is assigned or not.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="UNASSIGNED"/>
+            <states enumerated_value="1" dict_value="ASSIGNED"/>
+          </lookup>
+        </field>
+      </array>
+      <array fsw_name="global_var_int" num_items="64">
+        <sysdesc>This array holds all the global variable INT values and status.</sysdesc>
+        <field fsw_name="gvint_value" datatype="SIGNED_INT" length="4">
+          <sysdesc>The current value of the global variable.</sysdesc>
+        </field>
+        <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Whether the variable is assigned or not.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="UNASSIGNED"/>
+            <states enumerated_value="1" dict_value="ASSIGNED"/>
+          </lookup>
+        </field>
+      </array>
+      <array fsw_name="global_var_flt" num_items="64">
+        <sysdesc>This array holds all the global variable Float values and status.</sysdesc>
+        <field fsw_name="gvflt_value" datatype="FLOAT" length="8">
+          <sysdesc>The current value of the global variable.</sysdesc>
+        </field>
+        <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Whether the variable is assigned or not.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="UNASSIGNED"/>
+            <states enumerated_value="1" dict_value="ASSIGNED"/>
+          </lookup>
+        </field>
+      </array>
+      <array fsw_name="global_var_str" num_items="32">
+        <sysdesc>This array holds all the global variable String values and status.</sysdesc>
+        <field fsw_name="gvstr_value" datatype="ASCII" length="128">
+          <sysdesc>The current value of the global variable.</sysdesc>
+        </field>
+        <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Whether the variable is assigned or not.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="UNASSIGNED"/>
+            <states enumerated_value="1" dict_value="ASSIGNED"/>
+          </lookup>
+        </field>
+      </array>
+      <field fsw_name="num_active_sequences" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>The number of active sequences which governs what local variables are included</sysdesc>
+      </field>
+      <dynamic_array fsw_name="local_variables" variable="num_active_sequences">
+        <sysdesc>This array structure contains the local variables by sequence engine</sysdesc>
+        <field fsw_name="lv_dump_time_sec" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>This is SCLK (seconds) when the LVs for this sequence were dumped</sysdesc>
+        </field>
+        <field fsw_name="lv_dump_time_subsec" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>This is SCLK (subseconds) when the LVs for this sequence were dumped</sysdesc>
+        </field>
+        <field fsw_name="seq_name" datatype="ASCII" length="40">
+          <sysdesc>The name of the sequence</sysdesc>
+        </field>
+        <field fsw_name="seq_eng" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>The sequence engine that the sequence (and the variables) correspond to.</sysdesc>
+        </field>
+        <array fsw_name="local_var_uint" num_items="33">
+          <sysdesc>This array holds all the local variable UINT values, including the last command status variable, and status for the given engine.</sysdesc>
+          <field fsw_name="lvuint_value" datatype="UNSIGNED_INT" length="4">
+            <sysdesc>The current value of the local variable.</sysdesc>
+          </field>
+          <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Whether the variable is assigned or not.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="UNASSIGNED"/>
+              <states enumerated_value="1" dict_value="ASSIGNED"/>
+            </lookup>
+          </field>
+        </array>
+        <array fsw_name="local_var_int" num_items="32">
+          <sysdesc>This array holds all the local variable INT values and status for the given engine.</sysdesc>
+          <field fsw_name="lvint_value" datatype="SIGNED_INT" length="4">
+            <sysdesc>The current value of the local variable.</sysdesc>
+          </field>
+          <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Whether the variable is assigned or not.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="UNASSIGNED"/>
+              <states enumerated_value="1" dict_value="ASSIGNED"/>
+            </lookup>
+          </field>
+        </array>
+        <array fsw_name="local_var_flt" num_items="32">
+          <sysdesc>This array holds all the global variable Float values and status.</sysdesc>
+          <field fsw_name="lvflt_value" datatype="FLOAT" length="8">
+            <sysdesc>The current value of the global variable.</sysdesc>
+          </field>
+          <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Whether the variable is assigned or not.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="UNASSIGNED"/>
+              <states enumerated_value="1" dict_value="ASSIGNED"/>
+            </lookup>
+          </field>
+        </array>
+        <array fsw_name="local_var_str" num_items="8">
+          <sysdesc>This array holds all the global variable String values and status.</sysdesc>
+          <field fsw_name="lvstr_value" datatype="ASCII" length="128">
+            <sysdesc>The current value of the local variable.</sysdesc>
+          </field>
+          <field fsw_name="assigned" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Whether the variable is assigned or not.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="UNASSIGNED"/>
+              <states enumerated_value="1" dict_value="ASSIGNED"/>
+            </lookup>
+          </field>
+        </array>
+      </dynamic_array>
+    </fields>
+  </table>
+</data_product>

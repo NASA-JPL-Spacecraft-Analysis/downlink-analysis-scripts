@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="602" fsw_id="DP_ETHM_ENGINEERING_DATA" title="DP_ETHM_ENGINEERING_DATA">
+      <sysdesc>This product contains VE read register and FPM response packets.</sysdesc>
+      <categories>
+        <module>ethemis_mgr</module>
+        <ops_category>ETHM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <fields>
+      <repeat_block>
+        <field fsw_name="data" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>This product is a series of ETHEMIS internal packets and are represented as a series of bytes. </sysdesc>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

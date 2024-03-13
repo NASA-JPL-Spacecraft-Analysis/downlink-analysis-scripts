@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="74" fsw_id="DP_DATA_CATALOG_DMP" title="DP_DATA_CATALOG_DMP">
+      <sysdesc>A data product that contains the contents of the data catalog filtered per the command arguments.</sysdesc>
+      <categories>
+        <module>dpm_svc</module>
+        <ops_category>DDM</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>DDM_DMP_DATA_CATALOG</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="creation_time_filter_start" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The creation time filter start commanded when this data product was requested. The data product includes all products in the catalog whose product creation time is after this time.</sysdesc>
+      </field>
+      <field fsw_name="creation_time_filter_end" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The creation time filter end commanded when this data product was requested. The data product includes all products in the catalog whose product creation time is before this time.</sysdesc>
+      </field>
+      <field fsw_name="dvt_filter_start" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The data validity time filter start commanded when this data product was requested. The data product includes all products in the catalog whose product DVT is after this time.</sysdesc>
+      </field>
+      <field fsw_name="dvt_filter_end" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>The data validity time filter end commanded when this data product was requested. The data product includes all products in the catalog whose product DVT is before this time.</sysdesc>
+      </field>
+      <field fsw_name="apid_filter" datatype="UNSIGNED_INT" length="2">
+        <sysdesc>The APID range filter commanded when this data product was requested. The data product includes all products in the catalog whose APID equals this filter. A value of 0 represents that all APID are eligible for inclusion.</sysdesc>
+      </field>
+      <field fsw_name="sent_filter" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Flag indicating whether catalog entries in the SENT state are included in data product.</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="FALSE"/>
+          <states enumerated_value="1" dict_value="TRUE"/>
+        </lookup>
+      </field>
+      <field fsw_name="unsent_filter" datatype="UNSIGNED_INT" length="1">
+        <sysdesc>Flag indicating whether catalog entries in the UNSENT state are included in data product.</sysdesc>
+        <lookup>
+          <states enumerated_value="0" dict_value="FALSE"/>
+          <states enumerated_value="1" dict_value="TRUE"/>
+        </lookup>
+      </field>
+      <repeat_block>
+        <field fsw_name="dp_apid" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>APID of the data product.</sysdesc>
+        </field>
+        <field fsw_name="dp_size" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Size of the data product file in bytes. </sysdesc>
+        </field>
+        <field fsw_name="dp_create_time_start_sec" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Time (SCLK seconds) when the data product was opened for writing.</sysdesc>
+        </field>
+        <field fsw_name="dp_create_time_start_subsec" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Time (SCLK sub-seconds) when the data product was opened for writing.</sysdesc>
+        </field>
+        <field fsw_name="dp_dvt_sec" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Data validity time (SCLK seconds) of the data product.</sysdesc>
+        </field>
+        <field fsw_name="dp_dvt_subsec" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Data validity time (subseconds) of the data product.</sysdesc>
+        </field>
+        <field fsw_name="dp_priority" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>The downlink packetization priority (1-100) of the data product.</sysdesc>
+        </field>
+        <field fsw_name="dp_num_parts" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>Total number of parts that make up the data product (valid range between 0-1024). If the file is still open the value will equal 0.</sysdesc>
+        </field>
+        <field fsw_name="dp_part_unsent_range_start" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The start of the range of parts that are marked as UNSENT (valid range between 0-1024). If the product is still open this value will be set to 0. If the product is closed and completely sent this value will be set to 0.</sysdesc>
+        </field>
+        <field fsw_name="dp_part_unsent_range_end" datatype="UNSIGNED_INT" length="2">
+          <sysdesc>The start of the range of parts that are marked as UNSENT (valid range between 0-1024). If the product is still open this value will be set to 0.If the product is closed and completely sent this value will be set to 0.</sysdesc>
+        </field>
+        <field fsw_name="data_product_entry_state" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>This is the internal state of the data product. WRITING =  state indicating that the product is being written to. QUEUED = state indicating that the product has been closed after write and not yet selected for downlink. DOWNLINKING =  state indicating that the product is currently being packetized and downlinked. TRANSMITTED = state indicating that the product has been completely downlinked (all parts sent). CORRUPT = state indicating that an error was encountered while packetizing the product. Note that data products in the "WRITING/DOWNLINKING" state are considered busy and can not be deleted or modified.</sysdesc>
+          <lookup>
+            <states enumerated_value="1" dict_value="WRITING"/>
+            <states enumerated_value="2" dict_value="QUEUED"/>
+            <states enumerated_value="3" dict_value="DOWNLINKING"/>
+            <states enumerated_value="4" dict_value="TRANSMITTED"/>
+            <states enumerated_value="5" dict_value="PENDING_DELETION"/>
+            <states enumerated_value="6" dict_value="CORRUPT"/>
+          </lookup>
+        </field>
+        <field fsw_name="data_product_storage_state" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>This is the storage state of the data product. COMPRESSED =  The product is compressed (and on EFS). COMPRESSING = The product is currently being compressed, but the compression has not yet completed. DECOMPRESSING = The product is currently being decompressed, but the decompression has not yet completed. DECOMPRESSED = The product is not compressed. LINKED = The product is a linked data product that physically resides on BDS. Note that data products in the "WRITING/DOWNLINKING" state are considered busy and can not be deleted or modified.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="UNCOMPRESSED"/>
+            <states enumerated_value="1" dict_value="PENDING_COMPRESSION"/>
+            <states enumerated_value="2" dict_value="COMPRESSING"/>
+            <states enumerated_value="3" dict_value="COMPRESSED"/>
+            <states enumerated_value="4" dict_value="LINKED"/>
+            <states enumerated_value="5" dict_value="MOVING"/>
+          </lookup>
+        </field>
+        <field fsw_name="transmit_opts" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>This is the transmission type for the data product. FULL_TRANSACTION = The product will be downlinked as a full CFDP transaction. MPDU_ONLY = Only the MPDU will be downlinked when the product is selected for packetization. DPDU_ONLY = Only the DPDUs for the indicated part range will be downlinked when the product is selected for packetization. EPDU_ONLY = Only the EPDU will be downlinked when the product is selected for packetization.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="FULL_TRANSACTION"/>
+            <states enumerated_value="1" dict_value="MPDU_ONLY"/>
+            <states enumerated_value="2" dict_value="DPDU_ONLY"/>
+            <states enumerated_value="3" dict_value="EPDU_ONLY"/>
+          </lookup>
+        </field>
+        <field fsw_name="is_tag_update_pending" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Boolean flag. 0 if tag update is not pending for this entry, 1 if tag update is pending for this entry.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="FALSE"/>
+            <states enumerated_value="1" dict_value="TRUE"/>
+          </lookup>
+        </field>
+        <field fsw_name="checksum" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Checksum (CRC32) of the data product.</sysdesc>
+        </field>
+        <field fsw_name="string_id" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>The source string id of the data product.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="STRING_A"/>
+            <states enumerated_value="1" dict_value="STRING_B"/>
+          </lookup>
+        </field>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>

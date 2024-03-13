@@ -1,0 +1,14 @@
+black==22.8.0
+pytest==8.0.0
+-i https://cae-artifactory.jpl.nasa.gov/artifactory/api/pypi/pypi-develop-virtual/simple
+m20-operational-cloud-store==7.7.1
+close_the_u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git
+eas-parasol @ git+https://github.jpl.nasa.gov/397/parasol-py.git@feature/cam-auth-support
+aerie_cli>=2.0.0
+dataclasses-json
+xmltodict==0.13.0
+click==8.0.4
+bs4==0.0.2
+lxml==5.1.0
+m20-eas-dplib
+jpl_time

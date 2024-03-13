@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="155" fsw_id="DP_AVS_1553_STATISTICS" title="DP_AVS_1553_STATISTICS">
+      <sysdesc>This data product contains the 1553 statistic dump data</sysdesc>
+      <categories>
+        <module>bc_svc</module>
+        <ops_category>AVS</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <command>AVS_DMP_1553_STATISTICS</command>
+    <viewer name="default"/>
+    <fields>
+      <field fsw_name="online_time_secs" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>online_time_secs</sysdesc>
+      </field>
+      <field fsw_name="online_time_nanosecs" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>online_time_nanosecs</sysdesc>
+      </field>
+      <field fsw_name="num_buslists" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>num_buslists</sysdesc>
+      </field>
+      <field fsw_name="num_bus_lists_with_error" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>num_bus_lists_with_error</sysdesc>
+      </field>
+      <field fsw_name="num_buslist_error" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>num_buslist_error</sysdesc>
+      </field>
+      <field fsw_name="num_driver_faults" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>num_driver_faults</sysdesc>
+      </field>
+      <field fsw_name="sbe_count_reported" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>sbe_count_reported</sysdesc>
+      </field>
+      <field fsw_name="pri_bw_evr_warn_reported" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>pri_bw_evr_warn_reported</sysdesc>
+      </field>
+      <field fsw_name="commands_sent" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Total number of commands sent on the 1553 to all clients</sysdesc>
+      </field>
+      <field fsw_name="bytes_received" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Total number of bytes sent on the 1553 to all clients</sysdesc>
+      </field>
+      <field fsw_name="bytes_sent" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Total number of bytes received on the 1553 from all clients</sysdesc>
+      </field>
+      <field fsw_name="error_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>error_count</sysdesc>
+      </field>
+      <field fsw_name="ts_seconds" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>ts_seconds</sysdesc>
+      </field>
+      <field fsw_name="ts_nanoseconds" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>ts_nanoseconds</sysdesc>
+      </field>
+      <field fsw_name="total_inactive_responses" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>total_inactive_responses</sysdesc>
+      </field>
+      <field fsw_name="build_bus_list_hw" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>build_bus_list_hw</sysdesc>
+      </field>
+      <field fsw_name="data_distribution_hw" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>data_distribution_hw</sysdesc>
+      </field>
+      <field fsw_name="bw_hw" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>bw_hw</sysdesc>
+      </field>
+      <field fsw_name="last_sbe_address" datatype="UNSIGNED_INT" length="4" format="0x%x">
+        <sysdesc>last_sbe_address</sysdesc>
+      </field>
+      <field fsw_name="double_bit_edac_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>double_bit_edac_count</sysdesc>
+      </field>
+      <field fsw_name="last_dbe_address" datatype="UNSIGNED_INT" length="4" format="0x%x">
+        <sysdesc>last_dbe_address</sysdesc>
+      </field>
+      <field fsw_name="bc_dma_error_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>bc_dma_error_count</sysdesc>
+      </field>
+      <field fsw_name="missed_rti_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>missed_rti_count</sysdesc>
+      </field>
+      <field fsw_name="bava_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>bava_count</sysdesc>
+      </field>
+      <field fsw_name="illogical_cmd_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>illogical_cmd_count</sysdesc>
+      </field>
+      <field fsw_name="data_overrun_count" datatype="UNSIGNED_INT" length="4" format="%u">
+        <sysdesc>data_overrun_count</sysdesc>
+      </field>
+      <array fsw_name="bc_svc_stats" num_items="32">
+        <sysdesc>Transaction information by RT</sysdesc>
+        <field fsw_name="client_id" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Client ID of the Remote Terminal</sysdesc>
+        </field>
+        <field fsw_name="xaction_requested" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>xaction_requested</sysdesc>
+        </field>
+        <field fsw_name="xaction_dropped" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>xaction_dropped</sysdesc>
+        </field>
+        <field fsw_name="pending_xaction" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>pending_xaction</sysdesc>
+        </field>
+        <field fsw_name="bad_trans" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>bad_trans</sysdesc>
+        </field>
+        <field fsw_name="retries_a" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>retries_a</sysdesc>
+        </field>
+        <field fsw_name="retries_b" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>retries_b</sysdesc>
+        </field>
+        <field fsw_name="retry_fails_a" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>retry_fails_a</sysdesc>
+        </field>
+        <field fsw_name="retry_fails_b" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>retry_fails_b</sysdesc>
+        </field>
+        <field fsw_name="inactive_rt_responses" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>inactive_rt_responses</sysdesc>
+        </field>
+        <field fsw_name="commands_sent" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>commands_sent</sysdesc>
+        </field>
+        <field fsw_name="bytes_received" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>bytes_received</sysdesc>
+        </field>
+        <field fsw_name="bytes_sent" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>bytes_sent</sysdesc>
+        </field>
+        <field fsw_name="error_count" datatype="UNSIGNED_INT" length="4" format="%u">
+          <sysdesc>error_count</sysdesc>
+        </field>
+      </array>
+    </fields>
+  </table>
+</data_product>

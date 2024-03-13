@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0">
+    <spacecraft_ids>
+      <spacecraft_id value="159"/>
+    </spacecraft_ids>
+  </header>
+  <table>
+    <name id="105" fsw_id="DP_FSW_SHELL_OUTPUT" title="DP_FSW_SHELL_OUTPUT">
+      <sysdesc>The output from FSW Shell commands and scripts.
+
+Use the command FSW_DMP_SHELL_OUTPUT to direct the output to either DPs or the serial port for ground testing.</sysdesc>
+      <categories>
+        <module>shell_ctl</module>
+        <ops_category>FSW</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <viewer name="default"/>
+  </table>
+</data_product>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data_product>
+  <header mission_name="EUROPA_CLIPPER" version="0" schema_version="1.0"/>
+  <table>
+    <name id="302" fsw_id="DP_RAD750_DDR2_ALLOCATION_MAP" title="DP_RAD750_DDR2_ALLOCATION_MAP">
+      <sysdesc>Contains the RAD750 DDR2 physical address mapping (before virtual mapping), including information on free pages.</sysdesc>
+      <categories>
+        <module>plat_ptm</module>
+        <ops_category>FSW</ops_category>
+      </categories>
+    </name>
+    <versioninfo ver_num="0"/>
+    <fields>
+      <field fsw_name="loaded_count" datatype="UNSIGNED_INT" length="4">
+        <sysdesc>Number of components loaded</sysdesc>
+      </field>
+      <array fsw_name="components_load_stats" num_items="20">
+        <sysdesc>Load statistics for each defined components.</sysdesc>
+        <field fsw_name="load_stats-comp_name_len" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Valid character in the component name string.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-comp_name" datatype="ASCII" length="128" format="%s">
+          <sysdesc>Name of component.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-component_id" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Id of component.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-load_order" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Order that component was loaded.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-load_state" datatype="UNSIGNED_INT" length="1">
+          <sysdesc>Load state of component.</sysdesc>
+          <lookup>
+            <states enumerated_value="1" dict_value="LOAD_STARTED"/>
+            <states enumerated_value="31" dict_value="LOAD_COMPLETED"/>
+          </lookup>
+          <units>Load state of component.</units>
+        </field>
+        <field fsw_name="load_stats-kfpl_before_load" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Kernel free page count before component loaded.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-kfpl_after_load" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Kernel free page count after component loaded.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-recovered_kernel_pages" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Kernel free pages recovered.</sysdesc>
+        </field>
+        <field fsw_name="load_stats-kfpl_after_recovered" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Kernel free page count after load and recovered.</sysdesc>
+        </field>
+      </array>
+      <repeat_block>
+        <field fsw_name="component" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Component that is owner and tracker of the following descriptors.</sysdesc>
+          <lookup>
+            <states enumerated_value="0" dict_value="INVALID"/>
+            <states enumerated_value="1" dict_value="KERNEL"/>
+            <states enumerated_value="2" dict_value="PLAT"/>
+            <states enumerated_value="3" dict_value="DWN"/>
+            <states enumerated_value="4" dict_value="UPL"/>
+            <states enumerated_value="5" dict_value="DATA"/>
+            <states enumerated_value="6" dict_value="IO"/>
+            <states enumerated_value="7" dict_value="FIT"/>
+            <states enumerated_value="8" dict_value="SPARE"/>
+            <states enumerated_value="9" dict_value="SHELL"/>
+            <states enumerated_value="10" dict_value="GNC"/>
+            <states enumerated_value="11" dict_value="BDS"/>
+            <states enumerated_value="12" dict_value="PWR"/>
+            <states enumerated_value="13" dict_value="THRM"/>
+            <states enumerated_value="14" dict_value="TELE"/>
+            <states enumerated_value="15" dict_value="SYS"/>
+            <states enumerated_value="16" dict_value="SPARE_2"/>
+            <states enumerated_value="17" dict_value="INST"/>
+            <states enumerated_value="18" dict_value="DEMO"/>
+            <states enumerated_value="19" dict_value="EXAMPLE"/>
+            <states enumerated_value="20" dict_value="FREE_COMPONENT"/>
+          </lookup>
+        </field>
+        <field fsw_name="num_of_entries" datatype="UNSIGNED_INT" length="4">
+          <sysdesc>Number of memory descriptors.</sysdesc>
+        </field>
+        <dynamic_array fsw_name="descriptors" variable="num_of_entries">
+          <sysdesc>Describes the each memory allocated for each component. Depending on the descriptor types, the sub_id(1,2,3) will be interpreted differently.
+
+In most cases, addr1 and addr2 will be used to designate starting point of the same memory but in two different context (virtual, kernel, or physical). This information can be used to derive and map a virtual memory address to the physical and vice versa. When the descriptor type is STATIC MAP, both type specifies the address as kernel with addr1 for starting address and addr2 for ending address.</sysdesc>
+          <field fsw_name="comp_id" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Component id that this particular memory belongs to.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="INVALID"/>
+              <states enumerated_value="1" dict_value="KERNEL"/>
+              <states enumerated_value="2" dict_value="PLAT"/>
+              <states enumerated_value="3" dict_value="DWN"/>
+              <states enumerated_value="4" dict_value="UPL"/>
+              <states enumerated_value="5" dict_value="DATA"/>
+              <states enumerated_value="6" dict_value="IO"/>
+              <states enumerated_value="7" dict_value="FIT"/>
+              <states enumerated_value="8" dict_value="SPARE"/>
+              <states enumerated_value="9" dict_value="SHELL"/>
+              <states enumerated_value="10" dict_value="GNC"/>
+              <states enumerated_value="11" dict_value="BDS"/>
+              <states enumerated_value="12" dict_value="PWR"/>
+              <states enumerated_value="13" dict_value="THRM"/>
+              <states enumerated_value="14" dict_value="TELE"/>
+              <states enumerated_value="15" dict_value="SYS"/>
+              <states enumerated_value="16" dict_value="SPARE_2"/>
+              <states enumerated_value="17" dict_value="INST"/>
+              <states enumerated_value="18" dict_value="DEMO"/>
+              <states enumerated_value="19" dict_value="EXAMPLE"/>
+              <states enumerated_value="20" dict_value="FREE_COMPONENT"/>
+            </lookup>
+          </field>
+          <field fsw_name="descriptor_type" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Describes what kind of address the descriptor is describing. Each descriptor may use the sub_id1, sub_id2, and sub_id3 differently.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="NONE"/>
+              <states enumerated_value="1" dict_value="STATIC_MAP"/>
+              <states enumerated_value="2" dict_value="SYSTEM_RESOURCE"/>
+              <states enumerated_value="3" dict_value="SYSTEM_SPLIT_RESOURCE"/>
+              <states enumerated_value="4" dict_value="DESCRIPTOR_LIST"/>
+              <states enumerated_value="5" dict_value="PARTITION"/>
+              <states enumerated_value="6" dict_value="HEAP"/>
+              <states enumerated_value="7" dict_value="SHARED_HEAP"/>
+              <states enumerated_value="8" dict_value="PHYSICAL_MEMORY_REGION"/>
+            </lookup>
+          </field>
+          <field fsw_name="mem_type" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Specify the type of MEM_SVC_TYPE the address is description. Can be NOT_APPLICABLE for some descriptor types.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="GENERAL_HEAP"/>
+              <states enumerated_value="1" dict_value="DMA_SAFE_HEAP"/>
+              <states enumerated_value="2" dict_value="SHARED_HEAP"/>
+              <states enumerated_value="3" dict_value="RECOVERABLE_GENERAL_HEAP"/>
+              <states enumerated_value="4" dict_value="RECOVERABLE_SHARED_HEAP"/>
+              <states enumerated_value="5" dict_value="SHARED_DMA_SAFE_HEAP"/>
+              <states enumerated_value="6" dict_value="NOT_APPLICABLE"/>
+            </lookup>
+          </field>
+          <field fsw_name="addr1_type" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Specify what kind of address addr1 represents.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="VIRTUAL_ADDRESS"/>
+              <states enumerated_value="1" dict_value="KERNEL_ADDRESS"/>
+              <states enumerated_value="2" dict_value="PHYSICAL_ADDRESS"/>
+            </lookup>
+          </field>
+          <field fsw_name="addr2_type" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>Specify what kind of address addr2 represents.</sysdesc>
+            <lookup>
+              <states enumerated_value="0" dict_value="VIRTUAL_ADDRESS"/>
+              <states enumerated_value="1" dict_value="KERNEL_ADDRESS"/>
+              <states enumerated_value="2" dict_value="PHYSICAL_ADDRESS"/>
+            </lookup>
+          </field>
+          <field fsw_name="sub_id1" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>static map index when descriptor type = STATIC MAP
+resource index when descriptor type = SYSTEM_RESOURCE
+resource split count/index when descriptor type = SYSTEM_SPLIT_RESOURCE
+resource location when descriptor type = PARTITION
+client_component when descriptor type = SHARED_HEAP</sysdesc>
+          </field>
+          <field fsw_name="sub_id2" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>heap id when descriptor type = HEAP or SHARED_HEAP</sysdesc>
+          </field>
+          <field fsw_name="sub_id3" datatype="UNSIGNED_INT" length="1">
+            <sysdesc>heap instance when descriptor type = HEAP or SHARED_HEAP</sysdesc>
+          </field>
+          <field fsw_name="addr1" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+            <sysdesc>Address 1 (addr1_type specifies type)</sysdesc>
+          </field>
+          <field fsw_name="addr2" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+            <sysdesc>Address 2 (addr2_type specifies type)</sysdesc>
+          </field>
+          <field fsw_name="attributes" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+            <sysdesc>Attribute of the memory region, in some cases this will be set to 0, at which point it is NOT APPLICABLE.</sysdesc>
+          </field>
+          <field fsw_name="length" datatype="UNSIGNED_INT" length="4" format="0x%08x">
+            <sysdesc>Byte length of the memory address.</sysdesc>
+          </field>
+        </dynamic_array>
+      </repeat_block>
+    </fields>
+  </table>
+</data_product>
