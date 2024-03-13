@@ -20,6 +20,31 @@ import subprocess
 
 from command import Command
 
+# todo, allow these to be passed in via commnad line, ENV, and a transpire_dps.config file
+ocs_env = "dev" #default to dev if nothing passed in
+ocs_configs = {
+    "ccgds": {
+        "ocs_endpoint_host": "ocs.ccgds.eurc.jpl.nasa.gov",
+        "ocs_api": "/prod"
+    },
+    "dev": {
+        "ocs_endpoint_host": "ocs.eurc-dev.jpl.nasa.gov",
+        "ocs_api": "/dev"
+    },
+    "gdsit": {
+        "ocs_endpoint_host": "ocs.gdsit.eurc.jpl.nasa.gov",
+        "ocs_api": "/test"
+    },
+    "test": {
+        "ocs_endpoint_host": "ocs.test.eurc.jpl.nasa.gov",
+        "ocs_api": "/test"
+    },
+    "ops": {
+        "ocs_endpoint_host": "ocs.ops.eurc.jpl.nasa.gov",
+        "ocs_api": "/prod"
+    },
+}
+
 class DpOcsPusherException(Exception):
     pass
 
@@ -127,16 +152,8 @@ def parse_chill_csv_line(line):
 
 def build_ocs_client(venue):
     # SETUP OCS
-    config = {
-        "ccgds": {
-            "ocs_endpoint_host": "ocs.ccgds.eurc.jpl.nasa.gov",
-            "ocs_api": "/prod"
-        },
-        "dev": {
-            "ocs_endpoint_host": "ocs.eurc-dev.jpl.nasa.gov",
-            "ocs_api": "/dev"
-        }
-    }
+    global ocs_configs
+    config = ocs_configs
 
     if venue not in config:
         raise DpOcsPusherException("Unknown OCS venue {}".format(venue))
@@ -155,7 +172,8 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
     #todo: add in logic to check if a file exists and if not cast into StringIO
     local_object = StringIO(data)
 
-    client = build_ocs_client("dev")
+    global ocs_env
+    client = build_ocs_client(ocs_env)
     session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
 
     # describe_all_packages to find the package_id
@@ -256,7 +274,8 @@ def build_ocs_metadata_from_emd(emd_file):
 
 def query_ocs(expression, sort="scet:desc", max_results=1):
     print("Querying OCS with search expression: {}".format(expression))
-    client = build_ocs_client("dev")
+    global ocs_env
+    client = build_ocs_client(ocs_env)
 
     session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
 
@@ -299,6 +318,8 @@ def main():
     parser.add_argument('-K', '--session', help='session number to query on')
     parser.add_argument('-t', '--ocs_path', default='/transpire', help='The ocs directory to publish to')
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
+    parser.add_argument('-c', '--ocs_env', default='dev', help='the ocs environment to use(e.g. dev, test, prod, etc')
+    #todo add ocs_endpoint_host as a command line arg as well
     parser.add_argument('-d', '--dat_file', default=None, help='file path to dat file to parse')
     parser.add_argument('-e', '--emd_file', default=None, help='file path to emd file to parse')
     parser.add_argument('-o', '--output', default="ocs", help="Location to write json files OR 'ocs'(default) to push to ocs")
@@ -312,6 +333,16 @@ def main():
     dat_file = args.dat_file
     emd_file = args.emd_file
     output = args.output
+
+    #todo: read these out of cli, env, and a config file, see comment at top near these global variables
+    global ocs_env
+    global ocs_configs
+
+    if args.ocs_env not in ocs_configs:
+        print("Unknown OCS env {}, defaulting to {}".format(args.ocs_env, ocs_env))
+    else:
+        ocs_env = args.ocs_env
+        print("Using ocs env: {}".format(ocs_env))
 
     if not session and (not dat_file or not emd_file):
         print("You must pass in [ session(-K) ] OR a [ dat_file(-d) and emd_file(-e) ]")
