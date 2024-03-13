@@ -18,7 +18,7 @@ import xmltodict
 import sys
 import subprocess
 
-from command import Command
+from fspa_scripts.transpire.command import Command
 
 # todo, allow these to be passed in via commnad line, ENV, and a transpire_dps.config file
 ocs_env = "dev" #default to dev if nothing passed in
