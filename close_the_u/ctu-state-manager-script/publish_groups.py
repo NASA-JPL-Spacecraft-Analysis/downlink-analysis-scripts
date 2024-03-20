@@ -2,7 +2,7 @@ import xmltodict
 import argparse
 import json
 import close_the_u
-ENVIRONMENT = 'local'
+ENVIRONMENT = 'dev'
 
 
 def convert_xml(input_file: str) -> dict:
