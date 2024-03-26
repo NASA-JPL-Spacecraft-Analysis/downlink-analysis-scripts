@@ -53,7 +53,14 @@ Compare Parasol queries and parm.json and generate human-readable output (CSV or
 NOTE: Requires cam-login.
 
 ```shell
-$ python param_compare.py --host eurcits001 --session 578 --scet 2026-109T07:44:10 --vcid 0
+# compare parasol query, parasol query
+$ python param_compare.py parasol --host eurcits001 --session 578 --scet1 2026-109T07:44:10 --scet1 2026-109T07:44:10 --vcid 0
+
+# compare parasol query, param json
+$ python param_compare.py parasol_json --host eurcits001 --session 578 --scet 2026-109T07:44:10 --vcid 0 --json "/json_data/param1.json"
+
+# compare param.json, param.json
+$ python param_compare.py json --json1 "/json_data/param1.json" --json2 "/json_data/param2.json"
 ```
 
 ### transpire
