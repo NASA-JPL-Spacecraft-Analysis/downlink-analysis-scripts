@@ -54,13 +54,13 @@ NOTE: Requires cam-login.
 
 ```shell
 # compare parasol query, parasol query
-$ python param_compare.py parasol --host eurcits001 --session 578 --scet1 2026-109T07:44:10 --scet1 2026-109T07:44:10 --vcid 0
+$ python param_compare.py parasol --host eurcits001 --session 578 --scet1 2026-109T07:44:10 --scet2 2026-109T07:44:10 --vcid 0
 
 # compare parasol query, param json
-$ python param_compare.py parasol_json --host eurcits001 --session 578 --scet 2026-109T07:44:10 --vcid 0 --json "/json_data/param1.json"
+$ python param_compare.py parasol_json --host eurcits001 --session 578 --scet 2026-109T07:44:10 --vcid 0 --json "/parm_json/param1.json"
 
 # compare param.json, param.json
-$ python param_compare.py json --json1 "/json_data/param1.json" --json2 "/json_data/param2.json"
+$ python param_compare.py json --json1 "/parm_json/012_file_description.parm.json" --json2 "/parm_json/017_file_description.parm.json"
 ```
 
 ### transpire

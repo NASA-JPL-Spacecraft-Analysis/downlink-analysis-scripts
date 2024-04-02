@@ -18,7 +18,8 @@ setuptools.setup(
         "bs4==0.0.2",
         "lxml==5.1.0",
         "m20-eas-dplib",
-        "jpl_time"
+        "jpl_time",
+        "XlsxWriter"
     ],
     py_modules=["fspa_scripts"],
     entry_points={
