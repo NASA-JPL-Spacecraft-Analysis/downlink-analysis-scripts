@@ -309,7 +309,8 @@ def compare_parasol(args, response1, response2):
     df2 = pd.DataFrame(rows_list2)
 
     # merge dataframes from each query
-    df = pd.merge(df1, df2, how="outer", on=["module", "group", "copy", "name"])
+    df = pd.merge(df1, df2, how="outer", on=["module", "group", "copy", "name"], suffixes=("_1", "_2"))
+    print(df.head())
     df['match'] = df['value_1'] == df['value_2']
     
     # create worksheet for parasol-parasol comparison script
