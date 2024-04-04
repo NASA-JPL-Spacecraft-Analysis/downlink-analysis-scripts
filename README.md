@@ -48,19 +48,19 @@ $ python publish_fsw_params.py --host eurcits001 --session 578 --collection 'eur
 
 #### param_compare.py
 
-Compare Parasol queries and parm.json and generate human-readable output (CSV or JSON).
+Compare Parasol queries and parm.json and generate human-readable output (XLSX).
 
 NOTE: Requires cam-login.
 
 ```shell
 # compare parasol query, parasol query
-$ python param_compare.py parasol --host eurcits001 --session 578 --scet1 2026-109T07:44:10 --scet2 2026-109T07:44:10 --vcid 0
+$ python param_compare.py parasol --host eurcits001 --session 830 --scet1 2026-082T17:19:46 --scet2 2026-082T17:19:46 --vcid 0
 
 # compare parasol query, param json
-$ python param_compare.py parasol_json --host eurcits001 --session 578 --scet 2026-109T07:44:10 --vcid 0 --json "/parm_json/param1.json"
+$ python param_compare.py parasol_json --host eurcits001 --session 830 --scet 2026-082T17:19:46 --vcid 0 --json "./parm_json/017_success_active_only_260_nvm.parm.json"
 
 # compare param.json, param.json
-$ python param_compare.py json --json1 "/parm_json/012_file_description.parm.json" --json2 "/parm_json/017_file_description.parm.json"
+$ python param_compare.py json --json1 "./parm_json/012_success_active_only_30p_nvm.parm.json" --json2 "./parm_json/017_success_active_only_260_nvm.parm.json"
 ```
 
 ### transpire
