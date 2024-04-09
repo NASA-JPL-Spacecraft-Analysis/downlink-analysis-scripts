@@ -1,15 +1,5 @@
-import xmltodict
-import argparse
-import json
 import close_the_u
 ENVIRONMENT = 'dev'
-
-
-def convert_xml(input_file: str) -> dict:
-    with open(input_file, 'r') as file:
-        xml_data = file.read()
-        data_dict = xmltodict.parse(xml_data)
-        return data_dict
 
 
 def parse_channel(data: dict) -> tuple[list, list]:
@@ -202,17 +192,6 @@ def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None
     return parsed_dict
 
 
-def write_to_output_file(data: dict, output_file: str) -> None:
-    with open(output_file, 'w') as json_file:
-            json.dump(data, json_file)
-
-
-def read_from_json(filename: str) -> dict:
-    with open(filename) as f:
-        data = json.load(f)
-    return data
-
-
 def create_states(collection_id: str, state_records: dict, valueType: str) -> None:
     states = []
     for state in state_records:
@@ -304,31 +283,10 @@ def generate_group_mapping(collection_id, group_dict) -> list:
     
     return groups
 
-
-def main(mode: str, input_file: str, collection_id: str) -> None:
-    # currently script will simply parse channel or param files
-    data = convert_xml(input_file)
-    valueType = ''
-    if mode == 'channel':
-        state_output, group_output = parse_channel(data)
-        valueType = 'channel'
-        groups = map_channel_groups(state_output, group_output)
-    if mode == 'parameter':
-        state_output, group_output = parse_param(data)
-        valueType = 'fsw_parameter'
-        groups = group_output
+def generate_groups(groups: list, states: list, collection_id: str, value_type: str):
     group_dict = {'group': groups}
     # Create the states in SM to generate an ID
-    create_states(collection_id, state_output, valueType)
+    # create_states(collection_id, states, value_type)
     # For each state in a group find its associated ID in SM 
     groups = generate_group_mapping(collection_id, group_dict)
     close_the_u.state_manager.create_groups(collection_id, groups, ENVIRONMENT)
-        
-        
-if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser(description="close-the-u wrapper script")
-    arg_parser.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter'], required=True, help='run mode')
-    arg_parser.add_argument('-i', '--input', dest='input_file', required=True, help='input file')
-    arg_parser.add_argument('-c', '--collectionId', dest='collection_id', required=True, help='collection id to be used')
-    args = arg_parser.parse_args()
-    main(args.mode, args.input_file, args.collection_id)
