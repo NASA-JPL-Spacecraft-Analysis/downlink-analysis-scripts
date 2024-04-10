@@ -13,10 +13,55 @@ import pathlib
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from pathlib import Path
 # import xlsxwriter
 
 GROUP = "no_group"
 COPY = "COPY_0"
+
+###############################################################################
+# PARSER HELPERS
+###############################################################################
+
+def add_subparser(subparsers, name, description):
+    """
+    Add common arguments for all subparsers to the top-level argument
+    parser. Include flags for output path, output verbosity, and which
+    parameters to include in output. Sets the formatter class to 
+    argparse.RawDescriptionHelpFormatter.
+    """
+    
+    parser = subparsers.add_parser(
+        name,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=description)
+    
+    parser.add_argument(
+        "-o", "--output", 
+        type=pathlib.Path, 
+        metavar='PATH', 
+        help="Path to first param.json to generate comparison"
+    )
+
+    parser.add_argument(
+        "--verbose", 
+        action='store_true', 
+        help="Include all data from compared files in output."
+    )
+    
+    parser.add_argument(
+        "--diff-only", 
+        action='store_true', 
+        help="Only output parameters that do not match."
+    )
+    
+    parser.add_argument(
+        "--intersect-only", 
+        action='store_true', 
+        help="Only output parameters that exist in both inputs."
+    )
+
+    return parser
 
 ###############################################################################
 # QUERY HELPERS
@@ -106,7 +151,8 @@ def add_metadata_worksheet(workbook, metadata):
 ###############################################################################
 def create_parasol_parasol_xlsx(args, df):
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter("output/parasol_parasol.xlsx", engine="xlsxwriter")
+    output_path = get_output_path(args)
+    writer = pd.ExcelWriter(output_path.joinpath("parasol_parasol.xlsx"), engine="xlsxwriter")
     
     # Convert the dataframe to an XlsxWriter Excel object.
     df.to_excel(writer, sheet_name="compare")
@@ -161,7 +207,8 @@ def create_parasol_parasol_xlsx(args, df):
 
 def create_parasol_json_xlsx(args, df):
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter("output/parasol_json.xlsx", engine="xlsxwriter")
+    output_path = get_output_path(args)
+    writer = pd.ExcelWriter(output_path.joinpath("parasol_json.xlsx"), engine="xlsxwriter")
     
     # Convert the dataframe to an XlsxWriter Excel object.
     df.to_excel(writer, sheet_name="compare")
@@ -216,7 +263,8 @@ def create_parasol_json_xlsx(args, df):
 
 def create_json_json_xlsx(args, df):
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter("output/json_json.xlsx", engine="xlsxwriter")
+    output_path = get_output_path(args)
+    writer = pd.ExcelWriter(output_path.joinpath("json_json.xlsx"), engine="xlsxwriter")
     
     # Convert the dataframe to an XlsxWriter Excel object.
     df.to_excel(writer, sheet_name="compare")
@@ -349,15 +397,10 @@ def compare_parasol_json(args, parasol_response, json_data):
 def compare_json(args, json1, json2):
     print("Comparing json1 with json2 path inputs.")
     df1 = pd.json_normalize(json1['parameter_file']['parameter_list'])
-    print(df1.info())
-
     df2 = pd.json_normalize(json2['parameter_file']['parameter_list'])
-    print(df2.info())
-
     # merge dataframes from each query
     df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
-    
     # create worksheet for parasol-parasol comparison script
     create_json_json_xlsx(args, df)
 
@@ -372,21 +415,25 @@ def setup():
     except:
         pass
 
+
+def get_output_path(args):
+    output_basepath = Path(args.output) if args.output else Path.cwd().joinpath('output')
+    output_basepath.mkdir(exist_ok=True)
+    return output_basepath
+
 def main():
     setup()
 
     # CREATE PARSER
     parser = argparse.ArgumentParser(description="CLI for comparing parameter JSON and parasol queries.")
-    parser.add_argument("-o", "--output", default="XLSX", help="format to write output response (XLSX or JSON)")
-
     subparsers = parser.add_subparsers(title='command', dest='command')
 
     # PARASOL-PARASOL PARSER
-    parasol_only_parser = subparsers.add_parser(
+    parasol_only_parser = add_subparser(
+        subparsers,
         "parasol",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Compare two parasol queries by time1 and time2.")
-    
+        description="Compare two parasol queries between scet1 and scet2."
+    )
     parasol_only_parser.add_argument("--host", required=True, help="Session host on parasol (ex: eurcits001)")
     parasol_only_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
     parasol_only_parser.add_argument("--scet1", required=True, help="A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)")
@@ -395,11 +442,11 @@ def main():
     parasol_only_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values and publishing (ex: dev)")
     
     # PARASOL-JSON PARSER
-    parasol_json_parser = subparsers.add_parser(
+    parasol_json_parser = add_subparser(
+        subparsers,
         "parasol_json",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Compare two parasol queries by scet1 and scet2.")
-    
+        description="Compare two parasol queries by scet1 and scet2."
+    )
     parasol_json_parser.add_argument("--host", required=True, help="Session host on parasol (ex: eurcits001)")
     parasol_json_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
     parasol_json_parser.add_argument("--scet", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
@@ -408,14 +455,15 @@ def main():
     parasol_json_parser.add_argument("--json", required=True, type=pathlib.Path, metavar='PATH', help="param.json to use for comparison")
 
     # JSON-JSON PARSER
-    json_only_parser = subparsers.add_parser(
-        "json",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Compare two param.json files.")
-    
+    json_only_parser = add_subparser(
+        subparsers, 
+        "json", 
+        description="Compare two param.json files."
+    )
     json_only_parser.add_argument("--json1", required=True, type=pathlib.Path, metavar='PATH', help="Path to first param.json to generate comparison")
     json_only_parser.add_argument("--json2", required=True, type=pathlib.Path, metavar='PATH', help="Path to second param.json to generate comparison")
 
+    # parse arguments
     args = parser.parse_args()
 
     # COMPARE TWO PARASOL QUERIES
