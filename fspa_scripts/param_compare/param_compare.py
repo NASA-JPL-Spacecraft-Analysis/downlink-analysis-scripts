@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """
-FSW comparison script. Compare Parasol queries and parm.json and generate human-readable output.
+FSW comparison script. Compare Parasol queries and param.json and generate a 
+human-readable XLSX output.
 """
 
 import argparse
@@ -40,7 +41,7 @@ def add_subparser(subparsers, name, description):
         "-o", "--output", 
         type=pathlib.Path, 
         metavar='PATH', 
-        help="Path to first param.json to generate comparison"
+        help="Path to desired output location."
     )
 
     parser.add_argument(
@@ -51,14 +52,23 @@ def add_subparser(subparsers, name, description):
     
     parser.add_argument(
         "--diff-only", 
+        dest="diff_only",
         action='store_true', 
         help="Only output parameters that do not match."
     )
     
     parser.add_argument(
         "--intersect-only", 
+        dest="intersect_only",
         action='store_true', 
         help="Only output parameters that exist in both inputs."
+    )
+
+    parser.add_argument(
+        "--to-json", 
+        dest="to_json",
+        action='store_true', 
+        help="Output comparison as JSON."
     )
 
     return parser
@@ -244,8 +254,8 @@ def compare_parasol(args, response1, response2):
     df2 = pd.DataFrame(rows_list2)
 
     # merge dataframes from each query
-    df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
-    print(df.head())
+    merge_method = "inner" if args.intersect_only else "outer"
+    df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
     
     # create worksheet for parasol-parasol comparison script
@@ -259,7 +269,7 @@ def compare_parasol(args, response1, response2):
         "env:": args.env,
         "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
-    create_xlsx(args, df, "parasol_json", metadata)
+    create_xlsx(args, df, "parasol_parasol", metadata)
     
 def compare_parasol_json(args, parasol_response, json_data):
     # create excel output.
@@ -287,7 +297,8 @@ def compare_parasol_json(args, parasol_response, json_data):
         df2 = df2[['name','value']]
 
     # merge dataframes from each query
-    df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
+    merge_method = "inner" if args.intersect_only else "outer"
+    df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
     
     # create worksheet for parasol-parasol comparison script
@@ -312,7 +323,8 @@ def compare_json(args, json1, json2):
         df2 = df2[['name','value']]
 
     # merge dataframes from each query
-    df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
+    merge_method = "inner" if args.intersect_only else "outer"
+    df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
     
     # create worksheet for parasol-parasol comparison script
@@ -334,8 +346,8 @@ def setup():
     except:
         pass
 
-
 def get_output_path(args):
+    """Get or build output path provided by user."""
     output_basepath = Path(args.output) if args.output else Path.cwd().joinpath('output')
     output_basepath.mkdir(exist_ok=True)
     return output_basepath

@@ -63,6 +63,14 @@ $ python param_compare.py parasol_json --host eurcits001 --session 830 --scet 20
 $ python param_compare.py json --json1 "./parm_json/012_success_active_only_30p_nvm.parm.json" --json2 "./parm_json/017_success_active_only_260_nvm.parm.json"
 ```
 
+Additional flags:
+
+- `--output` Path to desired output location.
+- `--verbose` Includes all data from compared files in output.
+- `--intersect-only` Only output parameters that exist in both inputs.
+- `--diff-only` Only output parameters that do not match..
+- `--use-volatile` Only output parameters that do not match.
+
 ### transpire
 
 #### transpire_process_dps.py
