@@ -257,6 +257,9 @@ def compare_parasol(args, response1, response2):
     merge_method = "inner" if args.intersect_only else "outer"
     df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
+
+    if args.diff_only:
+        df = df[df['match'] == False]
     
     # create worksheet for parasol-parasol comparison script
     # create excel output
@@ -300,6 +303,9 @@ def compare_parasol_json(args, parasol_response, json_data):
     merge_method = "inner" if args.intersect_only else "outer"
     df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
+
+    if args.diff_only:
+        df = df[df['match'] == False]
     
     # create worksheet for parasol-parasol comparison script
     metadata = {
@@ -326,6 +332,9 @@ def compare_json(args, json1, json2):
     merge_method = "inner" if args.intersect_only else "outer"
     df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
+
+    if args.diff_only:
+        df = df[df['match'] == False]
     
     # create worksheet for parasol-parasol comparison script
     metadata = {
