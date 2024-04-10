@@ -215,9 +215,9 @@ def create_xlsx(args, df, filename, metadata):
 ###############################################################################
 def compare_parasol(args, response1, response2):
     # create excel output.
+    print("Processing parameters for query 1...")
     rows_list1 = []
     for module_name, module in response1.items():
-        print("Comparing parameters for query 1, module {}".format(module_name))
         for parameter_name, parameter in module[GROUP][COPY].items():
             row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
             
@@ -229,14 +229,14 @@ def compare_parasol(args, response1, response2):
                 row['evidence_status'] = parameter['non-volatile']['evidence_status']
 
             rows_list1.append(row)
-        print('Processed parasol response 1.')
+    print('Processed parasol response 1.')
 
     # create dataframe based on rows
     df1 = pd.DataFrame(rows_list1)
     
+    print("Processing parameters for query 2...")
     rows_list2 = []
     for module_name, module in response2.items():
-        print("Comparing parameters for query 2, module {}".format(module_name))
         for parameter_name, parameter in module[GROUP][COPY].items():
             row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
             
@@ -248,7 +248,7 @@ def compare_parasol(args, response1, response2):
                 row['evidence_status'] = parameter['non-volatile']['evidence_status']
             
             rows_list2.append(row)
-        print('Processed parasol response 2.')
+    print('Processed parasol response 2.')
 
     # create dataframe based on rows
     df2 = pd.DataFrame(rows_list2)
@@ -263,6 +263,8 @@ def compare_parasol(args, response1, response2):
     
     # create worksheet for parasol-parasol comparison script
     # create excel output
+    OUTPUT_TIME = datetime.now()
+    OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_parasol_parasol'
     metadata = {
         "Host:": args.host,
         "Session:": f"{args.session}",
@@ -270,10 +272,9 @@ def compare_parasol(args, response1, response2):
         "SCET 2:": args.scet2,
         "VCID:": f"{args.vcid}",
         "env:": args.env,
-        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+        "Workbook created:": OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
-
-    OUTPUT_FILENAME = 'parasol_parasol'
+    
     if args.to_json:
         output_path = get_output_path(args)
         data = json.loads(df.to_json(orient='records'))
@@ -284,9 +285,9 @@ def compare_parasol(args, response1, response2):
     
 def compare_parasol_json(args, parasol_response, json_data):
     # create excel output.
+    print("Processing parameters for parasol query...")
     rows_list1 = []
     for module_name, module in parasol_response.items():
-        print("Comparing parameters for query 1, module {}".format(module_name))
         for parameter_name, parameter in module[GROUP][COPY].items():
             row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
             
@@ -298,11 +299,11 @@ def compare_parasol_json(args, parasol_response, json_data):
                 row['evidence_status'] = parameter['non-volatile']['evidence_status']
             
             rows_list1.append(row)
-        print('Processed parasol response 1.')
-
-    # create dataframe based on rows
+    
     df1 = pd.DataFrame(rows_list1)
+    print('Processed parasol query.\nProcessing json input...')
     df2 = pd.json_normalize(json_data['parameter_file']['parameter_list'])
+    print("Processed json input.")
 
     if not args.verbose:
         df2 = df2[['name','value']]
@@ -316,6 +317,8 @@ def compare_parasol_json(args, parasol_response, json_data):
         df = df[df['match'] == False]
     
     # create worksheet for parasol-parasol comparison script
+    OUTPUT_TIME = datetime.now()
+    OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_parasol_json'
     metadata = {
         "Host:": args.host,
         "Session:": f"{args.session}",
@@ -323,10 +326,9 @@ def compare_parasol_json(args, parasol_response, json_data):
         "JSON PATH:": str(args.json),
         "VCID:": f"{args.vcid}",
         "env:": args.env,
-        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+        "Workbook created:": OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
 
-    OUTPUT_FILENAME = 'parasol_json'
     if args.to_json:
         output_path = get_output_path(args)
         data = json.loads(df.to_json(orient='records'))
@@ -336,9 +338,11 @@ def compare_parasol_json(args, parasol_response, json_data):
         create_xlsx(args, df, OUTPUT_FILENAME, metadata)
 
 def compare_json(args, json1, json2):
-    print("Comparing json1 with json2 path inputs.")
+    print("Processing json1 input...")
     df1 = pd.json_normalize(json1['parameter_file']['parameter_list'])
+    print("Processed json1 input.\nProcessing json2 inputs...")
     df2 = pd.json_normalize(json2['parameter_file']['parameter_list'])
+    print("Processed json2 input.")
     
     if not args.verbose:
         df1 = df1[['name','value']]
@@ -353,13 +357,13 @@ def compare_json(args, json1, json2):
         df = df[df['match'] == False]
     
     # create worksheet for parasol-parasol comparison script
+    OUTPUT_TIME = datetime.now()
+    OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_json_json'
     metadata = {
         "JSON 1 PATH:": str(args.json1),
         "JSON 2 PATH:": str(args.json2),
-        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+        "Workbook created:": OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
-
-    OUTPUT_FILENAME = 'json_json'
     if args.to_json:
         output_path = get_output_path(args)
         data = json.loads(df.to_json(orient='records'))
