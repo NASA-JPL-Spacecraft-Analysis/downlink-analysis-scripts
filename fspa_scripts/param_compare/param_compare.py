@@ -149,10 +149,10 @@ def add_metadata_worksheet(workbook, metadata):
 ###############################################################################
 # XLSX WRITERS
 ###############################################################################
-def create_parasol_parasol_xlsx(args, df):
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
+def create_xlsx(args, df, filename, metadata):
+     # Create a Pandas Excel writer using XlsxWriter as the engine.
     output_path = get_output_path(args)
-    writer = pd.ExcelWriter(output_path.joinpath("parasol_parasol.xlsx"), engine="xlsxwriter")
+    writer = pd.ExcelWriter(output_path.joinpath(f"{filename}.xlsx"), engine="xlsxwriter")
     
     # Convert the dataframe to an XlsxWriter Excel object.
     df.to_excel(writer, sheet_name="compare")
@@ -163,14 +163,19 @@ def create_parasol_parasol_xlsx(args, df):
     
     # make cell formats to use in conditional formatting, metadata
     green_format = workbook.add_format({'bg_color':   '#C6EFCE','font_color': '#006100'})
-    yellow_format = workbook.add_format({'bg_color':   '#FFEB9C', 'font_color': '#9C6500'})
+    # yellow_format = workbook.add_format({'bg_color':   '#FFEB9C', 'font_color': '#9C6500'})
     red_format = workbook.add_format({'bg_color':   '#FFC7CE','font_color': '#9C0006'})
     
     # set better column widths for compare
-    compare_worksheet.set_column("E:E", 45) # 'name'
-    compare_worksheet.set_column("F:F", 20) # 'non_volatile_value'
-    compare_worksheet.set_column("I:I", 20) # 'non_volatile_value_2'
-    compare_worksheet.set_column("L:L", 20) # 'match'
+    name_col = 1 + df.columns.get_loc("name")
+    value_1_col = 1 + df.columns.get_loc("value_1")
+    value_2_col = 1 + df.columns.get_loc("value_2")
+    match_col = 1 + df.columns.get_loc("match")
+    
+    compare_worksheet.set_column(name_col, name_col, 45) # 'name'
+    compare_worksheet.set_column(value_1_col, value_1_col, 20) # 'value_1'
+    compare_worksheet.set_column(value_2_col, value_2_col, 20) # 'value_2'
+    compare_worksheet.set_column(match_col, match_col, 20) # 'match'
 
     # Get the dimensions of the dataframe.
     (max_row, max_col) = df.shape
@@ -182,6 +187,7 @@ def create_parasol_parasol_xlsx(args, df):
         "value": "TRUE",
         "format": green_format
     })
+
     compare_worksheet.conditional_format(1, max_col, max_row, max_col, {
         "type": "cell",
         "criteria": "==",
@@ -189,129 +195,10 @@ def create_parasol_parasol_xlsx(args, df):
         "format": red_format
     })
 
-    # Add metadata from queries
-    metadata = {
-        "Host:": args.host,
-        "Session:": f"{args.session}",
-        "SCET 1:": args.scet1,
-        "SCET 2:": args.scet2,
-        "VCID:": f"{args.vcid}",
-        "env:": args.env,
-        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
-    }
     add_metadata_worksheet(workbook, metadata)
 
     # Close the Pandas Excel writer and output the Excel file.
     writer.close()
-
-
-def create_parasol_json_xlsx(args, df):
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
-    output_path = get_output_path(args)
-    writer = pd.ExcelWriter(output_path.joinpath("parasol_json.xlsx"), engine="xlsxwriter")
-    
-    # Convert the dataframe to an XlsxWriter Excel object.
-    df.to_excel(writer, sheet_name="compare")
-    
-    # Get the xlsxwriter workbook and worksheet objects.
-    workbook = writer.book
-    compare_worksheet = writer.sheets["compare"]
-    
-    # make cell formats to use in conditional formatting, metadata
-    green_format = workbook.add_format({'bg_color':   '#C6EFCE','font_color': '#006100'})
-    yellow_format = workbook.add_format({'bg_color':   '#FFEB9C', 'font_color': '#9C6500'})
-    red_format = workbook.add_format({'bg_color':   '#FFC7CE','font_color': '#9C0006'})
-    
-    # set better column widths for compare
-    compare_worksheet.set_column("E:E", 45) # 'name'
-    compare_worksheet.set_column("F:F", 20) # 'non_volatile_value'
-    compare_worksheet.set_column("N:N", 20) # 'value'
-    compare_worksheet.set_column("Q:Q", 20) # 'match'
-
-    # Get the dimensions of the dataframe.
-    (max_row, max_col) = df.shape
-
-    # Apply a conditional format to the required cell range.
-    compare_worksheet.conditional_format(1, max_col, max_row, max_col, {
-        "type": "cell",
-        "criteria": "==",
-        "value": "TRUE",
-        "format": green_format
-    })
-    compare_worksheet.conditional_format(1, max_col, max_row, max_col, {
-        "type": "cell",
-        "criteria": "==",
-        "value": "FALSE",
-        "format": red_format
-    })
-
-    # Add metadata from queries
-    metadata = {
-        "Host:": args.host,
-        "Session:": f"{args.session}",
-        "SCET:": args.scet,
-        "JSON PATH:": str(args.json),
-        "VCID:": f"{args.vcid}",
-        "env:": args.env,
-        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
-    }
-    add_metadata_worksheet(workbook, metadata)
-
-    # Close the Pandas Excel writer and output the Excel file.
-    writer.close()
-
-
-def create_json_json_xlsx(args, df):
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
-    output_path = get_output_path(args)
-    writer = pd.ExcelWriter(output_path.joinpath("json_json.xlsx"), engine="xlsxwriter")
-    
-    # Convert the dataframe to an XlsxWriter Excel object.
-    df.to_excel(writer, sheet_name="compare")
-    
-    # Get the xlsxwriter workbook and worksheet objects.
-    workbook = writer.book
-    compare_worksheet = writer.sheets["compare"]
-    
-    # make cell formats to use in conditional formatting, metadata
-    green_format = workbook.add_format({'bg_color':   '#C6EFCE','font_color': '#006100'})
-    yellow_format = workbook.add_format({'bg_color':   '#FFEB9C', 'font_color': '#9C6500'})
-    red_format = workbook.add_format({'bg_color':   '#FFC7CE','font_color': '#9C0006'})
-    
-    # set better column widths for compare
-    compare_worksheet.set_column("C:C", 45) # 'name'
-    compare_worksheet.set_column("H:H", 20) # 'value_1'
-    compare_worksheet.set_column("P:P", 20) # 'value_2'
-    compare_worksheet.set_column("S:S", 20) # 'match'
-
-    # Get the dimensions of the dataframe.
-    (max_row, max_col) = df.shape
-
-    # Apply a conditional format to the required cell range.
-    compare_worksheet.conditional_format(1, max_col, max_row, max_col, {
-        "type": "cell",
-        "criteria": "==",
-        "value": "TRUE",
-        "format": green_format
-    })
-    compare_worksheet.conditional_format(1, max_col, max_row, max_col, {
-        "type": "cell",
-        "criteria": "==",
-        "value": "FALSE",
-        "format": red_format
-    })
-
-    # Add metadata from queries
-    metadata = {
-        "JSON 1 PATH:": str(args.json1),
-        "JSON 2 PATH:": str(args.json2),
-        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
-    }
-    add_metadata_worksheet(workbook, metadata)
-
-    # Close the Pandas Excel writer and output the Excel file.
-    writer.close()
-
 
 ###############################################################################
 # COMPARE FUNCTIONS
@@ -322,15 +209,15 @@ def compare_parasol(args, response1, response2):
     for module_name, module in response1.items():
         print("Comparing parameters for query 1, module {}".format(module_name))
         for parameter_name, parameter in module[GROUP][COPY].items():
-            row = {
-                "module": module_name,
-                "group": GROUP,
-                "copy": COPY,
-                "name": parameter_name,
-                "value": parameter['non-volatile']['value'],
-                "evidence": parameter['non-volatile']['evidence'],
-                "evidence_status": parameter['non-volatile']['evidence_status'],
-            }
+            row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
+            
+            if args.verbose:
+                row['module'] = module_name
+                row['group'] = GROUP
+                row['copy'] = COPY
+                row['evidence'] = parameter['non-volatile']['evidence']
+                row['evidence_status'] = parameter['non-volatile']['evidence_status']
+
             rows_list1.append(row)
         print('Processed parasol response 1.')
 
@@ -341,15 +228,15 @@ def compare_parasol(args, response1, response2):
     for module_name, module in response2.items():
         print("Comparing parameters for query 2, module {}".format(module_name))
         for parameter_name, parameter in module[GROUP][COPY].items():
-            row = {
-                "module": module_name,
-                "group": GROUP,
-                "copy": COPY,
-                "name": parameter_name,
-                "value": parameter['non-volatile']['value'],
-                "evidence": parameter['non-volatile']['evidence'],
-                "evidence_status": parameter['non-volatile']['evidence_status'],
-            }
+            row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
+            
+            if args.verbose:
+                row['module'] = module_name
+                row['group'] = GROUP
+                row['copy'] = COPY
+                row['evidence'] = parameter['non-volatile']['evidence']
+                row['evidence_status'] = parameter['non-volatile']['evidence_status']
+            
             rows_list2.append(row)
         print('Processed parasol response 2.')
 
@@ -357,12 +244,22 @@ def compare_parasol(args, response1, response2):
     df2 = pd.DataFrame(rows_list2)
 
     # merge dataframes from each query
-    df = pd.merge(df1, df2, how="outer", on=["module", "group", "copy", "name"], suffixes=("_1", "_2"))
+    df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
     print(df.head())
     df['match'] = df['value_1'] == df['value_2']
     
     # create worksheet for parasol-parasol comparison script
-    create_parasol_parasol_xlsx(args, df)
+    # create excel output
+    metadata = {
+        "Host:": args.host,
+        "Session:": f"{args.session}",
+        "SCET 1:": args.scet1,
+        "SCET 2:": args.scet2,
+        "VCID:": f"{args.vcid}",
+        "env:": args.env,
+        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+    }
+    create_xlsx(args, df, "parasol_json", metadata)
     
 def compare_parasol_json(args, parasol_response, json_data):
     # create excel output.
@@ -370,39 +267,61 @@ def compare_parasol_json(args, parasol_response, json_data):
     for module_name, module in parasol_response.items():
         print("Comparing parameters for query 1, module {}".format(module_name))
         for parameter_name, parameter in module[GROUP][COPY].items():
-            row = {
-                "module": module_name,
-                "group": GROUP,
-                "copy": COPY,
-                "name": parameter_name,
-                "value": parameter['non-volatile']['value'],
-                "evidence": parameter['non-volatile']['evidence'],
-                "evidence_status": parameter['non-volatile']['evidence_status'],
-            }
+            row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
+            
+            if (args.verbose):
+                row['module'] = module_name
+                row['group'] = GROUP
+                row['copy'] = COPY
+                row['evidence'] = parameter['non-volatile']['evidence']
+                row['evidence_status'] = parameter['non-volatile']['evidence_status']
+            
             rows_list1.append(row)
         print('Processed parasol response 1.')
 
     # create dataframe based on rows
     df1 = pd.DataFrame(rows_list1)
-
     df2 = pd.json_normalize(json_data['parameter_file']['parameter_list'])
 
+    if not args.verbose:
+        df2 = df2[['name','value']]
+
     # merge dataframes from each query
-    df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_parasol", "_json"))
-    df['match'] = df['value_parasol'] == df['value_json']
+    df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
+    df['match'] = df['value_1'] == df['value_2']
     
     # create worksheet for parasol-parasol comparison script
-    create_parasol_json_xlsx(args, df)
+    metadata = {
+        "Host:": args.host,
+        "Session:": f"{args.session}",
+        "SCET:": args.scet,
+        "JSON PATH:": str(args.json),
+        "VCID:": f"{args.vcid}",
+        "env:": args.env,
+        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+    }
+    create_xlsx(args, df, "parasol_json", metadata)
 
 def compare_json(args, json1, json2):
     print("Comparing json1 with json2 path inputs.")
     df1 = pd.json_normalize(json1['parameter_file']['parameter_list'])
     df2 = pd.json_normalize(json2['parameter_file']['parameter_list'])
+    
+    if not args.verbose:
+        df1 = df1[['name','value']]
+        df2 = df2[['name','value']]
+
     # merge dataframes from each query
     df = pd.merge(df1, df2, how="outer", on=["name"], suffixes=("_1", "_2"))
     df['match'] = df['value_1'] == df['value_2']
+    
     # create worksheet for parasol-parasol comparison script
-    create_json_json_xlsx(args, df)
+    metadata = {
+        "JSON 1 PATH:": str(args.json1),
+        "JSON 2 PATH:": str(args.json2),
+        "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+    }
+    create_xlsx(args, df, "json_json", metadata)
 
 ###############################################################################
 # RUN MAIN, ARG PARSER
