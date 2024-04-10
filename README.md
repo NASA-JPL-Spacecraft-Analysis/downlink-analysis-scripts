@@ -68,7 +68,8 @@ Additional flags:
 - `--output` Path to desired output location.
 - `--verbose` Includes all data from compared files in output.
 - `--intersect-only` Only output parameters that exist in both inputs.
-- `--diff-only` Only output parameters that do not match..
+- `--diff-only` Only output parameters that do not match.
+- `--to-json` Output results in JSON at desired output path.
 
 ### transpire
 
