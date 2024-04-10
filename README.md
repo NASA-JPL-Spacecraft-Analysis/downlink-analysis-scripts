@@ -69,7 +69,6 @@ Additional flags:
 - `--verbose` Includes all data from compared files in output.
 - `--intersect-only` Only output parameters that exist in both inputs.
 - `--diff-only` Only output parameters that do not match..
-- `--use-volatile` Only output parameters that do not match.
 
 ### transpire
 

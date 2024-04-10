@@ -160,7 +160,7 @@ def add_metadata_worksheet(workbook, metadata):
 # XLSX WRITERS
 ###############################################################################
 def create_xlsx(args, df, filename, metadata):
-     # Create a Pandas Excel writer using XlsxWriter as the engine.
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
     output_path = get_output_path(args)
     writer = pd.ExcelWriter(output_path.joinpath(f"{filename}.xlsx"), engine="xlsxwriter")
     
@@ -272,7 +272,15 @@ def compare_parasol(args, response1, response2):
         "env:": args.env,
         "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
-    create_xlsx(args, df, "parasol_parasol", metadata)
+
+    OUTPUT_FILENAME = 'parasol_parasol'
+    if args.to_json:
+        output_path = get_output_path(args)
+        data = json.loads(df.to_json(orient='records'))
+        with open(output_path.joinpath(f"{OUTPUT_FILENAME}.json"), 'w') as json_file:
+            json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
+    else:
+        create_xlsx(args, df, OUTPUT_FILENAME, metadata)
     
 def compare_parasol_json(args, parasol_response, json_data):
     # create excel output.
@@ -317,7 +325,15 @@ def compare_parasol_json(args, parasol_response, json_data):
         "env:": args.env,
         "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
-    create_xlsx(args, df, "parasol_json", metadata)
+
+    OUTPUT_FILENAME = 'parasol_json'
+    if args.to_json:
+        output_path = get_output_path(args)
+        data = json.loads(df.to_json(orient='records'))
+        with open(output_path.joinpath(f"{OUTPUT_FILENAME}.json"), 'w') as json_file:
+            json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
+    else:
+        create_xlsx(args, df, OUTPUT_FILENAME, metadata)
 
 def compare_json(args, json1, json2):
     print("Comparing json1 with json2 path inputs.")
@@ -342,7 +358,16 @@ def compare_json(args, json1, json2):
         "JSON 2 PATH:": str(args.json2),
         "Workbook created:": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
     }
-    create_xlsx(args, df, "json_json", metadata)
+
+    OUTPUT_FILENAME = 'json_json'
+    if args.to_json:
+        output_path = get_output_path(args)
+        data = json.loads(df.to_json(orient='records'))
+        with open(output_path.joinpath(f"{OUTPUT_FILENAME}.json"), 'w') as json_file:
+            json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
+    else:
+        create_xlsx(args, df, OUTPUT_FILENAME, metadata)
+    
 
 ###############################################################################
 # RUN MAIN, ARG PARSER
