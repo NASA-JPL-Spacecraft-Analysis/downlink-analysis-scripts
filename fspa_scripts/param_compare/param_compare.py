@@ -1,29 +1,26 @@
 #!/usr/bin/env python
 
 """
-FSW comparison script. Compare Parasol queries and param.json and generate a 
-human-readable XLSX output.
+FSW parameter comparison script. Compare Parasol queries and/or param.json and 
+generate a human-readable output in XLSX or JSON.
 """
 
+# GENERAL IMPORTS
 import argparse
 import json
 import os
-import parasol
 import sys
 import pathlib
 import pandas as pd
-import numpy as np
 from datetime import datetime
 from pathlib import Path
-# import xlsxwriter
 
-GROUP = "no_group"
-COPY = "COPY_0"
+from utils.parasol import get_parameter_values
+from utils.compare import create_df_from_parasol, create_df_from_param_json, compare_parameters
 
 ###############################################################################
 # PARSER HELPERS
 ###############################################################################
-
 def add_subparser(subparsers, name, description):
     """
     Add common arguments for all subparsers to the top-level argument
@@ -74,76 +71,10 @@ def add_subparser(subparsers, name, description):
     return parser
 
 ###############################################################################
-# QUERY HELPERS
-###############################################################################
-def _get_env_venue(env):
-    """Get venue to query parasol by environment."""
-    if env == "dev":
-        return {
-            "parasol_host": "parasol.eurc-dev.jpl.nasa.gov",
-            "cookie_name": "ecDevRhel8Sso",
-        }
-
-
-def get_parameter_values(host, session, scet, vcid, env):
-    """Get and return parasol query based on provided CLI arguments."""
-
-    # create filename for response
-    filename = "./parasol_responses/{}_{}_{}_{}.json".format(
-        host, session, scet, vcid
-    )
-
-    if os.path.exists(filename):
-        print("Using saved response for Parasol for parameter values...")
-        with open(filename) as parasol_parameter_values:
-            return json.load(parasol_parameter_values)
-
-    else:
-        print("Making request to Parasol for parameter values...")
-        venue = _get_env_venue(env)
-        try:
-            response = parasol.get_parameter_values(
-                phase="cruise",
-                auth_type="cam",
-                parasol_host=venue["parasol_host"],
-                cookie_name=venue["cookie_name"],
-                time_str=scet,
-                time_type="scet",
-                session_host=host,
-                session_id=session,
-                vcid=vcid,
-            )
-        except parasol.exceptions.ParasolAuthException as exc:
-            print("Oh no! You forgot to login!")
-            raise exc
-        except parasol.exceptions.ParasolBaseException as exc:
-            print("Something else happened!")
-            raise exc
-
-        print("Received response from Parasol.")
-
-        with open(filename, "w") as json_file:
-            json.dump(
-                response, json_file, indent=4, sort_keys=False, separators=(",", ": ")
-            )
-
-        return response
-
-
-###############################################################################
 # XLSX HELPERS
-###############################################################################
-    
-def add_workbook_formats(workbook):
-    """make cell formats to use in conditional formatting, metadata"""
-    green_format = workbook.add_format({'bg_color':   '#C6EFCE','font_color': '#006100'})
-    yellow_format = workbook.add_format({'bg_color':   '#FFEB9C', 'font_color': '#9C6500'})
-    red_format = workbook.add_format({'bg_color':   '#FFC7CE','font_color': '#9C0006'})
-    bold_format = workbook.add_format({'bold': True})
-    return green_format, yellow_format, red_format, bold_format
-    
-
+###############################################################################   
 def add_metadata_worksheet(workbook, metadata):
+    """Add dictionary as table to a worksheet called 'metadata'."""
     # Add metadata worksheet to a workbook
     metadata_worksheet = workbook.add_worksheet("metadata")
     bold_format = workbook.add_format({'bold': True})
@@ -155,12 +86,10 @@ def add_metadata_worksheet(workbook, metadata):
         i += 1
     return workbook
 
-
-def create_xlsx(args, df, filename, metadata = dict()):
+def create_xlsx(df, filename, metadata = dict()):
     """Create XLSX file from pandas dataframe."""
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    output_path = get_output_path(args)
-    writer = pd.ExcelWriter(output_path.joinpath(f"{filename}.xlsx"), engine="xlsxwriter")
+    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
     
     # Sort rows with matches first; then alphabetical by parameter name
     df.sort_values(by=['match', 'name'], ascending=[False, True], inplace=True)
@@ -211,68 +140,27 @@ def create_xlsx(args, df, filename, metadata = dict()):
     # Close the Pandas Excel writer and output the Excel file.
     writer.close()
 
-
-def create_json(args, df, filename, metadata = dict()):
+def create_json(df, filename, metadata = dict()):
     """Create JSON file from pandas dataframe."""
-    output_path = get_output_path(args)
     data = json.loads(df.to_json(orient='records'))
-    with open(output_path.joinpath(f"{filename}.json"), 'w') as json_file:
+    with open(filename, 'w') as json_file:
         json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
 
 ###############################################################################
 # COMPARE FUNCTIONS
 ###############################################################################
+
 def compare_parasol(args, response1, response2):
-    # create excel output.
-    rows_list1 = []
-    for module_name, module in response1.items():
-        for parameter_name, parameter in module[GROUP][COPY].items():
-            row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
-            
-            if args.verbose:
-                row['module'] = module_name
-                row['group'] = GROUP
-                row['copy'] = COPY
-                row['evidence'] = parameter['non-volatile']['evidence']
-                row['evidence_status'] = parameter['non-volatile']['evidence_status']
-
-            rows_list1.append(row)
-
-    # create dataframe based on rows
-    df1 = pd.DataFrame(rows_list1)
+    """Compare parasol query to parasol query and generate output."""
+    df1 = create_df_from_parasol(response1)
+    df2 = create_df_from_parasol(response2)
+    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
     
-    rows_list2 = []
-    for module_name, module in response2.items():
-        for parameter_name, parameter in module[GROUP][COPY].items():
-            row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
-            
-            if args.verbose:
-                row['module'] = module_name
-                row['group'] = GROUP
-                row['copy'] = COPY
-                row['evidence'] = parameter['non-volatile']['evidence']
-                row['evidence_status'] = parameter['non-volatile']['evidence_status']
-            
-            rows_list2.append(row)
-
-    # create dataframe based on rows
-    df2 = pd.DataFrame(rows_list2)
-
-    # merge dataframes from each query
-    merge_method = "inner" if args.intersect_only else "outer"
-    df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
-    df['match'] = df['value_1'] == df['value_2']
-
-    if args.diff_only:
-        df = df[df['match'] == False]
-
     # print statistics from comparison
     total, match_count, non_match_count = return_stats(df)
-    
-    # create worksheet for parasol-parasol comparison script
-    # create excel output
     OUTPUT_TIME = datetime.now()
     OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_parasol_parasol'
+    OUTPUT_FILEPATH = get_output_path(args.output).joinpath(OUTPUT_FILENAME)
     metadata = {
         "Host:": args.host,
         "Session:": f"{args.session}",
@@ -287,47 +175,21 @@ def compare_parasol(args, response1, response2):
     }
     
     if args.to_json:
-        create_json(args, df, OUTPUT_FILENAME, metadata = dict())
+        create_json(df, f"{OUTPUT_FILEPATH}.json", metadata = dict())
     else:
-        create_xlsx(args, df, OUTPUT_FILENAME, metadata)
+        create_xlsx(df, f"{OUTPUT_FILEPATH}.xlsx", metadata)
     
 def compare_parasol_json(args, parasol_response, json_data):
-    # create excel output.
-    rows_list1 = []
-    for module_name, module in parasol_response.items():
-        for parameter_name, parameter in module[GROUP][COPY].items():
-            row = { "name": parameter_name, "value": parameter['non-volatile']['value'] }
-            
-            if (args.verbose):
-                row['module'] = module_name
-                row['group'] = GROUP
-                row['copy'] = COPY
-                row['evidence'] = parameter['non-volatile']['evidence']
-                row['evidence_status'] = parameter['non-volatile']['evidence_status']
-            
-            rows_list1.append(row)
-    
-    df1 = pd.DataFrame(rows_list1)
-    df2 = pd.json_normalize(json_data['parameter_file']['parameter_list'])
-
-    if not args.verbose:
-        df2 = df2[['name','value']]
-
-    # merge dataframes from each query
-    merge_method = "inner" if args.intersect_only else "outer"
-    df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
-    df['match'] = df['value_1'] == df['value_2']
-
-    if args.diff_only:
-        df = df[df['match'] == False]
-
+    """Compare parasol query to param.json and generate output."""
+    df1 = create_df_from_parasol(parasol_response)
+    df2 = create_df_from_param_json(json_data)
+    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
 
     # print statistics from comparison
     total, match_count, non_match_count = return_stats(df)
-    
-    # create worksheet for parasol-parasol comparison script
     OUTPUT_TIME = datetime.now()
     OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_parasol_json'
+    OUTPUT_FILEPATH = get_output_path(args.output).joinpath(OUTPUT_FILENAME)
     metadata = {
         "Host:": args.host,
         "Session:": f"{args.session}",
@@ -342,32 +204,21 @@ def compare_parasol_json(args, parasol_response, json_data):
     }
 
     if args.to_json:
-        create_json(args, df, OUTPUT_FILENAME, metadata = dict())
+        create_json(df, f"{OUTPUT_FILEPATH}.json", metadata = dict())
     else:
-        create_xlsx(args, df, OUTPUT_FILENAME, metadata)
+        create_xlsx(df, f"{OUTPUT_FILEPATH}.xlsx", metadata)
 
 def compare_json(args, json1, json2):
-    df1 = pd.json_normalize(json1['parameter_file']['parameter_list'])
-    df2 = pd.json_normalize(json2['parameter_file']['parameter_list'])
-    
-    if not args.verbose:
-        df1 = df1[['name','value']]
-        df2 = df2[['name','value']]
-
-    # merge dataframes from each query
-    merge_method = "inner" if args.intersect_only else "outer"
-    df = pd.merge(df1, df2, how=merge_method, on=["name"], suffixes=("_1", "_2"))
-    df['match'] = df['value_1'] == df['value_2']
-
-    if args.diff_only:
-        df = df[df['match'] == False]
+    """Compare param.json to param.json and generate output."""
+    df1 = create_df_from_param_json(json1)
+    df2 = create_df_from_param_json(json2)
+    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
 
     # print statistics from comparison
     total, match_count, non_match_count = return_stats(df)
-    
-    # create worksheet for parasol-parasol comparison script
     OUTPUT_TIME = datetime.now()
     OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_json_json'
+    OUTPUT_FILEPATH = get_output_path(args.output).joinpath(OUTPUT_FILENAME)
     metadata = {
         "JSON 1 PATH:": str(args.json1),
         "JSON 2 PATH:": str(args.json2),
@@ -378,25 +229,24 @@ def compare_json(args, json1, json2):
     }
 
     if args.to_json:
-        create_json(args, df, OUTPUT_FILENAME, metadata = dict())
+        create_json(df, f"{OUTPUT_FILEPATH}.json", metadata = dict())
     else:
-        create_xlsx(args, df, OUTPUT_FILENAME, metadata)
-
+        create_xlsx(df, f"{OUTPUT_FILEPATH}.xlsx", metadata)
 
 ###############################################################################
 # RUN MAIN, ARG PARSER
 ###############################################################################
-def setup():
-    """Create missing directories for script."""
+def create_script_directories():
+    """Create directories for script."""
     try:
-        os.mkdir("parasol_responses")
+        os.mkdir("data/parasol_responses")
         os.mkdir("output")
     except:
         pass
 
-def get_output_path(args):
+def get_output_path(path):
     """Get or build output path provided by user."""
-    output_basepath = Path(args.output) if args.output else Path.cwd().joinpath('output')
+    output_basepath = Path(path) if path else Path.cwd().joinpath('output')
     output_basepath.mkdir(exist_ok=True)
     return output_basepath
 
@@ -415,7 +265,7 @@ def return_stats(df):
     return total, matches, non_matches
 
 def main():
-    setup()
+    create_script_directories()
 
     # CREATE PARSER
     parser = argparse.ArgumentParser(description="CLI for comparing parameter JSON and parasol queries.")
@@ -466,7 +316,6 @@ def main():
 
         if response1 is None:
             sys.exit(f'ERROR: parasol query for \'{args.scet1}\' returned \'None\'.')
-
         if response2 is None:
             sys.exit(f'ERROR: parasol query for \'{args.scet2}\' returned \'None\'.')
         
@@ -475,7 +324,10 @@ def main():
     
     # COMPARE A PARASOL QUERY WITH PARAM JSON
     elif args.command == 'parasol_json':
-        parasol = get_parameter_values(args.host, args.session, args.scet, args.vcid, args.env)
+        parasol_response = get_parameter_values(args.host, args.session, args.scet, args.vcid, args.env)
+
+        if parasol_response is None:
+            sys.exit(f'ERROR: parasol query for \'{args.scet1}\' returned \'None\'.')
 
         try:
             with open(args.json, "r") as json_file:
@@ -483,7 +335,7 @@ def main():
         except FileNotFoundError:
             sys.exit(f'ERROR: file \'{args.json1}\' cannot be found.')
 
-        compare_parasol_json(args, parasol, json_data)
+        compare_parasol_json(args, parasol_response, json_data)
     
     # COMPARE TWO PARAM JSON
     elif args.command == 'json':
