@@ -9,14 +9,45 @@ generate a human-readable output in XLSX or JSON.
 import argparse
 import json
 import os
-import sys
 import pathlib
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
 from utils.parasol import get_parameter_values
-from utils.compare import create_df_from_parasol, create_df_from_param_json, compare_parameters
+from utils.param_json import get_param_json_values
+from utils.compare import compare_parameters, create_df_from_parasol, create_df_from_param_json
+
+###############################################################################
+# HELPERS
+###############################################################################
+def create_script_directories():
+    """Create directories for script."""
+    try:
+        os.mkdir("data/parasol_responses")
+        os.mkdir("output")
+    except:
+        pass
+
+def get_output_path(path):
+    """Get or build output path provided by user."""
+    output_basepath = Path(path) if path else Path.cwd().joinpath('output')
+    output_basepath.mkdir(exist_ok=True)
+    return output_basepath
+
+def return_stats(df):
+    """Print basic param_compare counts to console and return them."""
+    total = df.shape[0]
+    matches = df.loc[df['match'] == True].shape[0]
+    non_matches = total - matches
+    
+    # print summary
+    print("PARAMETERS:\t", total)
+    print('MATCHES:\t', matches)
+    print('NON-MATCHES:\t', non_matches)
+
+    # return results for metadata
+    return total, matches, non_matches
 
 ###############################################################################
 # PARSER HELPERS
@@ -75,7 +106,15 @@ def add_subparser(subparsers, name, description):
 
 ###############################################################################
 # XLSX HELPERS
-###############################################################################   
+###############################################################################  
+def get_metadata_from_args(args):
+    """Create CLI argument dictionary with string values for XLSX metadata."""
+    arg_dict = args.__dict__;
+    metadata = dict()
+    for i in arg_dict.keys():
+        metadata[i] = str(arg_dict[i])
+    return metadata
+ 
 def add_metadata_worksheet(workbook, metadata):
     """Add dictionary as table to a worksheet called 'metadata'."""
     # Add metadata worksheet to a workbook
@@ -150,123 +189,8 @@ def create_json(df, filename, metadata = dict()):
         json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
 
 ###############################################################################
-# COMPARE FUNCTIONS
-###############################################################################
-
-def compare_parasol(args, response1, response2):
-    """Compare parasol query to parasol query and generate output."""
-    df1 = create_df_from_parasol(response1)
-    df2 = create_df_from_parasol(response2)
-    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
-    
-    # print statistics from comparison
-    total, match_count, non_match_count = return_stats(df)
-    OUTPUT_TIME = datetime.now()
-    OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_parasol_parasol'
-    OUTPUT_FILEPATH = get_output_path(args.output).joinpath(OUTPUT_FILENAME)
-    metadata = {
-        "Host:": args.host,
-        "Session:": f"{args.session}",
-        "SCET 1:": args.scet1,
-        "SCET 2:": args.scet2,
-        "VCID:": f"{args.vcid}",
-        "env:": args.env,
-        "Workbook created:": OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f"),
-        "Parameter Count:": total,
-        "Matches:": match_count,
-        "Non-Matches:": non_match_count,
-    }
-    
-    if args.to_json:
-        create_json(df, f"{OUTPUT_FILEPATH}.json", metadata = dict())
-    else:
-        create_xlsx(df, f"{OUTPUT_FILEPATH}.xlsx", metadata)
-    
-def compare_parasol_json(args, parasol_response, json_data):
-    """Compare parasol query to param.json and generate output."""
-    df1 = create_df_from_parasol(parasol_response)
-    df2 = create_df_from_param_json(json_data)
-    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
-
-    # print statistics from comparison
-    total, match_count, non_match_count = return_stats(df)
-    OUTPUT_TIME = datetime.now()
-    OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_parasol_json'
-    OUTPUT_FILEPATH = get_output_path(args.output).joinpath(OUTPUT_FILENAME)
-    metadata = {
-        "Host:": args.host,
-        "Session:": f"{args.session}",
-        "SCET:": args.scet,
-        "JSON PATH:": str(args.json),
-        "VCID:": f"{args.vcid}",
-        "env:": args.env,
-        "Workbook created:": OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f"),
-        "Parameter Count:": total,
-        "Matches:": match_count,
-        "Non-Matches:": non_match_count,
-    }
-
-    if args.to_json:
-        create_json(df, f"{OUTPUT_FILEPATH}.json", metadata = dict())
-    else:
-        create_xlsx(df, f"{OUTPUT_FILEPATH}.xlsx", metadata)
-
-def compare_json(args, json1, json2):
-    """Compare param.json to param.json and generate output."""
-    df1 = create_df_from_param_json(json1)
-    df2 = create_df_from_param_json(json2)
-    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
-
-    # print statistics from comparison
-    total, match_count, non_match_count = return_stats(df)
-    OUTPUT_TIME = datetime.now()
-    OUTPUT_FILENAME = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_json_json'
-    OUTPUT_FILEPATH = get_output_path(args.output).joinpath(OUTPUT_FILENAME)
-    metadata = {
-        "JSON 1 PATH:": str(args.json1),
-        "JSON 2 PATH:": str(args.json2),
-        "Workbook created:": OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f"),
-        "Parameter Count:": total,
-        "Matches:": match_count,
-        "Non-Matches:": non_match_count,
-    }
-
-    if args.to_json:
-        create_json(df, f"{OUTPUT_FILEPATH}.json", metadata = dict())
-    else:
-        create_xlsx(df, f"{OUTPUT_FILEPATH}.xlsx", metadata)
-
-###############################################################################
 # RUN MAIN, ARG PARSER
 ###############################################################################
-def create_script_directories():
-    """Create directories for script."""
-    try:
-        os.mkdir("data/parasol_responses")
-        os.mkdir("output")
-    except:
-        pass
-
-def get_output_path(path):
-    """Get or build output path provided by user."""
-    output_basepath = Path(path) if path else Path.cwd().joinpath('output')
-    output_basepath.mkdir(exist_ok=True)
-    return output_basepath
-
-def return_stats(df):
-    """Get and print basic compare stats."""
-    total = df.shape[0]
-    matches = df.loc[df['match'] == True].shape[0]
-    non_matches = total - matches
-    
-    # print summary
-    print("PARAMETER COUNT:", total)
-    print('MATCHES:', matches)
-    print('NON-MATCHES:', non_matches)
-
-    # return results for metadata
-    return total, matches, non_matches
-
 def main():
     create_script_directories()
 
@@ -312,50 +236,50 @@ def main():
     # parse arguments
     args = parser.parse_args()
 
-    # COMPARE TWO PARASOL QUERIES
+    # log time the command was called (used for filename and metadata)
+    OUTPUT_TIME = datetime.now()
+
+    # COMMAND: compare parasol with parasol
     if args.command == 'parasol':
         response1 = get_parameter_values(args.host, args.session, args.scet1, args.vcid, args.env)
         response2 = get_parameter_values(args.host, args.session, args.scet2, args.vcid, args.env)
-
-        if response1 is None:
-            sys.exit(f'ERROR: parasol query for \'{args.scet1}\' returned \'None\'.')
-        if response2 is None:
-            sys.exit(f'ERROR: parasol query for \'{args.scet2}\' returned \'None\'.')
-        
-        # OR we can implement parameter_values_diff, which returns 
-        compare_parasol(args, response1, response2)
+        df1 = create_df_from_parasol(response1)
+        df2 = create_df_from_parasol(response2)
     
-    # COMPARE A PARASOL QUERY WITH PARAM JSON
+    # COMMAND: compare parasol with param.json
     elif args.command == 'parasol_json':
-        parasol_response = get_parameter_values(args.host, args.session, args.scet, args.vcid, args.env)
-
-        if parasol_response is None:
-            sys.exit(f'ERROR: parasol query for \'{args.scet1}\' returned \'None\'.')
-
-        try:
-            with open(args.json, "r") as json_file:
-                json_data = json.load(json_file)
-        except FileNotFoundError:
-            sys.exit(f'ERROR: file \'{args.json1}\' cannot be found.')
-
-        compare_parasol_json(args, parasol_response, json_data)
+        response1 = get_parameter_values(args.host, args.session, args.scet, args.vcid, args.env)
+        response2 = get_param_json_values(args.json)
+        df1 = create_df_from_parasol(response1)
+        df2 = create_df_from_param_json(response2)
     
-    # COMPARE TWO PARAM JSON
+    # COMMAND: compare param.json with param.json
     elif args.command == 'json':
-        try:
-            with open(args.json1, "r") as json_file1:
-                json_data1 = json.load(json_file1)
-        except FileNotFoundError:
-            sys.exit(f'ERROR: file \'{args.json1}\' cannot be found.')
+        response1 = get_param_json_values(args.json1)
+        response2 = get_param_json_values(args.json2)
+        df1 = create_df_from_param_json(response1)
+        df2 = create_df_from_param_json(response2)
+        
+    # CREATE METADATA FOR PARAMETERS AND RETURN REGARDLESS OF INPUTS
+    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
+
+    # print statistics from comparison
+    total, match_count, non_match_count = return_stats(df)
+
+    # get metadata
+    metadata = get_metadata_from_args(args)
+    metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
+    metadata["Parameters"] = total
+    metadata["Matches"] = match_count
+    metadata["Non-Matches"] = non_match_count
     
-        try:
-            with open(args.json2, "r") as json_file2:
-                json_data2 = json.load(json_file2)
-        except FileNotFoundError:
-            sys.exit(f'ERROR: file \'{args.json2}\' cannot be found.')
-
-        compare_json(args, json_data1, json_data2)
-
+    # return in user-designated format
+    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.command}'
+    output_filepath = get_output_path(args.output).joinpath(output_filename)
+    if args.to_json:
+        create_json(df, f"{output_filepath}.json", metadata = dict())
+    else:
+        create_xlsx(df, f"{output_filepath}.xlsx", metadata)
 
 if __name__ == "__main__":
     main()

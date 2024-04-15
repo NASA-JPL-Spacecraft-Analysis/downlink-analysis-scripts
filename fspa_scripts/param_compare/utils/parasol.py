@@ -5,6 +5,7 @@ Code that handles queries with parasol-py and returns data.
 import parasol
 import os
 import json
+import sys
 
 # CONSTANTS
 from .constants import PARASOL_HOST, PARASOL_PHASE, COOKIE_NAME
@@ -35,8 +36,11 @@ def get_parameter_values(host, session, scet, vcid, env):
 
     if os.path.exists(filename):
         print("Using saved response for Parasol for parameter values...")
-        with open(filename) as parasol_parameter_values:
-            return json.load(parasol_parameter_values)
+        try:
+            with open(filename) as parasol_parameter_values:
+                return json.load(parasol_parameter_values)
+        except FileNotFoundError:
+            sys.exit(f'ERROR: file \'{filename}\' cannot be found. This shouldn\'t happen.')
 
     else:
         print("Making request to Parasol for parameter values...")
@@ -66,6 +70,9 @@ def get_parameter_values(host, session, scet, vcid, env):
             json.dump(
                 response, json_file, indent=4, sort_keys=False, separators=(",", ": ")
             )
+            
+        if response is None:
+            sys.exit(f'ERROR: parasol response for \'{scet}\' is \'None\'.')
 
         return response
 
