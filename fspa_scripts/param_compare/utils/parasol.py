@@ -7,7 +7,7 @@ import os
 import json
 
 # CONSTANTS
-from .constants import PARASOL_HOST, COOKIE_NAME
+from .constants import PARASOL_HOST, PARASOL_PHASE, COOKIE_NAME
 
 ###############################################################################
 # HELPERS
@@ -43,7 +43,7 @@ def get_parameter_values(host, session, scet, vcid, env):
         venue = _get_env_venue(env)
         try:
             response = parasol.get_parameter_values(
-                phase="cruise",
+                phase=PARASOL_PHASE,
                 auth_type="cam",
                 parasol_host=venue["parasol_host"],
                 cookie_name=venue["cookie_name"],

@@ -1,10 +1,10 @@
 """
-File for converting parameter input formats into a pandas DataFrame. The 
-DataFrames are used for processing data sets efficiently.
+File for converting parameter inputs into a pandas DataFrame and comparing
+parameters. Pandas DataFrames are used to process data efficiently.
 """
 
 import pandas as pd
-from .constants import GROUP, COPY
+from .constants import PARASOL_GROUP, PARASOL_COPY
 
 ###############################################################################
 # COMPARE & MERGE PARAMETER SETS WITH USER INPUT
@@ -36,13 +36,13 @@ def create_df_from_parasol(response):
     """Return pandas DataFrame from parasol query JSON data."""
     rows_list = []
     for module_name, module in response.items():
-        for parameter_name, parameter in module[GROUP][COPY].items():
+        for parameter_name, parameter in module[PARASOL_GROUP][PARASOL_COPY].items():
             rows_list.append({
                 "name": parameter_name, 
                 "value": parameter['non-volatile']['value'],
                 "module": module_name,
-                "group": GROUP,
-                "copy": COPY,
+                "group": PARASOL_GROUP,
+                "copy": PARASOL_COPY,
                 "evidence":parameter['non-volatile']['evidence'],
                 "evidence_status": parameter['non-volatile']['evidence_status']
             })

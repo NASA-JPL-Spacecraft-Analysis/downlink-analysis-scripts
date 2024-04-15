@@ -57,10 +57,10 @@ NOTE: Requires cam-login.
 $ python param_compare.py parasol --host eurcits001 --session 830 --scet1 2026-082T17:19:46 --scet2 2026-082T17:19:46 --vcid 0
 
 # compare parasol query, param json
-$ python param_compare.py parasol_json --host eurcits001 --session 830 --scet 2026-082T17:19:46 --vcid 0 --json "./parm_json/017_success_active_only_260_nvm.parm.json"
+$ python param_compare.py parasol_json --host eurcits001 --session 830 --scet 2026-082T17:19:46 --vcid 0 --json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
 
 # compare param.json, param.json
-$ python param_compare.py json --json1 "./parm_json/012_success_active_only_30p_nvm.parm.json" --json2 "./parm_json/017_success_active_only_260_nvm.parm.json"
+$ python param_compare.py json --json1 "./data/parm_json/012_success_active_only_30p_nvm.parm.json" --json2 "./data/parm_json/017_success_active_only_260_nvm.parm.json"
 ```
 
 Additional flags:

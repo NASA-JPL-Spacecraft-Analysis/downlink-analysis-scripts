@@ -21,6 +21,8 @@ from utils.compare import create_df_from_parasol, create_df_from_param_json, com
 ###############################################################################
 # PARSER HELPERS
 ###############################################################################
+SUB_COMMANDS = ['parasol', 'json']
+
 def add_subparser(subparsers, name, description):
     """
     Add common arguments for all subparsers to the top-level argument
@@ -61,6 +63,7 @@ def add_subparser(subparsers, name, description):
         help="Only output parameters that exist in both inputs."
     )
 
+    # TODO: consider converting to 'choices' argument with 'xlsx (default)', 'json', or 'pandas'
     parser.add_argument(
         "--to-json", 
         dest="to_json",
