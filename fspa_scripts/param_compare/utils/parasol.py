@@ -6,9 +6,10 @@ import parasol
 import os
 import json
 import sys
+import pandas as pd
 
 # CONSTANTS
-from .constants import PARASOL_HOST, PARASOL_PHASE, COOKIE_NAME
+from .constants import PARASOL_HOST, PARASOL_PHASE, PARASOL_GROUP, PARASOL_COPY, COOKIE_NAME
 
 ###############################################################################
 # HELPERS
@@ -76,3 +77,22 @@ def get_parameter_values(host, session, scet, vcid, env):
 
         return response
 
+###############################################################################
+# PARASOL QUERY TO PANDAS
+###############################################################################
+
+def create_df_from_parasol(response):
+    """Return pandas DataFrame from parasol query JSON data."""
+    rows_list = []
+    for module_name, module in response.items():
+        for parameter_name, parameter in module[PARASOL_GROUP][PARASOL_COPY].items():
+            rows_list.append({
+                "name": parameter_name, 
+                "value": parameter['non-volatile']['value'],
+                "module": module_name,
+                "group": PARASOL_GROUP,
+                "copy": PARASOL_COPY,
+                "evidence":parameter['non-volatile']['evidence'],
+                "evidence_status": parameter['non-volatile']['evidence_status']
+            })
+    return pd.DataFrame(rows_list)

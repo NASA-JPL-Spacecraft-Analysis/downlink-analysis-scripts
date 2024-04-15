@@ -4,7 +4,6 @@ parameters. Pandas DataFrames are used to process data efficiently.
 """
 
 import pandas as pd
-from .constants import PARASOL_GROUP, PARASOL_COPY
 
 ###############################################################################
 # COMPARE & MERGE PARAMETER SETS WITH USER INPUT
@@ -27,27 +26,3 @@ def compare_parameters(df1, df2, verbose, intersect_only, diff_only):
         df = df[df['match'] == False]
     
     return df
-
-###############################################################################
-# CREATE DATAFRAME FUNCTIONS
-###############################################################################
-
-def create_df_from_parasol(response):
-    """Return pandas DataFrame from parasol query JSON data."""
-    rows_list = []
-    for module_name, module in response.items():
-        for parameter_name, parameter in module[PARASOL_GROUP][PARASOL_COPY].items():
-            rows_list.append({
-                "name": parameter_name, 
-                "value": parameter['non-volatile']['value'],
-                "module": module_name,
-                "group": PARASOL_GROUP,
-                "copy": PARASOL_COPY,
-                "evidence":parameter['non-volatile']['evidence'],
-                "evidence_status": parameter['non-volatile']['evidence_status']
-            })
-    return pd.DataFrame(rows_list)
-
-def create_df_from_param_json(data):
-    """Return pandas DataFrame from param.json data."""
-    return pd.json_normalize(data['parameter_file']['parameter_list'])

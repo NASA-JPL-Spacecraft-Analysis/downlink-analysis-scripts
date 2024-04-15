@@ -5,7 +5,6 @@ FSW parameter comparison script. Compare Parasol queries and/or param.json and
 generate a human-readable output in XLSX or JSON.
 """
 
-# GENERAL IMPORTS
 import argparse
 import json
 import os
@@ -14,9 +13,9 @@ import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
-from utils.parasol import get_parameter_values
-from utils.param_json import get_param_json_values
-from utils.compare import compare_parameters, create_df_from_parasol, create_df_from_param_json
+from utils.parasol import get_parameter_values, create_df_from_parasol
+from utils.param_json import get_param_json_values, create_df_from_param_json
+from utils.compare import compare_parameters
 
 ###############################################################################
 # HELPERS
@@ -50,62 +49,7 @@ def return_stats(df):
     return total, matches, non_matches
 
 ###############################################################################
-# PARSER HELPERS
-###############################################################################
-SUB_COMMANDS = ['parasol', 'json']
-
-def add_subparser(subparsers, name, description):
-    """
-    Add common arguments for all subparsers to the top-level argument
-    parser. Include flags for output path, output verbosity, and which
-    parameters to include in output. Sets the formatter class to 
-    argparse.RawDescriptionHelpFormatter.
-    """
-    
-    parser = subparsers.add_parser(
-        name,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=description)
-    
-    parser.add_argument(
-        "-o", "--output", 
-        type=pathlib.Path, 
-        metavar='PATH', 
-        help="Path to desired output location."
-    )
-
-    parser.add_argument(
-        "--verbose", 
-        action='store_true', 
-        help="Include all data from compared files in output."
-    )
-    
-    parser.add_argument(
-        "--diff-only", 
-        dest="diff_only",
-        action='store_true', 
-        help="Only output parameters that do not match."
-    )
-    
-    parser.add_argument(
-        "--intersect-only", 
-        dest="intersect_only",
-        action='store_true', 
-        help="Only output parameters that exist in both inputs."
-    )
-
-    # TODO: consider converting to 'choices' argument with 'xlsx (default)', 'json', or 'pandas'
-    parser.add_argument(
-        "--to-json", 
-        dest="to_json",
-        action='store_true', 
-        help="Output comparison as JSON."
-    )
-
-    return parser
-
-###############################################################################
-# XLSX HELPERS
+# XLSX AND JSON WRITERS
 ###############################################################################  
 def get_metadata_from_args(args):
     """Create CLI argument dictionary with string values for XLSX metadata."""
@@ -189,20 +133,59 @@ def create_json(df, filename, metadata = dict()):
         json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
 
 ###############################################################################
-# RUN MAIN, ARG PARSER
+# RUN MAIN & PARSE ARGUMENTS
 ###############################################################################
+SUB_COMMANDS = ['parasol', 'json']
+
 def main():
     create_script_directories()
 
-    # CREATE PARSER
-    parser = argparse.ArgumentParser(description="CLI for comparing parameter JSON and parasol queries.")
-    subparsers = parser.add_subparsers(title='command', dest='command')
+    # Create parent parser for shared arguments
+    parent_parser = argparse.ArgumentParser(add_help=False) 
 
-    # PARASOL-PARASOL PARSER
-    parasol_only_parser = add_subparser(
-        subparsers,
+    parent_parser.add_argument(
+        "-o", "--output", 
+        type=pathlib.Path, 
+        metavar='PATH', 
+        help="Path to desired output location."
+    )
+
+    parent_parser.add_argument(
+        "--verbose", 
+        action='store_true', 
+        help="Include all data from compared files in output."
+    )
+    
+    parent_parser.add_argument(
+        "--diff-only", 
+        dest="diff_only",
+        action='store_true', 
+        help="Only output parameters that do not match."
+    )
+    
+    parent_parser.add_argument(
+        "--intersect-only", 
+        dest="intersect_only",
+        action='store_true', 
+        help="Only output parameters that exist in both inputs."
+    )
+
+    # TODO: consider converting to 'choices' argument with 'xlsx (default)', 'json', or 'pandas'
+    parent_parser.add_argument(
+        "--to-json", 
+        dest="to_json",
+        action='store_true', 
+        help="Output comparison as JSON."
+    )
+
+    parser = argparse.ArgumentParser(description="CLI for comparing parameter JSON and parasol queries.")
+    subparsers = parser.add_subparsers(title='command', dest='command', required=True)
+
+    # CREATE PARASOL-PARASOL PARSER
+    parasol_only_parser = subparsers.add_parser(
         "parasol",
-        description="Compare two parasol queries between scet1 and scet2."
+        description="Compare parasol query with parasol query.",
+        parents=[parent_parser]
     )
     parasol_only_parser.add_argument("--host", required=True, help="Session host on parasol (ex: eurcits001)")
     parasol_only_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
@@ -211,11 +194,11 @@ def main():
     parasol_only_parser.add_argument("--vcid", type=int, default=0, help="VCID 0 or 1 (ex: 0)")
     parasol_only_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values and publishing (ex: dev)")
     
-    # PARASOL-JSON PARSER
-    parasol_json_parser = add_subparser(
-        subparsers,
+    # CREATE PARASOL-JSON PARSER
+    parasol_json_parser = subparsers.add_parser(
         "parasol_json",
-        description="Compare two parasol queries by scet1 and scet2."
+        description="Compare parasol query with param.json.",
+        parents=[parent_parser]
     )
     parasol_json_parser.add_argument("--host", required=True, help="Session host on parasol (ex: eurcits001)")
     parasol_json_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
@@ -224,11 +207,11 @@ def main():
     parasol_json_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values and publishing (ex: dev)")
     parasol_json_parser.add_argument("--json", required=True, type=pathlib.Path, metavar='PATH', help="param.json to use for comparison")
 
-    # JSON-JSON PARSER
-    json_only_parser = add_subparser(
-        subparsers, 
-        "json", 
-        description="Compare two param.json files."
+    # CREATE JSON-JSON PARSER
+    json_only_parser = subparsers.add_parser(
+        "json",
+        description="Compare param.json with param.json.",
+        parents=[parent_parser]
     )
     json_only_parser.add_argument("--json1", required=True, type=pathlib.Path, metavar='PATH', help="Path to first param.json to generate comparison")
     json_only_parser.add_argument("--json2", required=True, type=pathlib.Path, metavar='PATH', help="Path to second param.json to generate comparison")
