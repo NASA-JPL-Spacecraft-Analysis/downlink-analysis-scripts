@@ -27,7 +27,7 @@ def _get_env_venue(env):
 # QUERY PARASOL
 ###############################################################################
 
-def get_parameter_values(host, session, scet, vcid, env):
+def get_parasol_values(host, session, scet, vcid, env):
     """Get and return parasol query based on provided CLI arguments."""
 
     # create filename for response

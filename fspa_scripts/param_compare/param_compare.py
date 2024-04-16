@@ -13,7 +13,7 @@ import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
-from utils.parasol import get_parameter_values, create_df_from_parasol
+from utils.parasol import get_parasol_values, create_df_from_parasol
 from utils.param_json import get_param_json_values, create_df_from_param_json
 from utils.compare import compare_parameters
 
@@ -224,14 +224,14 @@ def main():
 
     # COMMAND: compare parasol with parasol
     if args.command == 'parasol':
-        response1 = get_parameter_values(args.host, args.session, args.scet1, args.vcid, args.env)
-        response2 = get_parameter_values(args.host, args.session, args.scet2, args.vcid, args.env)
+        response1 = get_parasol_values(args.host, args.session, args.scet1, args.vcid, args.env)
+        response2 = get_parasol_values(args.host, args.session, args.scet2, args.vcid, args.env)
         df1 = create_df_from_parasol(response1)
         df2 = create_df_from_parasol(response2)
     
     # COMMAND: compare parasol with param.json
     elif args.command == 'parasol_json':
-        response1 = get_parameter_values(args.host, args.session, args.scet, args.vcid, args.env)
+        response1 = get_parasol_values(args.host, args.session, args.scet, args.vcid, args.env)
         response2 = get_param_json_values(args.json)
         df1 = create_df_from_parasol(response1)
         df2 = create_df_from_param_json(response2)
