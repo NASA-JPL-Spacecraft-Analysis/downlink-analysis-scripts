@@ -92,7 +92,7 @@ $ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 de
 $ python param_compare.py --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
 
 # csds to parasol
-$ python param_compare.py --input1 csds "STATE_MANAGER_DEMO" 'SPS_PARAMETER_NAME' 2025-131T22:23:11.615 dev --input2 eurcits001 830 2026-082T17:19:46 0 dev
+$ python param_compare.py --input1 csds "STATE_MANAGER_DEMO" 'SPS_PARAMETER_NAME' 2025-131T22:23:11.615 dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
 ```
 
 Additional flags:
