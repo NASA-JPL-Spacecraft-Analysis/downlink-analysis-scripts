@@ -95,4 +95,9 @@ def create_df_from_parasol(response):
                 "evidence":parameter['non-volatile']['evidence'],
                 "evidence_status": parameter['non-volatile']['evidence_status']
             })
+
+    # if no parameters, return empty dataframe for merge
+    if not rows_list:
+        return pd.DataFrame(columns=['name', 'value'])
+    
     return pd.DataFrame(rows_list)

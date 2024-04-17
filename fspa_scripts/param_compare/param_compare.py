@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """
-FSW parameter comparison script. Compare Parasol queries and/or param.json and 
-generate a human-readable output in XLSX or JSON.
+FSW parameter comparison script. Compare Parasol, param.json, SEQGEN fincons, 
+and/or CSDS with one another and view a human-readable output in XLSX or JSON.
 """
 
 import argparse
@@ -15,6 +15,9 @@ from pathlib import Path
 
 from utils.parasol import get_parasol_values, create_df_from_parasol
 from utils.param_json import get_param_json_values, create_df_from_param_json
+from utils.seqgen_fincon import get_seqgen_fincon_values, create_df_from_seqgen_fincon
+from utils.csds import get_csds_values, create_df_from_csds
+
 from utils.compare import compare_parameters
 
 ###############################################################################
@@ -74,7 +77,7 @@ def create_parser():
     parasol_only_parser.add_argument("--scet1", required=True, help="A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)")
     parasol_only_parser.add_argument("--scet2", required=True, help="A SCET formatted time for parasol query 2 (ex: 2023-136T22:08:51.038)")
     parasol_only_parser.add_argument("--vcid", type=int, default=0, help="VCID 0 or 1 (ex: 0)")
-    parasol_only_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values and publishing (ex: dev)")
+    parasol_only_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values (ex: dev)")
     
     # CREATE PARASOL-JSON PARSER
     parasol_json_parser = subparsers.add_parser(
@@ -86,7 +89,7 @@ def create_parser():
     parasol_json_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
     parasol_json_parser.add_argument("--scet", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
     parasol_json_parser.add_argument("--vcid", type=int, default=0, help="VCID 0 or 1 (ex: 0)")
-    parasol_json_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values and publishing (ex: dev)")
+    parasol_json_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values (ex: dev)")
     parasol_json_parser.add_argument("--json", required=True, type=pathlib.Path, metavar='PATH', help="param.json to use for comparison")
 
     # CREATE JSON-JSON PARSER
@@ -98,6 +101,26 @@ def create_parser():
     json_only_parser.add_argument("--json1", required=True, type=pathlib.Path, metavar='PATH', help="Path to first param.json to generate comparison")
     json_only_parser.add_argument("--json2", required=True, type=pathlib.Path, metavar='PATH', help="Path to second param.json to generate comparison")
 
+    # CREATE JSON-JSON PARSER
+    seqgen_fincon_only_parser = subparsers.add_parser(
+        "seqgen_fincon",
+        description="Compare seqgen_fincon.json with seqgen_fincon.json.",
+        parents=[parent_parser]
+    )
+    seqgen_fincon_only_parser.add_argument("--json1", required=True, type=pathlib.Path, metavar='PATH', help="Path to first seqgen_fincon.json to generate comparison")
+    seqgen_fincon_only_parser.add_argument("--json2", required=True, type=pathlib.Path, metavar='PATH', help="Path to second seqgen_fincon.json to generate comparison")
+
+    # CREATE JSON-JSON PARSER
+    csds_only_parser = subparsers.add_parser(
+        "csds",
+        description="Compare CSDS query with CSDS query.",
+        parents=[parent_parser]
+    )
+    csds_only_parser.add_argument("--collection-name", required=True, help="Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')")
+    csds_only_parser.add_argument("--scet1", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
+    csds_only_parser.add_argument("--scet2", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
+    csds_only_parser.add_argument("--env", default="dev", help="Venue for retrieving command values (ex: dev)")
+
     return parser
 
 ###############################################################################
@@ -107,6 +130,7 @@ def create_script_directories():
     """Create directories for script."""
     try:
         os.mkdir("data/parasol_responses")
+        os.mkdir("data/csds_responses")
         os.mkdir("output")
     except:
         pass
@@ -248,6 +272,20 @@ def main():
         response2 = get_param_json_values(args.json2)
         df1 = create_df_from_param_json(response1)
         df2 = create_df_from_param_json(response2)
+
+    # COMMAND: compare param.json with param.json
+    elif args.command == 'seqgen_fincon':
+        response1 = get_seqgen_fincon_values(args.json1)
+        response2 = get_seqgen_fincon_values(args.json2)
+        df1 = create_df_from_seqgen_fincon(response1)
+        df2 = create_df_from_seqgen_fincon(response2)
+
+    # COMMAND: compare param.json with param.json
+    elif args.command == 'csds':
+        response1 = get_csds_values(args.collection_name, args.scet1, args.env)
+        response2 = get_csds_values(args.collection_name, args.scet2, args.env)
+        df1 = create_df_from_csds(response1)
+        df2 = create_df_from_csds(response2)
         
     # CREATE METADATA FOR PARAMETERS AND RETURN REGARDLESS OF INPUTS
     df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
