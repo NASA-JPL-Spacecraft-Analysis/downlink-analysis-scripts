@@ -42,8 +42,6 @@ required arguments:
         path        Path to json file.
     csds:
         collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
-        name        Parameter Name for state data store (ex: 'gnc')
-        scet        A SCET formatted time (ex: 2023-136T22:08:51.038)
         env         Venue for retrieving parameter values (ex: dev)
 """
 

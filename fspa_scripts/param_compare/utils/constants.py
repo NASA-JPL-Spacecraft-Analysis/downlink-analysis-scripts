@@ -16,5 +16,5 @@ INPUT_TYPE_ARG_COUNTS = {
     'parasol': 5,
     'param_json': 1,
     'seqgen_fincon': 1,
-    'csds': 4
+    'csds': 2
 }

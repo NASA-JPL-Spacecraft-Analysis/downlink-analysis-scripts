@@ -73,9 +73,7 @@ seqgen_fincon:
     path        Path to json file.
 
 csds:
-    collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
-    name        Parameter Name for state data store (ex: 'gnc')
-    scet        A SCET formatted time (ex: 2023-136T22:08:51.038)
+    collection  Collection Name for state data store (ex: 'eurcits001-collection-690')
     env         Venue for retrieving parameter values (ex: dev)
 ```
 
@@ -92,7 +90,7 @@ $ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 de
 $ python param_compare.py --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
 
 # csds to parasol
-$ python param_compare.py --input1 csds "STATE_MANAGER_DEMO" 'SPS_PARAMETER_NAME' 2025-131T22:23:11.615 dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
+$ python param_compare.py --input1 csds "eurcits001-collection-690" dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
 ```
 
 Additional flags:

@@ -1,5 +1,5 @@
 """
-Code that handles loading seqgen_fincon and returns data.
+Code that handles loading seqgen_fincon.json and returns data.
 """
 
 import json
@@ -16,7 +16,7 @@ def get_seqgen_fincon_values(file_path):
         with open(file_path, "r") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
-        sys.exit(f'ERROR: file \'{file_path}\' cannot be found.')
+        sys.exit(f"ERROR: file '{file_path}' cannot be found.")
     
 ###############################################################################
 # SEQGEN FINCONS TO PANDAS

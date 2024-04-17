@@ -29,19 +29,15 @@ def _get_env_venue(env):
 
 def get_parasol_values(host, session, scet, vcid, env):
     """Get and return parasol query based on provided CLI arguments."""
-
-    # create filename for response
-    filename = "./data/parasol_responses/{}_{}_{}_{}.json".format(
-        host, session, scet, vcid
-    )
+    filename = f"./data/parasol_responses/{host}_{session}_{scet}_{vcid}.json"
 
     if os.path.exists(filename):
-        print("Using saved response for Parasol for parameter values...")
+        print("Using saved response for Parasol for parameter values.")
         try:
             with open(filename) as parasol_parameter_values:
                 return json.load(parasol_parameter_values)
         except FileNotFoundError:
-            sys.exit(f'ERROR: file \'{filename}\' cannot be found. This shouldn\'t happen.')
+            sys.exit(f"ERROR: file '{filename}' cannot be found. This shouldn't happen.")
 
     else:
         print("Making request to Parasol for parameter values...")
@@ -73,7 +69,7 @@ def get_parasol_values(host, session, scet, vcid, env):
             )
             
         if response is None:
-            sys.exit(f'ERROR: parasol response for \'{scet}\' is \'None\'.')
+            sys.exit(f"ERROR: parasol response for '{scet}' is 'None'.")
 
         return response
 
