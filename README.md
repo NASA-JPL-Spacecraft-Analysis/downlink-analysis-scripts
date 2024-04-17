@@ -48,19 +48,51 @@ $ python publish_fsw_params.py --host eurcits001 --session 578 --collection 'eur
 
 #### param_compare.py
 
-Compare Parasol queries and parm.json and generate human-readable output (XLSX).
+Compare parasol, param.json, seqgen_fincon.json, or CSDS parameters and return results in human-readable output (Excel report or JSON).
 
-NOTE: Requires cam-login.
+NOTE: Requires cam-login. Run `cam-login` in your terminal before trying the param_compare script.
+
+##### CLI Schema
+
+```
+input types: {parasol, param_json, seqgen_fincon, csds}
+
+required arguments:
+
+parasol:
+    host        Session host on parasol (ex: eurcits001)
+    session     Session id on parasol (ex: 830)
+    scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
+    vcid        VCID 0 or 32 (ex: 0)
+    env         Venue for retrieving parameter values (ex: dev)
+
+param_json:
+    path        Path to json file.
+
+seqgen_fincon:
+    path        Path to json file.
+
+csds:
+    collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
+    name        Parameter Name for state data store (ex: 'gnc')
+    scet        A SCET formatted time (ex: 2023-136T22:08:51.038)
+    env         Venue for retrieving parameter values (ex: dev)
+```
+
+##### Examples
 
 ```shell
-# compare parasol query, parasol query
-$ python param_compare.py parasol --host eurcits001 --session 830 --scet1 2026-082T17:19:46 --scet2 2026-082T17:19:46 --vcid 0
+# parasol to parasol
+$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
 
-# compare parasol query, param json
-$ python param_compare.py parasol_json --host eurcits001 --session 830 --scet 2026-082T17:19:46 --vcid 0 --json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
+# parasol to param.json
+$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 dev --input2 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
 
-# compare param.json, param.json
-$ python param_compare.py json --json1 "./data/parm_json/012_success_active_only_30p_nvm.parm.json" --json2 "./data/parm_json/017_success_active_only_260_nvm.parm.json"
+# param.json to seqgen_fincon.json
+$ python param_compare.py --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
+
+# csds to parasol
+$ python param_compare.py --input1 csds "STATE_MANAGER_DEMO" 'SPS_PARAMETER_NAME' 2025-131T22:23:11.615 dev --input2 eurcits001 830 2026-082T17:19:46 0 dev
 ```
 
 Additional flags:
