@@ -8,6 +8,7 @@ and/or CSDS with one another and view a human-readable output in XLSX or JSON.
 import argparse
 import json
 import os
+import sys
 import pathlib
 import pandas as pd
 from datetime import datetime
@@ -20,113 +21,36 @@ from utils.csds import get_csds_values, create_df_from_csds
 
 from utils.compare import compare_parameters
 
+from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+
 ###############################################################################
-# PARSER
+# PARSER TEXT
 ###############################################################################
-def create_parser():
-    """Create CLI argument parser."""
-    # Create parent parser for shared arguments
-    parent_parser = argparse.ArgumentParser(add_help=False) 
+PARSER_DESCRIPTION = """CLI for comparing parameters from several formats: parasol, csds, param.json, seqgen_fincon.json."""
 
-    parent_parser.add_argument(
-        "-o", "--output", 
-        type=pathlib.Path, 
-        metavar='PATH', 
-        help="Path to desired output location."
-    )
-
-    parent_parser.add_argument(
-        "--verbose", 
-        action='store_true', 
-        help="Include all data from compared files in output."
-    )
-    
-    parent_parser.add_argument(
-        "--diff-only", 
-        dest="diff_only",
-        action='store_true', 
-        help="Only output parameters that do not match."
-    )
-    
-    parent_parser.add_argument(
-        "--intersect-only", 
-        dest="intersect_only",
-        action='store_true', 
-        help="Only output parameters that exist in both inputs."
-    )
-
-    # TODO: consider converting to 'choices' argument with 'xlsx (default)', 'json', or 'pandas'
-    parent_parser.add_argument(
-        "--to-json", 
-        dest="to_json",
-        action='store_true', 
-        help="Output comparison as JSON."
-    )
-
-    parser = argparse.ArgumentParser(description="CLI for comparing parameter JSON and parasol queries.")
-    subparsers = parser.add_subparsers(title='command', dest='command', required=True)
-
-    # CREATE PARASOL-PARASOL PARSER
-    parasol_only_parser = subparsers.add_parser(
-        "parasol",
-        description="Compare parasol query with parasol query.",
-        parents=[parent_parser]
-    )
-    parasol_only_parser.add_argument("--host", required=True, help="Session host on parasol (ex: eurcits001)")
-    parasol_only_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
-    parasol_only_parser.add_argument("--scet1", required=True, help="A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)")
-    parasol_only_parser.add_argument("--scet2", required=True, help="A SCET formatted time for parasol query 2 (ex: 2023-136T22:08:51.038)")
-    parasol_only_parser.add_argument("--vcid", type=int, default=0, help="VCID 0 or 1 (ex: 0)")
-    parasol_only_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values (ex: dev)")
-    
-    # CREATE PARASOL-JSON PARSER
-    parasol_json_parser = subparsers.add_parser(
-        "parasol_json",
-        description="Compare parasol query with param.json.",
-        parents=[parent_parser]
-    )
-    parasol_json_parser.add_argument("--host", required=True, help="Session host on parasol (ex: eurcits001)")
-    parasol_json_parser.add_argument("--session", required=True, help="Session id on parasol (ex: 578)")
-    parasol_json_parser.add_argument("--scet", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
-    parasol_json_parser.add_argument("--vcid", type=int, default=0, help="VCID 0 or 1 (ex: 0)")
-    parasol_json_parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values (ex: dev)")
-    parasol_json_parser.add_argument("--json", required=True, type=pathlib.Path, metavar='PATH', help="param.json to use for comparison")
-
-    # CREATE JSON-JSON PARSER
-    json_only_parser = subparsers.add_parser(
-        "json",
-        description="Compare param.json with param.json.",
-        parents=[parent_parser]
-    )
-    json_only_parser.add_argument("--json1", required=True, type=pathlib.Path, metavar='PATH', help="Path to first param.json to generate comparison")
-    json_only_parser.add_argument("--json2", required=True, type=pathlib.Path, metavar='PATH', help="Path to second param.json to generate comparison")
-
-    # CREATE JSON-JSON PARSER
-    seqgen_fincon_only_parser = subparsers.add_parser(
-        "seqgen_fincon",
-        description="Compare seqgen_fincon.json with seqgen_fincon.json.",
-        parents=[parent_parser]
-    )
-    seqgen_fincon_only_parser.add_argument("--json1", required=True, type=pathlib.Path, metavar='PATH', help="Path to first seqgen_fincon.json to generate comparison")
-    seqgen_fincon_only_parser.add_argument("--json2", required=True, type=pathlib.Path, metavar='PATH', help="Path to second seqgen_fincon.json to generate comparison")
-
-    # CREATE JSON-JSON PARSER
-    csds_only_parser = subparsers.add_parser(
-        "csds",
-        description="Compare CSDS query with CSDS query.",
-        parents=[parent_parser]
-    )
-    csds_only_parser.add_argument("--collection-name", required=True, help="Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')")
-    csds_only_parser.add_argument("--scet1", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
-    csds_only_parser.add_argument("--scet2", required=True, help="A SCET formatted time (ex: 2023-136T22:08:51.038)")
-    csds_only_parser.add_argument("--env", default="dev", help="Venue for retrieving command values (ex: dev)")
-
-    return parser
+PARSER_INPUT_HELP = """commands: {parasol, param_json, seqgen_fincon, csds}
+required arguments:
+    parasol:
+        host        Session host on parasol (ex: eurcits001)
+        session     Session id on parasol (ex: 830)
+        scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
+        vcid        VCID 0 or 32 (ex: 0)
+        env         Venue for retrieving parameter values (ex: dev)
+    param_json:
+        path        Path to json file.
+    seqgen_fincon:
+        path        Path to json file.
+    csds:
+        collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
+        name        Parameter Name for state data store (ex: 'gnc')
+        scet        A SCET formatted time (ex: 2023-136T22:08:51.038)
+        env         Venue for retrieving parameter values (ex: dev)
+"""
 
 ###############################################################################
 # HELPERS
 ###############################################################################
-def create_script_directories():
+def create_directories():
     """Create directories for script."""
     try:
         os.mkdir("data/parasol_responses")
@@ -242,58 +166,65 @@ def create_json(df, filename, metadata = dict()):
 ###############################################################################
 # RUN MAIN & PARSE ARGUMENTS
 ###############################################################################
-SUB_COMMANDS = ['parasol', 'param_json', 'seqgen_fincon', 'csds']
+def validate_input_arguments(inputs):
+    """Validate nargs is used with all required positional arguments."""
+    input_type = inputs[0] # should be valid input type
+    input_arg_count = len(inputs) - 1
+
+    if input_type not in INPUT_TYPES:
+        return sys.exit(f"Input type '{input_type}' does not exist. Valid types are 'parasol', 'param_json', 'seqgen_fincon', or 'csds'.")
+    
+    if input_arg_count != INPUT_TYPE_ARG_COUNTS[input_type]:
+        sys.exit(f"You provided {input_arg_count} arguments to {input_type}, where {INPUT_TYPE_ARG_COUNTS[input_type]} are expected. Read '-h' for command exmaples.")
+
+def get_values_from_input(inputs):
+    """Return pandas DataFrame of values from appropriate data source."""
+    input_type = inputs[0]
+
+    if input_type == 'parasol':
+       response = get_parasol_values(*inputs[1:])
+       return create_df_from_parasol(response)
+    elif input_type == 'param_json':
+        response = get_param_json_values(*inputs[1:])
+        return create_df_from_param_json(response)
+    elif input_type == 'seqgen_fincon':
+        response = get_seqgen_fincon_values(*inputs[1:])
+        return create_df_from_seqgen_fincon(response)
+    elif input_type == 'csds':
+        response = get_csds_values(*inputs[1:])
+        return create_df_from_csds(response)
 
 def main():
-    create_script_directories()
-    parser = create_parser()
+    create_directories()
+    parser = argparse.ArgumentParser(
+        description=PARSER_DESCRIPTION, 
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+    parser.add_argument("--input1", required=True, nargs='+', type=str, help=PARSER_INPUT_HELP)
+    parser.add_argument("--input2", required=True, nargs='+', type=str, help=PARSER_INPUT_HELP)
+    parser.add_argument("--verbose", action='store_true', help="Include all data from compared files in output.")
+    parser.add_argument("--diff-only", dest="diff_only",action='store_true', help="Only output parameters that do not match.")
+    parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
+    parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
+    parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     args = parser.parse_args()
-
-    # log time the command was called (used for filename and metadata)
-    OUTPUT_TIME = datetime.now()
-
-    # COMMAND: compare parasol with parasol
-    if args.command == 'parasol':
-        response1 = get_parasol_values(args.host, args.session, args.scet1, args.vcid, args.env)
-        response2 = get_parasol_values(args.host, args.session, args.scet2, args.vcid, args.env)
-        df1 = create_df_from_parasol(response1)
-        df2 = create_df_from_parasol(response2)
     
-    # COMMAND: compare parasol with param.json
-    elif args.command == 'parasol_json':
-        response1 = get_parasol_values(args.host, args.session, args.scet, args.vcid, args.env)
-        response2 = get_param_json_values(args.json)
-        df1 = create_df_from_parasol(response1)
-        df2 = create_df_from_param_json(response2)
+    # validate input types
+    validate_input_arguments(args.input1)
+    validate_input_arguments(args.input2)
     
-    # COMMAND: compare param.json with param.json
-    elif args.command == 'json':
-        response1 = get_param_json_values(args.json1)
-        response2 = get_param_json_values(args.json2)
-        df1 = create_df_from_param_json(response1)
-        df2 = create_df_from_param_json(response2)
+    # query/load data and conver to pandas DataFrames
+    df1 = get_values_from_input(args.input1)
+    df2 = get_values_from_input(args.input2)
 
-    # COMMAND: compare param.json with param.json
-    elif args.command == 'seqgen_fincon':
-        response1 = get_seqgen_fincon_values(args.json1)
-        response2 = get_seqgen_fincon_values(args.json2)
-        df1 = create_df_from_seqgen_fincon(response1)
-        df2 = create_df_from_seqgen_fincon(response2)
-
-    # COMMAND: compare param.json with param.json
-    elif args.command == 'csds':
-        response1 = get_csds_values(args.collection_name, args.scet1, args.env)
-        response2 = get_csds_values(args.collection_name, args.scet2, args.env)
-        df1 = create_df_from_csds(response1)
-        df2 = create_df_from_csds(response2)
-        
-    # CREATE METADATA FOR PARAMETERS AND RETURN REGARDLESS OF INPUTS
+    # compare parameters
     df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
 
     # print statistics from comparison
     total, match_count, non_match_count = return_stats(df)
 
     # get metadata
+    OUTPUT_TIME = datetime.now()
     metadata = get_metadata_from_args(args)
     metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
     metadata["Parameters"] = total
@@ -301,7 +232,7 @@ def main():
     metadata["Non-Matches"] = non_match_count
     
     # return in user-designated format
-    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.command}'
+    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.input1[0]}_{args.input2[0]}'
     output_filepath = get_output_path(args.output).joinpath(output_filename)
     if args.to_json:
         create_json(df, f"{output_filepath}.json", metadata = dict())
