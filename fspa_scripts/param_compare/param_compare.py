@@ -179,22 +179,23 @@ def validate_input_arguments(inputs):
 
 def get_values_from_input(inputs):
     """Return pandas DataFrame of values from appropriate data source."""
-    if inputs[0] == 'parasol':
+    input_type = inputs[0]
+
+    if input_type == 'parasol':
        response = get_parasol_values(*inputs[1:])
        return create_df_from_parasol(response)
-    elif inputs[0] == 'param_json':
+    elif input_type == 'param_json':
         response = get_param_json_values(*inputs[1:])
         return create_df_from_param_json(response)
-    elif inputs[0] == 'seqgen_fincon':
+    elif input_type == 'seqgen_fincon':
         response = get_seqgen_fincon_values(*inputs[1:])
         return create_df_from_seqgen_fincon(response)
-    elif inputs[0] == 'csds':
+    elif input_type == 'csds':
         response = get_csds_values(*inputs[1:])
         return create_df_from_csds(response)
 
 def main():
     create_directories()
-    
     parser = argparse.ArgumentParser(
         description=PARSER_DESCRIPTION, 
         formatter_class=argparse.RawTextHelpFormatter
@@ -206,11 +207,7 @@ def main():
     parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
-
     args = parser.parse_args()
-
-    # log time the command was called (used for filename and metadata)
-    OUTPUT_TIME = datetime.now()
     
     # validate input types
     validate_input_arguments(args.input1)
@@ -227,6 +224,7 @@ def main():
     total, match_count, non_match_count = return_stats(df)
 
     # get metadata
+    OUTPUT_TIME = datetime.now()
     metadata = get_metadata_from_args(args)
     metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
     metadata["Parameters"] = total
