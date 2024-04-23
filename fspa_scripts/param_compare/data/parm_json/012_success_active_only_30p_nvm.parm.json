@@ -1,0 +1,318 @@
+{
+    "metadata": {
+      "date": "2023-03-14T14:11:42",
+      "source_param_file_path": "/this/is/my/file/my_param_update.dat",
+      "param_xml_file_path": "/this/is/my/file/param.xml",
+      "user": "winner",
+      "tool_name": "foobar",
+      "tool_version": "123"
+    },
+    "parameter_destination": {
+      "fsw_version": "10.3.1.0",
+      "ece_string": "prime",
+      "save_to_nvm": true,
+      "update_method": "file_load",
+      "gnc_idle": true,
+      "gnc_idle_time_sec": 30
+    },
+    "parameter_file": {
+      "parameter_list": [
+        {
+          "id": "0x0D0CE0AA",
+          "name": "SFP_MON_THRM_EIS_NAC_BH_ZN_DRIFT_LCL_RSP_ENA",
+          "version": 1,
+          "type": 1,
+          "friendly_type": "ENUM8",
+          "enum_name": "mon_rsp_enab",
+          "value": 0,
+          "symbolic": "DISABLE",
+          "value_type": "predicted"
+        },
+        {
+            "id": "0x020A0000",
+            "name": "AVS_FSW_STABLE_DURATION",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "I32",
+            "value": 10800,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0001",
+            "name": "CB_CONFIG_1_DOWNLINK_BAND",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_radio_ex_type",
+            "value": 0,
+            "symbolic": "RADIO_EX_X",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0002",
+            "name": "CB_CONFIG_1_RADIO_MODE",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_radio_mission_mode",
+            "value": 1,
+            "symbolic": "RX_ONLY",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0003",
+            "name": "CB_CONFIG_1_PRIME_RADIO_ANTENNA_PATH",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_antenna_unit",
+            "value": 5,
+            "symbolic": "FBA-1",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F19F000",
+            "name": "GNC_ECLIPSE_1_START_TIME",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "I32",
+            "value": 466259556,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F19F04B",
+            "name": "GNC_ECLIPSE_1_END_TIME",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "I32",
+            "value": 466262701,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0004",
+            "name": "CB_CONFIG_1_BACKUP_RADIO_ANTENNA_PATH",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_antenna_unit",
+            "value": 3,
+            "symbolic": "LGA-2",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0005",
+            "name": "CB_CONFIG_1_CMD_RATE",
+            "version": 1,
+            "type": 5,
+            "friendly_type": "ENUM32",
+            "enum_name": "cb_radio_rx_rate",
+            "value": 3355,
+            "symbolic": "7.8125",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0006",
+            "name": "CB_CONFIG_1_TLM_RATE",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 416,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0007",
+            "name": "CB_CONFIG_1_BACKUP_RADIO_CONFIG",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_radio_config_unit",
+            "value": 2,
+            "symbolic": "OFF",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0008",
+            "name": "CB_CONFIG_1_ALTERNATE_BAND_PRIME_TWTA_CONFIG",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_twta_config_unit",
+            "value": 0,
+            "symbolic": "OFF",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0009",
+            "name": "CB_CONFIG_1_BACKUP_TWTA_CONFIG",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_twta_config_unit",
+            "value": 0,
+            "symbolic": "OFF",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B000A",
+            "name": "CB_CONFIG_1_TONE_SELECTION_FILE",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_tone_selection_file",
+            "value": 0,
+            "symbolic": "NO_TOUCH",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B000B",
+            "name": "CB_CONFIG_1_TELEMETRY_SELECTION_FILE",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "cb_telemetry_selection_file",
+            "value": 0,
+            "symbolic": "NO_TOUCH",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0371",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_RT_CRIT",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 60,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0372",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_RT_HIGH",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 1800,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0373",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_RT_MED",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 3600,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0374",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_RT_LOW",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 3600,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0375",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_REC_CRIT",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 60,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0376",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_REC_HIGH",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 1800,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0377",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_REC_MED",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 3600,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0F0B0378",
+            "name": "CB_CONFIG_1_EHA_PROD_RATE_REC_LOW",
+            "version": 1,
+            "type": 2,
+            "friendly_type": "U16",
+            "value": 3600,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0A0E000C",
+            "name": "GNC_DSS_GAIN_A_VALID_UNTIL",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "U32",
+            "value": 480223900,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0D0CE0AA",
+            "name": "GNC_DSS_B_GAIN_A",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "gnc_dss_gain_setting",
+            "value": 1,
+            "symbolic": "MIDDLE",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x0A0E0000",
+            "name": "GNC_DSS_A_GAIN_A",
+            "version": 1,
+            "type": 1,
+            "friendly_type": "ENUM8",
+            "enum_name": "gnc_dss_gain_setting",
+            "value": 0,
+            "symbolic": "LOWEST",
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x040E0000",
+            "name": "SEQ_EPOCH_TIME_101",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "U32",
+            "value": 0,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x040E0001",
+            "name": "SEQ_EPOCH_TIME_100",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "U32",
+            "value": 406000,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x040E0002",
+            "name": "SEQ_EPOCH_TIME_99",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "U32",
+            "value": 662000,
+            "value_type": "predicted"
+          },
+          {
+            "id": "0x040E0003",
+            "name": "SEQ_EPOCH_TIME_98",
+            "version": 1,
+            "type": 4,
+            "friendly_type": "U32",
+            "value": 108000,
+            "value_type": "predicted"
+          }
+      ]
+    }
+  }
