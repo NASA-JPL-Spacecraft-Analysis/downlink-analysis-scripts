@@ -3,6 +3,7 @@ import argparse
 import json
 from publish_groups import *
 from publish_constraints import *
+from publish_events import *
 
 
 def convert_xml(input_file: str) -> dict:
@@ -24,7 +25,6 @@ def read_from_json(filename: str) -> dict:
 
 
 def main(mode: str, input_file: str, collection_id: str) -> None:
-    # currently script will simply parse channel or param files
     data = convert_xml(input_file)
     valueType = ''
     if mode == 'channel':
@@ -37,22 +37,17 @@ def main(mode: str, input_file: str, collection_id: str) -> None:
         valueType = 'fsw_parameter'
         groups = group_output
         generate_groups(groups, state_output, collection_id, valueType)
-    if mode == 'constraint':
-        flight_rules = parse_flight_rules(data, collection_id)
-        create_constraints(collection_id, flight_rules)
-        
+    if mode == 'flight_rules':
+        constraints = parse_flight_rules(data, collection_id)
+        create_constraints(collection_id, constraints)
+    if mode == 'evr':
+        events = parse_evr(data, collection_id)
+        create_events(collection_id, events)
         
 if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser(description="close-the-u wrapper script", usage='ctu_sm_script.py [-h] -i INPUT_FILE -c COLLECTION_ID {groups,constraints} ...')
+    arg_parser = argparse.ArgumentParser(description="close-the-u wrapper script")
     arg_parser.add_argument('-i', '--input', dest='input_file', required=True, help='input file: REQUIRED')
     arg_parser.add_argument('-c', '--collectionId', dest='collection_id', required=True, help='collection id to be used: REQUIRED')
-    sub_parser = arg_parser.add_subparsers(help='Publish groups or constraints to State Manager')
-    # subparser for groups command
-    parser_group = sub_parser.add_parser('groups', help='parse channel.xml or param.xml')
-    parser_group.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter'], required=True, help='file mode: REQUIRED')
-    # subparser for contraints command
-    parser_constraint = sub_parser.add_parser('constraints', help='parse flight_rules.xml')
-    
+    arg_parser.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter','flight_rules', 'evr'], required=True, help='Publish SM groups with channel and parameter. Publish SM constraints with flight_rules. Publish SM events with evr. mode:  REQUIRED')
     args = arg_parser.parse_args()
-    mode = args.mode if hasattr(args, 'mode') else 'constraint'
-    main(mode, args.input_file, args.collection_id)
+    main(args.mode, args.input_file, args.collection_id)
