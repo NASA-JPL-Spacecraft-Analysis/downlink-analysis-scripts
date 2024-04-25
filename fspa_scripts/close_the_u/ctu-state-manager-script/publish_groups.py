@@ -286,7 +286,7 @@ def generate_group_mapping(collection_id, group_dict) -> list:
 def generate_groups(groups: list, states: list, collection_id: str, value_type: str):
     group_dict = {'group': groups}
     # Create the states in SM to generate an ID
-    # create_states(collection_id, states, value_type)
+    create_states(collection_id, states, value_type)
     # For each state in a group find its associated ID in SM 
     groups = generate_group_mapping(collection_id, group_dict)
     close_the_u.state_manager.create_groups(collection_id, groups, ENVIRONMENT)
