@@ -19,6 +19,7 @@ setuptools.setup(
         "lxml==5.1.0",
         "m20-eas-dplib",
         "jpl_time",
+        "pandas",
         "XlsxWriter"
     ],
     py_modules=["fspa_scripts"],
