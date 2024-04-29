@@ -10,15 +10,15 @@ import json
 import os
 import sys
 import pathlib
-import pandas as pd
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
+
+import pandas as pd
 
 from utils.parasol import get_parasol_values, create_df_from_parasol
 from utils.param_json import get_param_json_values, create_df_from_param_json
 from utils.seqgen_fincon import get_seqgen_fincon_values, create_df_from_seqgen_fincon
 from utils.csds import get_csds_values, create_df_from_csds
-
 from utils.compare import compare_parameters
 
 from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
@@ -48,7 +48,7 @@ required arguments:
 ###############################################################################
 # HELPERS
 ###############################################################################
-def create_directories():
+def _create_directories():
     """Create directories for script."""
     try:
         os.mkdir("data/parasol_responses")
@@ -57,13 +57,7 @@ def create_directories():
     except:
         pass
 
-def get_output_path(path):
-    """Get or build output path provided by user."""
-    output_basepath = Path(path) if path else Path.cwd().joinpath('output')
-    output_basepath.mkdir(exist_ok=True)
-    return output_basepath
-
-def return_stats(df):
+def _return_stats(df):
     """Print basic param_compare counts to console and return them."""
     total = df.shape[0]
     matches = df.loc[df['match'] == True].shape[0]
@@ -77,18 +71,33 @@ def return_stats(df):
     # return results for metadata
     return total, matches, non_matches
 
+def _get_output_path(path):
+    """Get or build output path provided by user."""
+    output_basepath = Path(path) if path else Path.cwd().joinpath('output')
+    output_basepath.mkdir(exist_ok=True)
+    return output_basepath
+
 ###############################################################################
 # XLSX AND JSON WRITERS
 ###############################################################################  
-def get_metadata_from_args(args):
+def _get_metadata_from_args(args):
     """Create CLI argument dictionary with string values for XLSX metadata."""
     arg_dict = args.__dict__;
     metadata = dict()
     for i in arg_dict.keys():
         metadata[i] = str(arg_dict[i])
     return metadata
+
+def _get_metadata_from_args_library(input1, input2):
+    """Create CLI argument dictionary with string values for XLSX metadata."""
+    metadata = dict()
+    for i in input1.keys():
+        metadata[f'{input1['type']}_{i}'] = str(input1[i])
+    for i in input2.keys():
+        metadata[f'{input2['type']}_{i}'] = str(input2[i])
+    return metadata
  
-def add_metadata_worksheet(workbook, metadata):
+def add_metadata_worksheet(workbook, metadata = dict()):
     """Add dictionary as table to a worksheet called 'metadata'."""
     # Add metadata worksheet to a workbook
     metadata_worksheet = workbook.add_worksheet("metadata")
@@ -162,6 +171,148 @@ def create_json(df, filename, metadata = dict()):
         json.dump(data, json_file, indent=4, sort_keys=False, separators=(",", ": "))
 
 ###############################################################################
+# LIBRARY
+###############################################################################
+
+def validate_input_arguments_library(input_args):
+    """Validate nargs is used with all required positional arguments."""
+    input_type = input_args[0] # should be valid input type
+    input_arg_count = len(input_args.keys()) - 1
+
+    if input_type not in INPUT_TYPES:
+        return sys.exit(f"Input type '{input_type}' does not exist. Valid types are 'parasol', 'param_json', 'seqgen_fincon', or 'csds'.")
+    
+    if input_arg_count != INPUT_TYPE_ARG_COUNTS[input_type]:
+        sys.exit(f"You provided {input_arg_count} arguments to {input_type}, where {INPUT_TYPE_ARG_COUNTS[input_type]} are expected. Read '-h' for command exmaples.")
+
+def get_values_from_input_library(input_args):
+    """Return pandas DataFrame of values from appropriate data source."""
+    input_type = input_args[0]
+
+    if input_type == 'parasol':
+       response = get_parasol_values(
+            host=input_args['host'], 
+            session=input_args['session'], 
+            scet=input_args['scet'], 
+            vcid=input_args['vcid'], 
+            env=input_args['env']
+        )
+       return create_df_from_parasol(response)
+    elif input_type == 'param_json':
+        response = get_param_json_values(path=input_args['path'])
+        return create_df_from_param_json(response)
+    elif input_type == 'seqgen_fincon':
+        response = get_seqgen_fincon_values(path=input_args['path'])
+        return create_df_from_seqgen_fincon(response)
+    elif input_type == 'csds':
+        response = get_csds_values(
+            collection_name=input_args['collection_name'],
+            env=input_args['env']
+        )
+        return create_df_from_csds(response)
+
+
+def compare(
+        input1: dict, 
+        input2: dict, 
+        verbose: bool = False,
+        diff_only: bool = False,
+        intersect_only: bool = False,
+        return_type: str = None,
+        output: str = None
+    ):
+    """
+    CLI for comparing parameters from several formats: parasol, csds, param.json, seqgen_fincon.json.
+    
+    **Input Syntax**
+    
+        ::
+
+            response = fspa_scripts.param_compare.param_compare(
+                {
+                    'type': 'parasol',
+                    'host': 'eurcitis001',
+                    'session': 830,
+                    'scet': '2023-136T22:08:51.038',
+                    'vcid': 0,
+                    'env': 'dev'
+                },
+                {
+                    'type'='param_json',
+                    'path'='/path/to/param_json.json',
+                }
+                verbose = True,
+                diff_only = True,
+                intersect_only = True,
+                return_type = 'xlsx',
+                output = '/my/output/folder',
+            )
+
+    ARGS:
+
+        type (enum): **[REQUIRED]** 'parasol', 'param_json', 'seqgen_fincon', 'csds' (default: None)
+        verbose (bool): Include all data from compared files in output (default: False)
+        diff_only (bool): Only output parameters that do not match (default: False)
+        intersect_only (bool): Only output parameters that exist in both inputs (default: False)
+        return_type (enum): Save output file as JSON (options: 'xlsx', 'json') (default: None)
+        output (str): Path to desired output location (default: None)
+
+    INPUT TYPE ARGS:
+        parasol:
+            host (str): **[REQUIRED]** Session host on parasol (ex: eurcits001) (default: None)
+            session (int): **[REQUIRED]** Session id on parasol (ex: 830) (default: None)
+            scet (str): **[REQUIRED]** A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038) (default: None)
+            vcid (int): **[REQUIRED]** VCID 0 or 32 (options: 0, 32) (default: None)
+            env (str): **[REQUIRED]** Venue for retrieving parameter values (options: 'local', 'dev') (default: None)
+
+        param_json:
+            path (str): **[REQUIRED]** Path to json file (default: None)
+
+        seqgen_fincon:
+            path (str): **[REQUIRED]** Path to json file (default: None)
+
+        csds:
+            collection_name (str): **[REQUIRED]** Collection Name for state data store (ex: 'STATE_MANAGER_DEMO') (default: None)
+            env (str): **[REQUIRED]** Venue for retrieving parameter values (options: 'local', 'dev') (default: None)
+
+    Returns:
+        Output in JSON.
+    """
+    _create_directories()
+    
+    # validate input types
+    validate_input_arguments_library(input1)
+    validate_input_arguments_library(input2)
+    
+    # query/load data and conver to pandas DataFrames
+    df1 = get_values_from_input_library(input1)
+    df2 = get_values_from_input_library(input2)
+
+    # compare parameters
+    df = compare_parameters(df1, df2, verbose, intersect_only, diff_only)
+
+    # print statistics from comparison
+    total, match_count, non_match_count = _return_stats(df)
+
+    # get metadata
+    OUTPUT_TIME = datetime.now()
+    metadata = _get_metadata_from_args_library(input1, input2)
+    metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
+    metadata["Parameters"] = total
+    metadata["Matches"] = match_count
+    metadata["Non-Matches"] = non_match_count
+    
+    # return in user-designated format
+    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{input1['type']}_{input2['type']}'
+    output_filepath = _get_output_path(output).joinpath(output_filename)
+    if return_type == 'json':
+        create_json(df, f"{output_filepath}.json", metadata = dict())
+    elif return_type == 'xlsx':
+        create_xlsx(df, f"{output_filepath}.xlsx", metadata)
+
+    return df.to_json(orient='records')
+
+###############################################################################
 # RUN MAIN & PARSE ARGUMENTS
 ###############################################################################
 def validate_input_arguments(inputs):
@@ -193,7 +344,7 @@ def get_values_from_input(inputs):
         return create_df_from_csds(response)
 
 def main():
-    create_directories()
+    _create_directories()
     parser = argparse.ArgumentParser(
         description=PARSER_DESCRIPTION, 
         formatter_class=argparse.RawTextHelpFormatter
@@ -219,11 +370,11 @@ def main():
     df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
 
     # print statistics from comparison
-    total, match_count, non_match_count = return_stats(df)
+    total, match_count, non_match_count = _return_stats(df)
 
     # get metadata
     OUTPUT_TIME = datetime.now()
-    metadata = get_metadata_from_args(args)
+    metadata = _get_metadata_from_args(args)
     metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
     metadata["Parameters"] = total
     metadata["Matches"] = match_count
@@ -231,7 +382,7 @@ def main():
     
     # return in user-designated format
     output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.input1[0]}_{args.input2[0]}'
-    output_filepath = get_output_path(args.output).joinpath(output_filename)
+    output_filepath = _get_output_path(args.output).joinpath(output_filename)
     if args.to_json:
         create_json(df, f"{output_filepath}.json", metadata = dict())
     else:
