@@ -15,13 +15,13 @@ from datetime import datetime
 
 import pandas as pd
 
-from utils.parasol import get_parasol_values, create_df_from_parasol
-from utils.param_json import get_param_json_values, create_df_from_param_json
-from utils.seqgen_fincon import get_seqgen_fincon_values, create_df_from_seqgen_fincon
-from utils.csds import get_csds_values, create_df_from_csds
-from utils.compare import compare_parameters
+from fspa_scripts.param_compare.utils.parasol import get_parasol_values, create_df_from_parasol
+from fspa_scripts.param_compare.utils.param_json import get_param_json_values, create_df_from_param_json
+from fspa_scripts.param_compare.utils.seqgen_fincon import get_seqgen_fincon_values, create_df_from_seqgen_fincon
+from fspa_scripts.param_compare.utils.csds import get_csds_values, create_df_from_csds
 
-from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+from fspa_scripts.param_compare.utils.compare import compare_parameters
+from fspa_scripts.param_compare.utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
 
 ###############################################################################
 # PARSER TEXT
@@ -51,6 +51,7 @@ required arguments:
 def _create_directories():
     """Create directories for script."""
     try:
+        os.mkdir("data")
         os.mkdir("data/parasol_responses")
         os.mkdir("data/csds_responses")
         os.mkdir("output")
@@ -176,7 +177,7 @@ def create_json(df, filename, metadata = dict()):
 
 def validate_input_arguments_library(input_args):
     """Validate nargs is used with all required positional arguments."""
-    input_type = input_args[0] # should be valid input type
+    input_type = input_args['type'] # should be valid input type
     input_arg_count = len(input_args.keys()) - 1
 
     if input_type not in INPUT_TYPES:
@@ -187,7 +188,7 @@ def validate_input_arguments_library(input_args):
 
 def get_values_from_input_library(input_args):
     """Return pandas DataFrame of values from appropriate data source."""
-    input_type = input_args[0]
+    input_type = input_args['type']
 
     if input_type == 'parasol':
        response = get_parasol_values(
@@ -310,7 +311,7 @@ def compare(
     elif return_type == 'xlsx':
         create_xlsx(df, f"{output_filepath}.xlsx", metadata)
 
-    return df.to_json(orient='records')
+    return json.loads(df.to_json(orient='records'))
 
 ###############################################################################
 # RUN MAIN & PARSE ARGUMENTS

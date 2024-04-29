@@ -5,18 +5,19 @@ Code that handles loading param.json and returns data.
 import json
 import sys
 import pandas as pd
+import os
 
 ###############################################################################
 # GET PARAM.JSON
 ###############################################################################
 
-def get_param_json_values(file_path):
+def get_param_json_values(path):
     """Return param.json data from file path."""
     try:
-        with open(file_path, "r") as json_file:
+        with open(path, "r") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
-        sys.exit(f"ERROR: file '{file_path}' cannot be found.")
+        sys.exit(f"ERROR: file '{path}' cannot be found.")
     
 ###############################################################################
 # PARAM.JSON TO PANDAS
