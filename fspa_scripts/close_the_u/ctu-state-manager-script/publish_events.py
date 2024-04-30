@@ -1,6 +1,3 @@
-import close_the_u
-ENVIRONMENT = 'dev'
-
 def parse_evr(data: dict, collection_id: str) -> list:
     evr_events = []
     events = data['evr_dictionary']['evrs']['evr']
@@ -26,6 +23,3 @@ def parse_evr(data: dict, collection_id: str) -> list:
         evr_events.append(evr_data)
         
     return evr_events
-
-def create_events(collection_id: str, events: list):
-    close_the_u.state_manager.create_events(collection_id, events, ENVIRONMENT)

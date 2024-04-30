@@ -1,5 +1,4 @@
 import close_the_u
-ENVIRONMENT = 'dev'
 
 
 def parse_channel(data: dict) -> tuple[list, list]:
@@ -192,7 +191,7 @@ def parse_dict(data: dict, top_key: str, main_key: str, optional_key: str = None
     return parsed_dict
 
 
-def create_states(collection_id: str, state_records: dict, valueType: str) -> None:
+def create_states(collection_id: str, state_records: dict, valueType: str, environment: str) -> None:
     states = []
     for state in state_records:
         if isinstance(state, dict):
@@ -215,7 +214,7 @@ def create_states(collection_id: str, state_records: dict, valueType: str) -> No
                 enum_name_value['value'] = value
                 record['enumerations'].append(enum_name_value)
  
-    close_the_u.state_manager.create_states(collection_id, states, ENVIRONMENT)
+    close_the_u.state_manager.create_states(collection_id, states, environment)
 
 
 def map_channel_groups(channel_def: list, channel_groups: list) -> list:
@@ -245,7 +244,7 @@ def map_channel_groups(channel_def: list, channel_groups: list) -> list:
     return channel_mapping                
 
 
-def find_state_identifier(state_identifier, state_dict) -> str:
+def find_state_identifier(state_identifier: str, state_dict: dict) -> str:
     identifier = ''
     states = state_dict['data']['states']
     for state in states:
@@ -257,9 +256,9 @@ def find_state_identifier(state_identifier, state_dict) -> str:
              
 
 # Query the state IDs from SM and add it to the group mapping
-def generate_group_mapping(collection_id, group_dict) -> list:
+def generate_group_mapping(collection_id: str, group_dict: dict, environment: str) -> list:
     states = {}
-    states = close_the_u.state_manager.get_states(collection_id, env=ENVIRONMENT)
+    states = close_the_u.state_manager.get_states(collection_id, env=environment)
     groups = []
     # Find each state id for each given group
     for group in group_dict['group']:
@@ -283,10 +282,10 @@ def generate_group_mapping(collection_id, group_dict) -> list:
     
     return groups
 
-def generate_groups(groups: list, states: list, collection_id: str, value_type: str):
+def generate_groups(groups: list, states: list, collection_id: str, value_type: str, environment: str):
     group_dict = {'group': groups}
     # Create the states in SM to generate an ID
-    create_states(collection_id, states, value_type)
+    create_states(collection_id, states, value_type, environment)
     # For each state in a group find its associated ID in SM 
-    groups = generate_group_mapping(collection_id, group_dict)
-    close_the_u.state_manager.create_groups(collection_id, groups, ENVIRONMENT)
+    groups = generate_group_mapping(collection_id, group_dict, environment)
+    close_the_u.state_manager.create_groups(collection_id, groups, environment)

@@ -1,6 +1,3 @@
-import close_the_u
-ENVIRONMENT = 'dev'
-
 def parse_flight_rules(data: dict, collection_id: str) -> list:
     flight_rules = []
     rules = data['flight_rules']['flight_rule']
@@ -19,7 +16,7 @@ def parse_flight_rules(data: dict, collection_id: str) -> list:
             if key == '@level':
                 level = value
             if key == '@operational_category':
-                category = value.get('ops_category')
+                category = value
         rule_data['description'] = f'{level} {category} {description}'
         flight_rules.append(rule_data)
         
@@ -47,7 +44,3 @@ def parse_fault_monitors(data: dict, collection_id: str) -> list:
         fault_monitors.append(fault_data)
         
     return fault_monitors
-
-
-def create_constraints(collection_id: str, constraints: list):
-    close_the_u.state_manager.create_constraints(collection_id, constraints, ENVIRONMENT)
