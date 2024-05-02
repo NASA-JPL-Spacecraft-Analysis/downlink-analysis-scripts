@@ -37,9 +37,9 @@ required arguments:
         vcid        VCID 0 or 32 (ex: 0)
         env         Venue for retrieving parameter values (ex: dev)
     param_json:
-        path        Path to json file.
+        path        Path to JSON file.
     seqgen_fincon:
-        path        Path to json file.
+        path        Path to JSON file.
     csds:
         collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
         env         Venue for retrieving parameter values (ex: dev)
@@ -173,7 +173,12 @@ def validate_input_arguments(inputs):
         return sys.exit(f"Input type '{input_type}' does not exist. Valid types are 'parasol', 'param_json', 'seqgen_fincon', or 'csds'.")
     
     if input_arg_count != INPUT_TYPE_ARG_COUNTS[input_type]:
-        sys.exit(f"You provided {input_arg_count} arguments to {input_type}, where {INPUT_TYPE_ARG_COUNTS[input_type]} are expected. Read '-h' for command exmaples.")
+        sys.exit(f"Input type {input_type} expects {INPUT_TYPE_ARG_COUNTS[input_type]} arguments. You provided {input_arg_count}. Read '-h' for help.")
+
+    if input_type in ['param_json', 'seqgen_fincon']:
+        file_extension = Path(os.path.basename(inputs[1])).suffix
+        if file_extension != '.json':
+            sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {inputs[1]}")
 
 def get_values_from_input(inputs):
     """Return pandas DataFrame of values from appropriate data source."""
