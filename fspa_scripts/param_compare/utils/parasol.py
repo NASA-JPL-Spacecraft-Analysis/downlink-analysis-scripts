@@ -28,7 +28,7 @@ def _get_env_venue(env):
 # QUERY PARASOL
 ###############################################################################
 
-def get_parasol_values(host, session, scet, vcid, env):
+def get_parasol_values(host, session, scet, vcid, volatility, env):
     """Get and return parasol query based on provided CLI arguments."""
     filename = f"./data/parasol_responses/{host}_{session}_{scet}_{vcid}.json"
 
@@ -81,7 +81,7 @@ def get_parasol_values(host, session, scet, vcid, env):
 # PARASOL QUERY TO PANDAS
 ###############################################################################
 
-def create_df_from_parasol(response):
+def create_df_from_parasol(response, vol):
     """Return pandas DataFrame from parasol query JSON data."""
     rows_list = []
     logging.info(f"Groups in parasol query: {len(response.items())}")
@@ -96,14 +96,27 @@ def create_df_from_parasol(response):
                 continue
 
             for parameter_name, parameter in group[PARASOL_COPY].items():
+                volatility = 'volatile' if vol == 'vol' else 'non-volatile'
+                
+                # check if volatility specified by user exists in query
+                if not volatility in parameter:
+                    new_vol = 'non-volatile' if volatility == 'volatile' else 'non-volatile'
+                    if not new_vol in parameter:
+                        logging.error(f"No value exists for {parameter_name} in parasol query.")
+                        sys.exit()
+                    
+                    # inform user we're testing different volatility
+                    logging.warning(f"Parameter '{parameter_name}' has no {volatility} value. Using {new_vol} value instead.")
+                    volatility = new_vol
+
                 rows_list.append({
                     "name": parameter_name, 
-                    "value": parameter['non-volatile']['value'],
+                    "value": parameter[volatility]['value'],
                     "module": module_name,
                     "group": group_name,
                     "copy": PARASOL_COPY,
-                    "evidence":parameter['non-volatile']['evidence'],
-                    "evidence_status": parameter['non-volatile']['evidence_status']
+                    "evidence":parameter[volatility]['evidence'],
+                    "evidence_status": parameter[volatility]['evidence_status']
                 })
 
     # if no parameters, return empty dataframe for merge

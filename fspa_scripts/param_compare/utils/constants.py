@@ -12,7 +12,7 @@ COOKIE_NAME = "ecDevRhel8Sso"
 # CLI
 INPUT_TYPES = ['parasol', 'param_json', 'seqgen_fincon', 'csds']
 INPUT_TYPE_ARG_COUNTS = {
-    'parasol': 5,
+    'parasol': 6,
     'param_json': 1,
     'seqgen_fincon': 1,
     'csds': 2

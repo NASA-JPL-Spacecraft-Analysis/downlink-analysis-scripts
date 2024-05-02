@@ -41,8 +41,8 @@ required arguments:
         session     Session id on parasol (ex: 830)
         scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
         vcid        VCID 0 or 32 (ex: 0)
+        volatility  Use parasol volatile values (options: 'vol' or 'nvm')
         env         Venue for retrieving parameter values (ex: dev)
-        volatility  Use parasol volatile values (options: 'volatile' or 'non-volatile')
     param_json:
         path        Path to JSON file.
     seqgen_fincon:
@@ -193,7 +193,7 @@ def get_values_from_input(inputs):
 
     if input_type == 'parasol':
        response = get_parasol_values(*inputs[1:])
-       return create_df_from_parasol(response)
+       return create_df_from_parasol(response, inputs[-2]) # -2 is volatility
     elif input_type == 'param_json':
         response = get_param_json_values(*inputs[1:])
         return create_df_from_param_json(response)
