@@ -100,6 +100,7 @@ Additional flags:
 - `--intersect-only` Only output parameters that exist in both inputs.
 - `--diff-only` Only output parameters that do not match.
 - `--to-json` Output results in JSON at desired output path.
+- `--debug` Log param_compare processing information to console.
 
 ### transpire
 

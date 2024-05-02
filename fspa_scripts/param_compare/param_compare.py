@@ -13,6 +13,8 @@ import pathlib
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
+import requests
+import logging
 
 from utils.parasol import get_parasol_values, create_df_from_parasol
 from utils.param_json import get_param_json_values, create_df_from_param_json
@@ -22,6 +24,10 @@ from utils.csds import get_csds_values, create_df_from_csds
 from utils.compare import compare_parameters
 
 from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+
+# setup logging
+FORMAT = "[%(levelname)s] [%(asctime)s]: %(message)s"
+requests.packages.urllib3.disable_warnings()
 
 ###############################################################################
 # PARSER TEXT
@@ -36,6 +42,7 @@ required arguments:
         scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
         vcid        VCID 0 or 32 (ex: 0)
         env         Venue for retrieving parameter values (ex: dev)
+        volatility  Use parasol volatile values (options: 'volatile' or 'non-volatile')
     param_json:
         path        Path to JSON file.
     seqgen_fincon:
@@ -210,7 +217,10 @@ def main():
     parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
+    parser.add_argument('--debug', help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
     args = parser.parse_args()
+
+    logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
     
     # validate input types
     validate_input_arguments(args.input1)
