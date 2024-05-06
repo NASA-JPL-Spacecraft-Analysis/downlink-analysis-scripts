@@ -93,28 +93,31 @@ def buildModuleStates(args, response):
         states = []
         print("Composing states for module {}".format(module_name))
 
-        for parameter_name, parameter in module[GROUP][
-            COPY
-        ].items():
-            for volatility, data in parameter.items():
-                if volatility.upper() in [
-                    member.value
-                    for member in state_data_store.enum_classes["volatility"]
-                ]:
 
-                    try:
-                        if isinstance(data, list):
-                            data = data[0]
+        for group_name, group in module.items():
+            if not bool(group):
+                continue
 
-                        state = _composeState(
-                            args, parameter_name, volatility.upper(), data
-                        )
-                        if state is not None:
-                            states.append(state)
+            for parameter_name, parameter in group[COPY].items():
+                for volatility, data in parameter.items():
+                    if volatility.upper() in [
+                        member.value
+                        for member in state_data_store.enum_classes["volatility"]
+                    ]:
 
-                    except ValueError as err:
-                        print(err)
-                        pass
+                        try:
+                            if isinstance(data, list):
+                                data = data[0]
+
+                            state = _composeState(
+                                args, parameter_name, volatility.upper(), data
+                            )
+                            if state is not None:
+                                states.append(state)
+
+                        except ValueError as err:
+                            print(err)
+                            pass
 
         print("Composed {} states for module: {}".format(len(states), module_name))
         _insertStates(args.env, states)
