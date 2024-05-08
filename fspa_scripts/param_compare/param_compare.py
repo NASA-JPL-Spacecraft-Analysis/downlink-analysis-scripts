@@ -194,6 +194,11 @@ def validate_input_arguments_library(input_args):
     if input_arg_count != INPUT_TYPE_ARG_COUNTS[input_type]:
         sys.exit(f"You provided {input_arg_count} arguments to {input_type}, where {INPUT_TYPE_ARG_COUNTS[input_type]} are expected. Read '-h' for command exmaples.")
 
+    if input_type in ['param_json', 'seqgen_fincon']:
+        file_extension = Path(os.path.basename(input_args["path"])).suffix
+        if file_extension != '.json':
+            sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {input_args["path"]}")
+
 def get_values_from_input_library(input_args):
     """Return pandas DataFrame of values from appropriate data source."""
     input_type = input_args['type']
@@ -206,7 +211,7 @@ def get_values_from_input_library(input_args):
             vcid=input_args['vcid'], 
             env=input_args['env']
         )
-       return create_df_from_parasol(response)
+       return create_df_from_parasol(response, input_args['volatility']) # -2 is volatility
     elif input_type == 'param_json':
         response = get_param_json_values(path=input_args['path'])
         return create_df_from_param_json(response)
@@ -244,6 +249,7 @@ def compare(
                     'session': 830,
                     'scet': '2023-136T22:08:51.038',
                     'vcid': 0,
+                    'volatility': 'nvm',
                     'env': 'dev'
                 },
                 {
@@ -272,6 +278,7 @@ def compare(
             session (int): **[REQUIRED]** Session id on parasol (ex: 830) (default: None)
             scet (str): **[REQUIRED]** A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038) (default: None)
             vcid (int): **[REQUIRED]** VCID 0 or 32 (options: 0, 32) (default: None)
+            volatility (str) **[REQUIRED]** Use parasol volatile values (options: 'vol' or 'nvm') (default: None)
             env (str): **[REQUIRED]** Venue for retrieving parameter values (options: 'local', 'dev') (default: None)
 
         param_json:
@@ -370,7 +377,7 @@ def main():
     parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
-    parser.add_argument('--debug', help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
+    parser.add_argument("--debug", help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
