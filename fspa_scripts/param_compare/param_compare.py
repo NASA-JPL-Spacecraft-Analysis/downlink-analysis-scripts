@@ -12,6 +12,9 @@ import sys
 import pathlib
 from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+import requests
+import logging
 
 import pandas as pd
 
@@ -22,6 +25,10 @@ from fspa_scripts.param_compare.utils.csds import get_csds_values, create_df_fro
 
 from fspa_scripts.param_compare.utils.compare import compare_parameters
 from fspa_scripts.param_compare.utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+
+# setup logging
+FORMAT = "[%(levelname)s] [%(asctime)s]: %(message)s"
+requests.packages.urllib3.disable_warnings()
 
 ###############################################################################
 # PARSER TEXT
@@ -35,11 +42,12 @@ required arguments:
         session     Session id on parasol (ex: 830)
         scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
         vcid        VCID 0 or 32 (ex: 0)
+        volatility  Use parasol volatile values (options: 'vol' or 'nvm')
         env         Venue for retrieving parameter values (ex: dev)
     param_json:
-        path        Path to json file.
+        path        Path to JSON file.
     seqgen_fincon:
-        path        Path to json file.
+        path        Path to JSON file.
     csds:
         collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
         env         Venue for retrieving parameter values (ex: dev)
@@ -325,7 +333,12 @@ def validate_input_arguments(inputs):
         return sys.exit(f"Input type '{input_type}' does not exist. Valid types are 'parasol', 'param_json', 'seqgen_fincon', or 'csds'.")
     
     if input_arg_count != INPUT_TYPE_ARG_COUNTS[input_type]:
-        sys.exit(f"You provided {input_arg_count} arguments to {input_type}, where {INPUT_TYPE_ARG_COUNTS[input_type]} are expected. Read '-h' for command exmaples.")
+        sys.exit(f"Input type {input_type} expects {INPUT_TYPE_ARG_COUNTS[input_type]} arguments. You provided {input_arg_count}. Read '-h' for help.")
+
+    if input_type in ['param_json', 'seqgen_fincon']:
+        file_extension = Path(os.path.basename(inputs[1])).suffix
+        if file_extension != '.json':
+            sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {inputs[1]}")
 
 def get_values_from_input(inputs):
     """Return pandas DataFrame of values from appropriate data source."""
@@ -333,7 +346,7 @@ def get_values_from_input(inputs):
 
     if input_type == 'parasol':
        response = get_parasol_values(*inputs[1:])
-       return create_df_from_parasol(response)
+       return create_df_from_parasol(response, inputs[-2]) # -2 is volatility
     elif input_type == 'param_json':
         response = get_param_json_values(*inputs[1:])
         return create_df_from_param_json(response)
@@ -357,7 +370,10 @@ def main():
     parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
+    parser.add_argument('--debug', help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
     args = parser.parse_args()
+
+    logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
     
     # validate input types
     validate_input_arguments(args.input1)
