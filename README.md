@@ -64,6 +64,7 @@ parasol:
     session     Session id on parasol (ex: 830)
     scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
     vcid        VCID 0 or 32 (ex: 0)
+    volatility  Use parasol volatile values (options: 'vol' or 'nvm')
     env         Venue for retrieving parameter values (ex: dev)
 
 param_json:
@@ -81,10 +82,10 @@ csds:
 
 ```shell
 # parasol to parasol
-$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
+$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev
 
 # parasol to param.json
-$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 dev --input2 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
+$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --input2 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
 
 # param.json to seqgen_fincon.json
 $ python param_compare.py --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
