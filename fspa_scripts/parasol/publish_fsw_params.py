@@ -4,6 +4,8 @@ import json
 import numbers
 import os
 
+from typing import Any, Dict, List, Optional
+
 import parasol
 from close_the_u import state_data_store
 
@@ -13,15 +15,27 @@ GROUP = "no_group"
 COPY = "COPY_0"
 
 
-def _getEnvVenue(env):
+def _getEnvVenue(env: str) -> Dict[str, Any]:
     if env == "dev":
         return {
             "parasol_host": "parasol.eurc-dev.jpl.nasa.gov",
             "cookie_name": "ecDevRhel8Sso",
         }
 
+    if env == "testbed":
+        return {
+            "parasol_host": "parasol.ectb.awsgw1.jpl.nasa.gov",
+            "cookie_name": "ecProdRhel8Sso",
+        }
 
-def _insertStates(venue, states):
+    if env == "gdsit":
+        return {
+            "parasol_host": "parasol.gdsit.eurc.jpl.nasa.gov",
+            "cookie_name": "ecTestCloudSso",
+        }
+
+
+def _insertStates(venue: str, states: List[Dict]) -> None:
     response = state_data_store.create_states(states, env=venue)
 
     if response["data"]["createStates"]["success"] == True:
@@ -32,7 +46,9 @@ def _insertStates(venue, states):
         )
 
 
-def _composeState(args, parameter_name, volatility, data):
+def _composeState(
+    args: Dict[str, Any], parameter_name: str, volatility: str, data: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
     state = None
 
     value = data["value"]
@@ -44,6 +60,7 @@ def _composeState(args, parameter_name, volatility, data):
         "name": parameter_name,
         "scet": evidence["scet"],
         "volatility": volatility,
+        "cpu": str(args.vcid),
         "value": value if isinstance(value, numbers.Number) else -99999,
     }
 
@@ -54,7 +71,7 @@ def _composeState(args, parameter_name, volatility, data):
     return state
 
 
-def getParameterValues(args):
+def getParameterValues(args: Dict[str, Any]) -> Dict[str, Any]:
     filename = "./parasol_responses/{}_{}_{}_{}.json".format(
         args.host, args.session, args.scet, args.vcid
     )
@@ -88,11 +105,10 @@ def getParameterValues(args):
         return response
 
 
-def buildModuleStates(args, response):
+def buildModuleStates(args: Dict[str, Any], response: Dict[str, Any]) -> None:
     for module_name, module in response.items():
         states = []
         print("Composing states for module {}".format(module_name))
-
 
         for group_name, group in module.items():
             if not bool(group):
@@ -100,7 +116,8 @@ def buildModuleStates(args, response):
 
             for parameter_name, parameter in group[COPY].items():
                 for volatility, data in parameter.items():
-                    if volatility.upper() in [
+                    csds_volatility = volatility.replace("-", "_").upper()
+                    if csds_volatility in [
                         member.value
                         for member in state_data_store.enum_classes["volatility"]
                     ]:
@@ -110,8 +127,9 @@ def buildModuleStates(args, response):
                                 data = data[0]
 
                             state = _composeState(
-                                args, parameter_name, volatility.upper(), data
+                                args, parameter_name, csds_volatility, data
                             )
+
                             if state is not None:
                                 states.append(state)
 
