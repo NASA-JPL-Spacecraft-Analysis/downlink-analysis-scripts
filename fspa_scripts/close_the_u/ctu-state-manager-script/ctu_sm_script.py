@@ -5,6 +5,7 @@ import close_the_u
 from publish_groups import *
 from publish_constraints import *
 from publish_events import *
+from publish_commands import *
 
 ENVIRONMENT = 'dev'
 
@@ -30,7 +31,7 @@ def main() -> None:
     arg_parser = argparse.ArgumentParser(description="close-the-u wrapper script")
     arg_parser.add_argument('-i', '--input', dest='input_file', required=True, help='input file: type is of XML and is REQUIRED')
     arg_parser.add_argument('-c', '--collectionId', dest='collection_id', required=True, help='collection id to be used: REQUIRED')
-    arg_parser.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter','flight_rules', 'evr', 'fault_monitors'], required=True, help='Publish SM groups with channel.xml or parameter.xml. Publish SM constraints with flight_rules.xml or fault_monitors.xml. Publish SM events with evr.xml. mode:  REQUIRED')
+    arg_parser.add_argument('-m', '--mode', dest='mode', choices=['channel', 'parameter','flight_rules', 'evr', 'fault_monitors', 'command'], required=True, help='Publish SM groups with channel.xml or parameter.xml. Publish SM constraints with flight_rules.xml or fault_monitors.xml. Publish SM events with evr.xml. Publish SM commands with command.xml. mode:  REQUIRED')
     arg_parser.add_argument('-e', '--environment', dest='environment', default=ENVIRONMENT, required=False, help='The environmental server to use')
     args = arg_parser.parse_args()
     
@@ -60,6 +61,9 @@ def main() -> None:
     if mode == 'evr':
         events = parse_evr(data, collection_id)
         close_the_u.state_manager.create_events(collection_id, events, environment)
+    if mode == 'command':
+        commands = parse_commands(data, collection_id)
+        close_the_u.state_manager.create_commands(collection_id, commands, environment)
     
 if __name__ == "__main__":
    main()
