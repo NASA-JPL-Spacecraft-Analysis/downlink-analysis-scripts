@@ -81,6 +81,11 @@ def create_df_from_parasol(response):
     """Return pandas DataFrame from parasol query JSON data."""
     rows_list = []
     for module_name, module in response.items():
+        
+        # if module is empty, go to next module
+        if not bool(module):
+            continue
+
         for parameter_name, parameter in module[PARASOL_GROUP][PARASOL_COPY].items():
             rows_list.append({
                 "name": parameter_name, 
