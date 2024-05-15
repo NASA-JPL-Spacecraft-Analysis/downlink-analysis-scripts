@@ -17,7 +17,7 @@ setuptools.setup(
         "click==8.0.4",
         "bs4==0.0.2",
         "lxml==5.1.0",
-        "m20-eas-dplib",
+        "eurc-fspa-dplib",
         "jpl_time",
         "XlsxWriter"
     ],
