@@ -17,6 +17,7 @@ import requests
 import logging
 
 if __name__ == "__main__":
+    # This will be used if someone is running `python fspa_scripts/param_compare/param_compare.py ...`
     from utils.parasol import get_parasol_values, create_df_from_parasol
     from utils.param_json import get_param_json_values, create_df_from_param_json
     from utils.seqgen_fincon import (
@@ -29,6 +30,7 @@ if __name__ == "__main__":
 
     from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
 else:
+    # This will be used if someone is running `param_comapre ...`
     from .utils.parasol import get_parasol_values, create_df_from_parasol
     from .utils.param_json import get_param_json_values, create_df_from_param_json
     from .utils.seqgen_fincon import (
