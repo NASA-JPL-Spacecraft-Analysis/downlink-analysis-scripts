@@ -3,6 +3,7 @@ Code that handles queries with parasol-py and returns data.
 """
 
 import parasol
+import parasol.exceptions
 import os
 import json
 import sys
@@ -24,11 +25,13 @@ def _get_env_venue(env):
             "cookie_name": COOKIE_NAME,
         }
 
+
 ###############################################################################
 # QUERY PARASOL
 ###############################################################################
 
-def get_parasol_values(host, session, scet, vcid, volatility, env):
+
+def get_parasol_values(host, session, scet, vcid, volatility, env, csso: bool = False):
     """Get and return parasol query based on provided CLI arguments."""
     filename = f"./data/parasol_responses/{host}_{session}_{scet}_{vcid}.json"
 
@@ -47,9 +50,9 @@ def get_parasol_values(host, session, scet, vcid, volatility, env):
         try:
             response = parasol.get_parameter_values(
                 phase=PARASOL_PHASE,
-                auth_type="cam",
+                auth_type="cam" if not csso else "csso",
                 parasol_host=venue["parasol_host"],
-                cookie_name=venue["cookie_name"],
+                cookie_name=venue["cookie_name"] if not csso else "ssosession",
                 time_str=scet,
                 time_type="scet",
                 session_host=host,
@@ -57,11 +60,16 @@ def get_parasol_values(host, session, scet, vcid, volatility, env):
                 vcid=vcid,
             )
         except parasol.exceptions.ParasolAuthException as exc:
-            logging.error(f"Please run 'cam-login' in your terminal.")
+            logging.error(
+                "Please run %r in your terminal.", "cam-login" if not csso else "credss"
+            )
             sys.exit()
-        
+
         except parasol.exceptions.ParasolBaseException as exc:
-            logging.error(f"Parasol exception. Run 'cam-login' in your terminal and try again. Otherwise ask for support.")
+            logging.error(
+                "Parasol exception. Run %r in your terminal and try again. Otherwise ask for support.",
+                "cam-login" if not csso else "credss",
+            )
             sys.exit()
 
         logging.info("Received response from Parasol.")
