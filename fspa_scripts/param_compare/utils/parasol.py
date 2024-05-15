@@ -47,12 +47,15 @@ def get_parasol_values(host, session, scet, vcid, volatility, env, csso: bool = 
     else:
         logging.info("Making request to Parasol for parameter values...")
         venue = _get_env_venue(env)
+        if venue:
+            parasol.configure(
+                parasol_host=venue["parasol_host"],
+                auth_type="cam" if not csso else "csso",
+                phase=PARASOL_PHASE,
+                cookie_name=venue["cookie_name"] if not csso else "ssosession",
+            )
         try:
             response = parasol.get_parameter_values(
-                phase=PARASOL_PHASE,
-                auth_type="cam" if not csso else "csso",
-                parasol_host=venue["parasol_host"],
-                cookie_name=venue["cookie_name"] if not csso else "ssosession",
                 time_str=scet,
                 time_type="scet",
                 session_host=host,
