@@ -16,14 +16,30 @@ from pathlib import Path
 import requests
 import logging
 
-from utils.parasol import get_parasol_values, create_df_from_parasol
-from utils.param_json import get_param_json_values, create_df_from_param_json
-from utils.seqgen_fincon import get_seqgen_fincon_values, create_df_from_seqgen_fincon
-from utils.csds import get_csds_values, create_df_from_csds
+if __name__ == "__main__":
+    from utils.parasol import get_parasol_values, create_df_from_parasol
+    from utils.param_json import get_param_json_values, create_df_from_param_json
+    from utils.seqgen_fincon import (
+        get_seqgen_fincon_values,
+        create_df_from_seqgen_fincon,
+    )
+    from utils.csds import get_csds_values, create_df_from_csds
 
-from utils.compare import compare_parameters
+    from utils.compare import compare_parameters
 
-from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+    from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+else:
+    from .utils.parasol import get_parasol_values, create_df_from_parasol
+    from .utils.param_json import get_param_json_values, create_df_from_param_json
+    from .utils.seqgen_fincon import (
+        get_seqgen_fincon_values,
+        create_df_from_seqgen_fincon,
+    )
+    from .utils.csds import get_csds_values, create_df_from_csds
+
+    from .utils.compare import compare_parameters
+
+    from .utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
 
 # setup logging
 FORMAT = "[%(levelname)s] [%(asctime)s]: %(message)s"
@@ -51,6 +67,7 @@ required arguments:
         collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
         env         Venue for retrieving parameter values (ex: dev)
 """
+
 
 ###############################################################################
 # HELPERS
