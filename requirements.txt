@@ -13,3 +13,4 @@ lxml==5.1.0
 m20-eas-dplib
 jpl_time
 XlsxWriter
+pandas
