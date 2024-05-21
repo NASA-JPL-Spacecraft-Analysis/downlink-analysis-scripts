@@ -262,7 +262,7 @@ def main():
     print("Start of transpire_process_dps script, running on host {}".format(hostname))
 
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
-    parser.add_argument('-p', '--apid', default=100, help='apid to query(only supports apid 100 atm)')
+    parser.add_argument('-p', '--apid', default=301, help='apid to query(only supports apid 301 atm)')
     parser.add_argument('-K', '--session', help='session number to query on')
     parser.add_argument('-t', '--ocs_path', default='/parasol', help='The ocs directory to publish to')
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
