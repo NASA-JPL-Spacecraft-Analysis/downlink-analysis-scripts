@@ -279,7 +279,7 @@ def main():
     ocs_package_name = args.ocs_package
     dat_file = args.dat_file
     emd_file = args.emd_file
-    
+
     #todo: read these out of cli, env, and a config file, see comment at top near these global variables
     global ocs_env
     global ocs_configs
@@ -323,13 +323,13 @@ def main():
 
         # write files to ocs
 
-        push_to_ocs(data=dat_file,
+        push_to_ocs(filepath=dat_file,
                     ocs_package_name=ocs_package_name,
                     ocs_path=ocs_path,
                     ocs_filename=filename,
                     ocs_metadata=metadata)
 
-        push_to_ocs(data=emd_file,
+        push_to_ocs(filepath=emd_file,
                     ocs_package_name=ocs_package_name,
                     ocs_path=ocs_path,
                     ocs_filename=filename,
