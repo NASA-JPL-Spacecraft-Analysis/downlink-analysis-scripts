@@ -151,8 +151,8 @@ def push_to_ocs(filepath, ocs_package_name, ocs_path, ocs_filename, ocs_metadata
     #     SessionToken=session_token,
     #     Overwrite=True
     # )
-
-    print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
+    #
+    # print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
 
 def build_ocs_metadata_from_emd(emd_file):
     print("Building metadata from emd file {}".format(emd_file))
