@@ -279,8 +279,7 @@ def main():
     ocs_package_name = args.ocs_package
     dat_file = args.dat_file
     emd_file = args.emd_file
-    output = args.output
-
+    
     #todo: read these out of cli, env, and a config file, see comment at top near these global variables
     global ocs_env
     global ocs_configs
