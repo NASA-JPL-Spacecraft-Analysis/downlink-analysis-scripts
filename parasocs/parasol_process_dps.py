@@ -162,7 +162,7 @@ def build_ocs_metadata_from_emd(emd_file):
 
     # turn it into a Dict
     emd_dict = xmltodict.parse(read_emd)
-    # print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
+    print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
 
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
     product_metadata = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:ProductMetadata"]
@@ -205,16 +205,60 @@ def build_ocs_metadata_from_emd(emd_file):
 
     meta = {
         "session_id": session_id,
-        "session_host": host,
         "session_name": session_name,
+        "session_fsw_dictionary_dir": None,
         "session_fsw_dictionary_version": fsw_ver,
-        "sclk_coarse": sclk_coarse,
-        "sclk_fine": sclk_fine,
-        "scet": scet,
-        "ert": ert,
-        "vcid": vcid,
+        "session_venue_type": None,
+        "session_test_bed_name": None,
+        "session_user": None,
+        "session_host": host,
+        "session_output_directory": None,
+        "creation_time": None,
+        "scid": None,
         "apid": apid,
-        "dat_file_name": dat_file_name
+        "product_type": None,
+        "vcid": vcid,
+        "ground_status": None,
+        "fsw_version": None,
+        "product_tag": None,
+        "data_file_name": None,
+        "onboard_creation_time": None,
+        "onboard_Creation_time_str": None,
+        "sequence_id": None,
+        "sequence_version": None,
+        "command_number": None,
+        "dvt_coarse": None, #is this sclk_coarse?
+        "dvt_fine": None, #is this sclk_fine?
+        "sclk": None,
+        "sclk_str": None,
+        "scet": None,
+        "ert": None,
+        "expected_product_checksum": None,
+        "actual_product_checksum": None,
+        "expected_product_filesize": None,
+        "actual_product_filesize": None,
+        "cfdp_transaction_sequence_id": None,
+        "absolute_path": None,
+        "absolute_path_emd": None,
+        "source": None,
+        "file_type": None,
+        "sha256": None,
+        "sha256_dat": None,
+        "sha256_emd": None,
+        "md5": None,
+        "md5_dat": None,
+        "md5_emd": None,
+        "dvt": None,
+        "dat_filename": None,
+        "emd_filename": None,
+        "dat_extension": None,
+        "emd_extension": None
+
+        # "sclk_coarse": sclk_coarse,
+        # "sclk_fine": sclk_fine,
+        # "scet": scet,
+        # "ert": ert,
+        # "dat_file_name": dat_file_name
     }
 
     print("metadata is {}".format(json.dumps(meta, indent=4)))
@@ -243,7 +287,7 @@ def query_ocs(expression, sort="sclk_str:desc", max_results=1):
     # except ocs.exceptions.RequestError as r:
     #     print(r)
 
-def query_from_ocs(session_host, session_id):
+def query_from_ocs(session_host, session_id, ocs_package):
     # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
     #     ocs_type, pcfg_name, start_scet, end_scet)
     #expression = "ocs_name: {}".format(filename)
@@ -254,7 +298,8 @@ def query_from_ocs(session_host, session_id):
 
     #queries below with session host and id do not work...blah
     #expression = "ocs_type_name: {} AND session_host={}".format(ocs_type, session_host)
-    expression = "ocs_type_name: {} AND session_host: {} AND session_id: {}".format(ocs_type, session_host, session_id)
+    expression = "ocs_type_name: {} AND session_host: {} AND session_id: {} AND ocs_package_name: {}".format(
+        ocs_type, session_host, session_id, ocs_package)
 
     query_ocs(expression)
 
@@ -335,10 +380,11 @@ def main():
                     ocs_path=ocs_path,
                     ocs_filename=filename,
                     ocs_metadata=metadata)
-        # try to query out the data we just pushed to make sure it got in
-        print("Verifying data made it to OCS")
-        query_from_ocs(metadata['session_host'], metadata['session_id'])
 
+        # try to query out the data we just pushed to make sure it got in
+        # print("Verifying data made it to OCS")
+        # query_from_ocs(metadata['session_host'], metadata['session_id'], ocs_package)
+        #
 
 if __name__ == "__main__":
     main()
