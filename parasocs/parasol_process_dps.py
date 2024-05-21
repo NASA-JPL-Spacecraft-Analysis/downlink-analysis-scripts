@@ -227,20 +227,21 @@ def query_ocs(expression, sort="scet:desc", max_results=1):
 
     session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
 
-    try:
+    # try:
+    if True:
         found_records = client.search_by_expression(expression, session_token,
                                                              Sort=[sort], MaxResults=max_results)
         print(json.dumps(found_records, indent=4))
         return found_records
-    except ocs.exceptions.HTTPError as e:
-        print(e)
-
-        if 'HTTP Error: 403' in e.args[0]:
-            raise Exception('User is forbidden from accessing OCS resources.')
-        elif 'HTTP Error: 401' in e.args[0]:
-            raise Exception('User is not authorized to access OCS resources.')
-    except ocs.exceptions.RequestError as r:
-        print(r)
+    # except ocs.exceptions.HTTPError as e:
+    #     print(e)
+    #
+    #     if 'HTTP Error: 403' in e.args[0]:
+    #         raise Exception('User is forbidden from accessing OCS resources.')
+    #     elif 'HTTP Error: 401' in e.args[0]:
+    #         raise Exception('User is not authorized to access OCS resources.')
+    # except ocs.exceptions.RequestError as r:
+    #     print(r)
 
 def query_from_ocs(session_host, session_id):
     # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
