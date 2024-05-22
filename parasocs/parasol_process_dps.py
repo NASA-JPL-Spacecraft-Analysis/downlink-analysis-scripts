@@ -165,20 +165,43 @@ def build_ocs_metadata_from_emd(emd_file):
     print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
 
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
+    session_id =    session_info["mpcs:SessionId"]["mpcs:Number"]
+    session_name =  session_info["mpcs:SessionId"]["mpcs:Name"]
+    fsw_dict_ver =  session_info["mpcs:SessionId"]["mpcs:FswDictionaryVersion"]
+    fsw_dict_dir =  session_info["mpcs:SessionId"]["mpcs:FswDictionaryDir"]
+
+    venue_type =    session_info["mpcs:Venue"]["mpcs:VenueType"]
+    host =          session_info["mpcs:Venue"]["mpcs:Host"]
+    user =          session_info["mpcs:Venue"]["mpcs:User"]
+
+    output_dir =    session_info["mpcs:OutputDirectory"]
+
     product_metadata = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:ProductMetadata"]
-    session_id = session_info["mpcs:SessionId"]["mpcs:Number"]
-    #venue = session_info["mpcs:Venue"]["mpcs:VenueType"]
-    host = session_info["mpcs:Venue"]["mpcs:Host"]
-    #user = session_info["mpcs:Venue"]["mpcs:User"]
-    session_name = session_info["mpcs:SessionId"]["mpcs:Name"]
-    fsw_ver = session_info["mpcs:SessionId"]["mpcs:FswDictionaryVersion"]
+    scid =          int(product_metadata["mm-emd:Scid"])
+    vcid =          int(product_metadata["mm-emd:Vcid"])
+    apid =          int(product_metadata["mm-emd:Apid"])
+    product_type =  product_metadata["mm-emd:ProductType"]
+    ground_status = product_metadata["mm-emd:GroundStatus"]
+    seq_id =        product_metadata["mm-emd:SequenceId"]
+    seq_ver =       product_metadata["mm-emd:SequenceVersion"]
+    cmd_num =       int(product_metadata["mm-emd:CommandNumber"])
+    dvt_coarse =    int(product_metadata["mm-emd:DvtCoarse"])
+    dvt_fine =      int(product_metadata["mm-emd:DvtFine"])
+    sclk_str =      product_metadata["mm-emd:FirstPartSclk"]
+    chksum_expect = product_metadata["mm-emd:ExpectedProductChecksum"]
+    chksum_actual = product_metadata["mm-emd:ActualProductChecksum"]
+    size_expect =   product_metadata["mm-emd:ExpectedProductFileSize"]
+    size_actual =   product_metadata["mm-emd:ActualProductFileSize"]
+    cfdp_id =       product_metadata["mm-emd:CfdpTransactionSequenceNumber"]
+    dat_filepath =  product_metadata["mm-emd:DataFilePath"]
+    emd_filepath =  dat_filepath.replace(".dat", ".emd")
 
-    sclk_str_split = product_metadata["mm-emd:FirstPartSclk"].split(".")
-    sclk_coarse = int(sclk_str_split[0])
-    sclk_fine = 0
-
-    if len(sclk_str_split) == 2:
-        sclk_fine = int(sclk_str_split[1])
+    # sclk_str_split = sclk_str.split(".")
+    # sclk_coarse = int(sclk_str_split[0])
+    # sclk_fine = 0
+    #
+    # if len(sclk_str_split) == 2:
+    #     sclk_fine = int(sclk_str_split[1])
 
     #ocs is picky and wants us to have 5 decimal precision in our milliseconds
     scet_str_split = product_metadata["mm-emd:FirstPartScet"].split(".")
@@ -199,66 +222,58 @@ def build_ocs_metadata_from_emd(emd_file):
 
     ert = "{}.{}".format(ert_str_split[0], ert_millis)
 
-    vcid = int(product_metadata["mm-emd:Vcid"])
-    apid = int(product_metadata["mm-emd:Apid"])
-    dat_file_name = product_metadata["mm-emd:DataFilePath"]
+
 
     meta = {
         "session_id": session_id,
         "session_name": session_name,
-        "session_fsw_dictionary_dir": None,
-        "session_fsw_dictionary_version": fsw_ver,
-        "session_venue_type": None,
-        "session_test_bed_name": None,
-        "session_user": None,
+        "session_fsw_dictionary_dir": fsw_dict_dir,
+        "session_fsw_dictionary_version": fsw_dict_ver,
+        "session_venue_type": venue_type,
+        # "session_test_bed_name": None,
+        "session_user": user,
         "session_host": host,
-        "session_output_directory": None,
+        "session_output_directory": output_dir,
         "creation_time": None,
-        "scid": None,
+        "scid": scid,
         "apid": apid,
-        "product_type": None,
+        "product_type": product_type,
         "vcid": vcid,
-        "ground_status": None,
+        "ground_status": ground_status,
         "fsw_version": None,
         "product_tag": None,
         "data_file_name": None,
         "onboard_creation_time": None,
         "onboard_Creation_time_str": None,
-        "sequence_id": None,
-        "sequence_version": None,
-        "command_number": None,
-        "dvt_coarse": None, #is this sclk_coarse?
-        "dvt_fine": None, #is this sclk_fine?
+        "sequence_id": seq_id,
+        "sequence_version": seq_ver,
+        "command_number": cmd_num,
+        "dvt_coarse": dvt_coarse,
+        "dvt_fine": dvt_fine,
         "sclk": None,
-        "sclk_str": None,
+        "sclk_str": sclk_str,
         "scet": None,
         "ert": None,
-        "expected_product_checksum": None,
-        "actual_product_checksum": None,
-        "expected_product_filesize": None,
-        "actual_product_filesize": None,
-        "cfdp_transaction_sequence_id": None,
-        "absolute_path": None,
-        "absolute_path_emd": None,
-        "source": None,
+        "expected_product_checksum": chksum_expect,
+        "actual_product_checksum": chksum_actual,
+        "expected_product_filesize": size_expect,
+        "actual_product_filesize": size_actual,
+        "cfdp_transaction_sequence_id": cfdp_id,
+        "absolute_path": dat_filepath,
+        "absolute_path_emd": emd_filepath,
+        "source": dat_filepath,
         "file_type": None,
-        "sha256": None,
+        "sha256": None, #are these sha and md5 manually calculated on upload?
         "sha256_dat": None,
         "sha256_emd": None,
         "md5": None,
         "md5_dat": None,
         "md5_emd": None,
         "dvt": None,
-        "dat_filename": None,
-        "emd_filename": None,
-        "dat_extension": None,
-        "emd_extension": None
-
-        # "sclk_coarse": sclk_coarse,
-        # "sclk_fine": sclk_fine,
-        # "scet": scet,
-        # "ert": ert,
-        # "dat_file_name": dat_file_name
+        "dat_filename": dat_filepath.split("/")[-1],
+        "emd_filename": emd_file.split("/")[-1],
+        "dat_extension": "dat",
+        "emd_extension": "emd"
     }
 
     print("metadata is {}".format(json.dumps(meta, indent=4)))
