@@ -296,33 +296,23 @@ def query_ocs(expression, sort="sclk_str:desc", max_results=1):
 
     session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
 
-    # try:
-    if True:
+    try:
         found_records = client.search_by_expression(expression, session_token,
                                                              Sort=[sort], MaxResults=max_results)
         print(json.dumps(found_records, indent=4))
         return found_records
-    # except ocs.exceptions.HTTPError as e:
-    #     print(e)
-    #
-    #     if 'HTTP Error: 403' in e.args[0]:
-    #         raise Exception('User is forbidden from accessing OCS resources.')
-    #     elif 'HTTP Error: 401' in e.args[0]:
-    #         raise Exception('User is not authorized to access OCS resources.')
-    # except ocs.exceptions.RequestError as r:
-    #     print(r)
+    except ocs.exceptions.HTTPError as e:
+        print(e)
+
+        if 'HTTP Error: 403' in e.args[0]:
+            raise Exception('User is forbidden from accessing OCS resources.')
+        elif 'HTTP Error: 401' in e.args[0]:
+            raise Exception('User is not authorized to access OCS resources.')
+    except ocs.exceptions.RequestError as r:
+        print(r)
 
 def query_from_ocs(session_host, session_id, ocs_package):
-    # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
-    #     ocs_type, pcfg_name, start_scet, end_scet)
-    #expression = "ocs_name: {}".format(filename)
     ocs_type = "eurc-idms-ampcs-dp"
-
-    #searching with type name by itself works...
-    #expression = "ocs_type_name: {}".format(ocs_type)
-
-    #queries below with session host and id do not work...blah
-    #expression = "ocs_type_name: {} AND session_host={}".format(ocs_type, session_host)
     expression = "ocs_type_name: {} AND session_host: {} AND session_id: {} AND ocs_package_name: {}".format(
         ocs_type, session_host, session_id, ocs_package)
 
@@ -333,23 +323,17 @@ def main():
     print("Start of transpire_process_dps script, running on host {}".format(hostname))
 
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
-    parser.add_argument('-p', '--apid', default=301, help='apid to query(only supports apid 301 atm)')
     parser.add_argument('-K', '--session', help='session number to query on')
     parser.add_argument('-t', '--ocs_path', default='/parasol', help='The ocs directory to publish to')
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
     parser.add_argument('-c', '--ocs_env', default='dev', help='the ocs environment to use(e.g. dev, test, prod, etc')
-    #todo add ocs_endpoint_host as a command line arg as well
-    parser.add_argument('-d', '--dat_file', default=None, help='file path to dat file to parse')
-    parser.add_argument('-e', '--emd_file', default=None, help='file path to emd file to parse')
 
     args = parser.parse_args()
 
     session = args.session
-    apid = args.apid
+    apid = 301
     ocs_path = args.ocs_path
     ocs_package_name = args.ocs_package
-    dat_file = args.dat_file
-    emd_file = args.emd_file
 
     #todo: read these out of cli, env, and a config file, see comment at top near these global variables
     global ocs_env
@@ -361,23 +345,13 @@ def main():
         ocs_env = args.ocs_env
         print("Using ocs env: {}".format(ocs_env))
 
-    if not session and (not dat_file or not emd_file):
-        print("You must pass in [ session(-K) ] OR a [ dat_file(-d) and emd_file(-e) ]")
+    if not session:
+        print("You must pass in [ session(-K) ]")
         sys.exit()
 
     # we need to find the dat and emd files using chill and the session + apid
     if session and apid:
         data_products = find_data_products(session=session, apid=apid)
-    # we were given a dat file and emd file, just shove it in the data_products list for the loop below to handle
-    else:
-        # data_products from find_data_products() also has extra things like session, host, and apid, but we do not
-        # really need those anymore as those are actually provided in the EMD file
-        # we just need to shove the 'dat_file' key in there
-        data_products = [
-            {
-                'dat_file': dat_file
-            }
-        ]
 
     if not data_products:
         print("No data products found")
@@ -385,15 +359,13 @@ def main():
 
     for dp in data_products:
         dat_file = dp['dat_file']
-
         emd_file = dat_file.replace(".dat", ".emd")
         metadata = build_ocs_metadata_from_emd(emd_file)
 
-        filename = dp['dat_file'].split("/")[-1]
-        #filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
-
         # write files to ocs
         metadata['file_type'] = "dat"
+        filename = dat_file.split("/")[-1]
+
         push_to_ocs(filepath=dat_file,
                     ocs_package_name=ocs_package_name,
                     ocs_path=ocs_path,
@@ -401,6 +373,8 @@ def main():
                     ocs_metadata=metadata)
 
         metadata['file_type'] = "emd"
+        filename = emd_file.split("/")[-1]
+
         push_to_ocs(filepath=emd_file,
                     ocs_package_name=ocs_package_name,
                     ocs_path=ocs_path,
