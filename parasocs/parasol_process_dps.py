@@ -163,7 +163,7 @@ def build_ocs_metadata_from_emd(emd_file):
 
     # turn it into a Dict
     emd_dict = xmltodict.parse(read_emd)
-    print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
+    # print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
 
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
     session_id =    session_info["mpcs:SessionId"]["mpcs:Number"]
