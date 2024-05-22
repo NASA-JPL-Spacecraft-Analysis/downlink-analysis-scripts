@@ -9,6 +9,7 @@ import xmltodict
 #import os
 import sys
 import subprocess
+import datetime
 
 # todo, allow these to be passed in via commnad line, ENV, and a transpire_dps.config file
 ocs_env = "dev" #default to dev if nothing passed in
@@ -222,6 +223,8 @@ def build_ocs_metadata_from_emd(emd_file):
 
     ert = "{}.{}".format(ert_str_split[0], ert_millis)
 
+    create_time = datetime.datetime.now().strftime("%Y-%jT%H:%M:%S.%f")
+
     meta = {
         "session_id": session_id,
         "session_name": session_name,
@@ -232,7 +235,7 @@ def build_ocs_metadata_from_emd(emd_file):
         "session_user": user,
         "session_host": host,
         "session_output_directory": output_dir,
-        "creation_time": None,
+        "creation_time": create_time,
         "scid": scid,
         "apid": apid,
         "product_type": product_type,
