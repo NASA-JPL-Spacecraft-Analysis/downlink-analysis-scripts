@@ -235,7 +235,7 @@ def build_ocs_metadata_from_emd(emd_file):
         "session_user": user,
         "session_host": host,
         "session_output_directory": output_dir,
-        "creation_time": create_time,
+        # "creation_time": create_time,
         "scid": scid,
         "apid": apid,
         "product_type": product_type,
