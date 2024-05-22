@@ -153,7 +153,7 @@ def push_to_ocs(filepath, ocs_package_name, ocs_path, ocs_filename, ocs_metadata
         Overwrite=True
     )
 
-    print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
+    print('\nSuccessfully uploaded to OCS.  OCS dataset_id is: {}\n'.format(response['data']['dataset_id']))
 
 def build_ocs_metadata_from_emd(emd_file):
     print("Building metadata from emd file {}".format(emd_file))
@@ -289,34 +289,6 @@ def build_ocs_metadata_from_emd(emd_file):
     print("metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
-def query_ocs(expression, sort="sclk_str:desc", max_results=1):
-    print("Querying OCS with search expression: {}".format(expression))
-    global ocs_env
-    client = build_ocs_client(ocs_env)
-
-    session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
-
-    try:
-        found_records = client.search_by_expression(expression, session_token,
-                                                             Sort=[sort], MaxResults=max_results)
-        print(json.dumps(found_records, indent=4))
-        return found_records
-    except ocs.exceptions.HTTPError as e:
-        print(e)
-
-        if 'HTTP Error: 403' in e.args[0]:
-            raise Exception('User is forbidden from accessing OCS resources.')
-        elif 'HTTP Error: 401' in e.args[0]:
-            raise Exception('User is not authorized to access OCS resources.')
-    except ocs.exceptions.RequestError as r:
-        print(r)
-
-def query_from_ocs(session_host, session_id, ocs_package):
-    ocs_type = "eurc-idms-ampcs-dp"
-    expression = "ocs_type_name: {} AND session_host: {} AND session_id: {} AND ocs_package_name: {}".format(
-        ocs_type, session_host, session_id, ocs_package)
-
-    query_ocs(expression)
 
 def main():
     hostname = socket.gethostname()
@@ -382,11 +354,6 @@ def main():
                     ocs_path=ocs_path,
                     ocs_filename=filename,
                     ocs_metadata=metadata)
-
-    # try to query out the data we just pushed to make sure it got in
-    print("Verifying data made it to OCS")
-    query_from_ocs(metadata['session_host'], metadata['session_id'], ocs_package_name)
-
 
 if __name__ == "__main__":
     main()
