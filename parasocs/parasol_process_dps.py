@@ -357,6 +357,8 @@ def main():
         print("No data products found")
         sys.exit()
 
+    metadata = {}
+    
     for dp in data_products:
         dat_file = dp['dat_file']
         emd_file = dat_file.replace(".dat", ".emd")
@@ -381,11 +383,10 @@ def main():
                     ocs_filename=filename,
                     ocs_metadata=metadata)
 
-        break
-        # try to query out the data we just pushed to make sure it got in
-        # print("Verifying data made it to OCS")
-        # query_from_ocs(metadata['session_host'], metadata['session_id'], ocs_package)
-        #
+    # try to query out the data we just pushed to make sure it got in
+    print("Verifying data made it to OCS")
+    query_from_ocs(metadata['session_host'], metadata['session_id'], ocs_package_name)
+
 
 if __name__ == "__main__":
     main()
