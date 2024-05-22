@@ -148,7 +148,7 @@ def push_to_ocs(filepath, ocs_package_name, ocs_path, ocs_filename, ocs_metadata
         OcsName=ocs_filename,
         Metadata=ocs_metadata,
         LocalObject=local_object,
-        MimeType='application/json',
+        MimeType='binary/octet-stream',
         SessionToken=session_token,
         Overwrite=True
     )
@@ -358,7 +358,7 @@ def main():
         sys.exit()
 
     metadata = {}
-    
+
     for dp in data_products:
         dat_file = dp['dat_file']
         emd_file = dat_file.replace(".dat", ".emd")
