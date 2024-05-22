@@ -141,19 +141,19 @@ def push_to_ocs(filepath, ocs_package_name, ocs_path, ocs_filename, ocs_metadata
 
     object_type = 'eurc-idms-ampcs-dp'
 
-    # response = client.index_local_object(
-    #     PackageId=package_id,
-    #     ObjectTypeName=object_type,
-    #     OcsPath=ocs_path,
-    #     OcsName=ocs_filename,
-    #     Metadata=ocs_metadata,
-    #     LocalObject=local_object,
-    #     MimeType='application/json',
-    #     SessionToken=session_token,
-    #     Overwrite=True
-    # )
-    #
-    # print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
+    response = client.index_local_object(
+        PackageId=package_id,
+        ObjectTypeName=object_type,
+        OcsPath=ocs_path,
+        OcsName=ocs_filename,
+        Metadata=ocs_metadata,
+        LocalObject=local_object,
+        MimeType='application/json',
+        SessionToken=session_token,
+        Overwrite=True
+    )
+
+    print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
 
 def build_ocs_metadata_from_emd(emd_file):
     print("Building metadata from emd file {}".format(emd_file))
@@ -407,6 +407,7 @@ def main():
                     ocs_filename=filename,
                     ocs_metadata=metadata)
 
+        break
         # try to query out the data we just pushed to make sure it got in
         # print("Verifying data made it to OCS")
         # query_from_ocs(metadata['session_host'], metadata['session_id'], ocs_package)
