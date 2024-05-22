@@ -222,8 +222,6 @@ def build_ocs_metadata_from_emd(emd_file):
 
     ert = "{}.{}".format(ert_str_split[0], ert_millis)
 
-
-
     meta = {
         "session_id": session_id,
         "session_name": session_name,
@@ -250,10 +248,19 @@ def build_ocs_metadata_from_emd(emd_file):
         "command_number": cmd_num,
         "dvt_coarse": dvt_coarse,
         "dvt_fine": dvt_fine,
-        "sclk": None,
+        "sclk": {
+            "gte": sclk_str,
+            "lte": sclk_str
+        },
         "sclk_str": sclk_str,
-        "scet": None,
-        "ert": None,
+        "scet": {
+            "gte": scet,
+            "lte": scet
+        },
+        "ert": {
+            "gte": ert,
+            "lte": ert
+        },
         "expected_product_checksum": chksum_expect,
         "actual_product_checksum": chksum_actual,
         "expected_product_filesize": size_expect,
@@ -262,7 +269,7 @@ def build_ocs_metadata_from_emd(emd_file):
         "absolute_path": dat_filepath,
         "absolute_path_emd": emd_filepath,
         "source": dat_filepath,
-        "file_type": None,
+        "file_type": None, #this gets filled in by caller
         "sha256": None, #are these sha and md5 manually calculated on upload?
         "sha256_dat": None,
         "sha256_emd": None,
@@ -383,13 +390,14 @@ def main():
         #filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
 
         # write files to ocs
-
+        metadata['file_type'] = "dat"
         push_to_ocs(filepath=dat_file,
                     ocs_package_name=ocs_package_name,
                     ocs_path=ocs_path,
                     ocs_filename=filename,
                     ocs_metadata=metadata)
 
+        metadata['file_type'] = "emd"
         push_to_ocs(filepath=emd_file,
                     ocs_package_name=ocs_package_name,
                     ocs_path=ocs_path,
