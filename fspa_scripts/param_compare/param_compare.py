@@ -221,6 +221,7 @@ def get_values_from_input_library(input_args, csso: bool = False):
             session=input_args['session'], 
             scet=input_args['scet'], 
             vcid=input_args['vcid'], 
+            volatility=input_args['volatility'], 
             env=input_args['env'],
             csso=csso
         )
@@ -238,7 +239,6 @@ def get_values_from_input_library(input_args, csso: bool = False):
         )
         return create_df_from_csds(response)
 
-
 def compare(
         input1: dict, 
         input2: dict, 
@@ -247,6 +247,7 @@ def compare(
         intersect_only: bool = False,
         return_type: str = None,
         output: str = None,
+        debug: bool = True,
         csso: bool = False
     ):
     """
@@ -309,6 +310,9 @@ def compare(
     Returns:
         Output in JSON.
     """
+    log_level = logging.DEBUG if debug else logging.WARNING
+    logging.basicConfig(format=FORMAT, level=log_level, datefmt='%Y-%m-%d %H:%M:%S')
+
     _create_directories()
     
     # validate input types

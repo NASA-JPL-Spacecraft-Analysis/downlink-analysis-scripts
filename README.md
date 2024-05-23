@@ -111,12 +111,18 @@ Additional flags:
 
 #### param_compare library
 
-See below for examples. The `compare` function of param_compare will return a JSON object by default, with option to write results to an xlsx or json file just like the CLI script.
+See below for examples.
+
+1. Make sure library is built and installed with `pip install .` from the fspa-scripts root directory.
+2. Import the `compare` function from `from fspa_scripts.param_compare.param_compare import compare`.
+3. Call `compare` with codes similar to the below example.
+
+`compare` returns a JSON list of results by default, with option to write results to xlsx or json file like the CLI script.
 
 ##### Examples
 
 ```python
-from fspa_scripts.param_compare import compare
+from fspa_scripts.param_compare.param_compare import compare
 
 # input types: 'parasol', 'csds', 'param_json', or 'seqgen_fincon'
 # should be written as objects with their respective arguments
@@ -124,7 +130,7 @@ from fspa_scripts.param_compare import compare
 response = compare(
     input1={
         'type': 'parasol', # input example for parasol
-        'host': 'eurcitis001',
+        'host': 'eurcits001',
         'session': 830,
         'scet': '2026-082T17:19:46',
         'vcid': 0,
@@ -134,14 +140,17 @@ response = compare(
     input2={
         'type'='param_json',  # input example for param_json
         'path'='/path/to/param_json.json',
-    }
+    },
     verbose = True,
     diff_only = True,
     intersect_only = True,
     return_type = 'xlsx', # optional file to write results
     output = '/my/output/folder', # optional file path to write results
+    debug = True,
     csso = False
 )
+
+response = compare(input1={'type': 'parasol','host': 'eurcits001','session': 830,'scet': '2026-082T17:19:46','vcid': 0,'volatility': 'nvm','env': 'dev'}, input2={'type': 'parasol','host': 'eurcits001','session': 830,'scet': '2026-082T17:19:46','vcid': 0,'volatility': 'nvm','env': 'dev'})
 ```
 
 ### transpire
