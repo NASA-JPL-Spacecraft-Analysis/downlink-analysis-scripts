@@ -46,13 +46,11 @@ $ python publish_fsw_params.py --host eurcits001 --session 578 --collection 'eur
 
 ### param_compare
 
-#### param_compare.py
-
 Compare parasol, param.json, seqgen_fincon.json, or CSDS parameters and return results in human-readable output (Excel report or JSON).
 
-NOTE: Requires cam-login. Run `cam-login` in your terminal before trying the param_compare script.
+NOTE: Requires cam-login. Run `cam-login` in your terminal before trying the param_compare script. This may require CSSO in future updates, and a flag is provided for when that happens.
 
-##### CLI Schema
+#### Input Schemas
 
 ```
 input types: {parasol, param_json, seqgen_fincon, csds}
@@ -66,6 +64,7 @@ parasol:
     vcid        VCID 0 or 32 (ex: 0)
     volatility  Use parasol volatile values (options: 'vol' or 'nvm')
     env         Venue for retrieving parameter values (ex: dev)
+    csso        Add this CSSO flag when Parasol is behind CSSO for OCS Data Products (default: false)
 
 param_json:
     path        Path to json file.
@@ -78,20 +77,26 @@ csds:
     env         Venue for retrieving parameter values (ex: dev)
 ```
 
+#### CLI
+
+Enter `param_compare -h` for help details.
+
 ##### Examples
+
+After building the fspa-scripts libraries in the root directory with `pip install .` and running `make setup`, you should be able to run the script without prefixing `python` or adding the `.py` extension.
 
 ```shell
 # parasol to parasol
-$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev
+$ param_compare --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev
 
 # parasol to param.json
-$ python param_compare.py --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --input2 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
+$ param_compare --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --input2 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json"
 
 # param.json to seqgen_fincon.json
-$ python param_compare.py --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
+$ param_compare --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
 
 # csds to parasol
-$ python param_compare.py --input1 csds "eurcits001-collection-690" dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
+$ param_compare --input1 csds "eurcits001-collection-690" dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
 ```
 
 Additional flags:
@@ -102,6 +107,42 @@ Additional flags:
 - `--diff-only` Only output parameters that do not match.
 - `--to-json` Output results in JSON at desired output path.
 - `--debug` Log param_compare processing information to console.
+- `--csso` Flag to pass when Parasol is behind CSSO for OCS Data Product
+
+#### param_compare library
+
+See below for examples. The `compare` function of param_compare will return a JSON object by default, with option to write results to an xlsx or json file just like the CLI script.
+
+##### Examples
+
+```python
+from fspa_scripts.param_compare import compare
+
+# input types: 'parasol', 'csds', 'param_json', or 'seqgen_fincon'
+# should be written as objects with their respective arguments
+
+response = compare(
+    input1={
+        'type': 'parasol', # input example for parasol
+        'host': 'eurcitis001',
+        'session': 830,
+        'scet': '2026-082T17:19:46',
+        'vcid': 0,
+        'volatility': 'nvm',
+        'env': 'dev'
+    },
+    input2={
+        'type'='param_json',  # input example for param_json
+        'path'='/path/to/param_json.json',
+    }
+    verbose = True,
+    diff_only = True,
+    intersect_only = True,
+    return_type = 'xlsx', # optional file to write results
+    output = '/my/output/folder', # optional file path to write results
+    csso = False
+)
+```
 
 ### transpire
 

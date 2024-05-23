@@ -87,9 +87,7 @@ def _return_stats(df):
     non_matches = total - matches
     
     # print summary
-    print("PARAMETERS:\t", total)
-    print('MATCHES:\t', matches)
-    print('NON-MATCHES:\t', non_matches)
+    print(f"PARAMETERS:\t{total}\nMATCHES:\t{matches}\nNON-MATCHES:\t{non_matches}")
 
     # return results for metadata
     return total, matches, non_matches
@@ -213,7 +211,7 @@ def validate_input_arguments_library(input_args):
         if file_extension != '.json':
             sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {input_args["path"]}")
 
-def get_values_from_input_library(input_args):
+def get_values_from_input_library(input_args, csso: bool = False):
     """Return pandas DataFrame of values from appropriate data source."""
     input_type = input_args['type']
 
@@ -223,9 +221,10 @@ def get_values_from_input_library(input_args):
             session=input_args['session'], 
             scet=input_args['scet'], 
             vcid=input_args['vcid'], 
-            env=input_args['env']
+            env=input_args['env'],
+            csso=csso
         )
-       return create_df_from_parasol(response, input_args['volatility']) # -2 is volatility
+       return create_df_from_parasol(response, input_args['volatility'])
     elif input_type == 'param_json':
         response = get_param_json_values(path=input_args['path'])
         return create_df_from_param_json(response)
@@ -247,7 +246,8 @@ def compare(
         diff_only: bool = False,
         intersect_only: bool = False,
         return_type: str = None,
-        output: str = None
+        output: str = None,
+        csso: bool = False
     ):
     """
     CLI for comparing parameters from several formats: parasol, csds, param.json, seqgen_fincon.json.
@@ -275,6 +275,7 @@ def compare(
                 intersect_only = True,
                 return_type = 'xlsx',
                 output = '/my/output/folder',
+                csso = False
             )
 
     ARGS:
@@ -315,8 +316,8 @@ def compare(
     validate_input_arguments_library(input2)
     
     # query/load data and conver to pandas DataFrames
-    df1 = get_values_from_input_library(input1)
-    df2 = get_values_from_input_library(input2)
+    df1 = get_values_from_input_library(input1, csso=csso)
+    df2 = get_values_from_input_library(input2, csso=csso)
 
     # compare parameters
     df = compare_parameters(df1, df2, verbose, intersect_only, diff_only)
@@ -335,6 +336,7 @@ def compare(
     # return in user-designated format
     output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{input1['type']}_{input2['type']}'
     output_filepath = _get_output_path(output).joinpath(output_filename)
+    
     if return_type == 'json':
         create_json(df, f"{output_filepath}.json", metadata = dict())
     elif return_type == 'xlsx':
@@ -392,7 +394,7 @@ def main():
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
-    parser.add_argument("--csso", action="store_true", help="Pass when Parasol is behind CSSO for OCS DataProducts")
+    parser.add_argument("--csso", action="store_true", help="Add this CSSO flag when Parasol is behind CSSO for OCS Data Products")
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
