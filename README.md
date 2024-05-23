@@ -150,6 +150,7 @@ response = compare(
     csso = False
 )
 
+# parasol-parasol basic example
 response = compare(input1={'type': 'parasol','host': 'eurcits001','session': 830,'scet': '2026-082T17:19:46','vcid': 0,'volatility': 'nvm','env': 'dev'}, input2={'type': 'parasol','host': 'eurcits001','session': 830,'scet': '2026-082T17:19:46','vcid': 0,'volatility': 'nvm','env': 'dev'})
 ```
 
