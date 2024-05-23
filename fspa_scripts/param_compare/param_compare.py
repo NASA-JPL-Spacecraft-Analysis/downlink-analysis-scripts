@@ -12,19 +12,32 @@ import sys
 import pathlib
 from pathlib import Path
 from datetime import datetime
-from pathlib import Path
 import requests
 import logging
-
 import pandas as pd
 
-from fspa_scripts.param_compare.utils.parasol import get_parasol_values, create_df_from_parasol
-from fspa_scripts.param_compare.utils.param_json import get_param_json_values, create_df_from_param_json
-from fspa_scripts.param_compare.utils.seqgen_fincon import get_seqgen_fincon_values, create_df_from_seqgen_fincon
-from fspa_scripts.param_compare.utils.csds import get_csds_values, create_df_from_csds
-
-from fspa_scripts.param_compare.utils.compare import compare_parameters
-from fspa_scripts.param_compare.utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+if __name__ == "__main__":
+    # This will be used if someone is running `python fspa_scripts/param_compare/param_compare.py ...`
+    from utils.parasol import get_parasol_values, create_df_from_parasol
+    from utils.param_json import get_param_json_values, create_df_from_param_json
+    from utils.seqgen_fincon import (
+        get_seqgen_fincon_values,
+        create_df_from_seqgen_fincon,
+    )
+    from utils.csds import get_csds_values, create_df_from_csds
+    from utils.compare import compare_parameters
+    from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
+else:
+    # This will be used if someone is running `param_comapre ...`
+    from .utils.parasol import get_parasol_values, create_df_from_parasol
+    from .utils.param_json import get_param_json_values, create_df_from_param_json
+    from .utils.seqgen_fincon import (
+        get_seqgen_fincon_values,
+        create_df_from_seqgen_fincon,
+    )
+    from .utils.csds import get_csds_values, create_df_from_csds
+    from .utils.compare import compare_parameters
+    from .utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
 
 # setup logging
 FORMAT = "[%(levelname)s] [%(asctime)s]: %(message)s"
@@ -52,6 +65,7 @@ required arguments:
         collection  Collection Name for state data store (ex: 'STATE_MANAGER_DEMO')
         env         Venue for retrieving parameter values (ex: dev)
 """
+
 
 ###############################################################################
 # HELPERS
@@ -347,12 +361,12 @@ def validate_input_arguments(inputs):
         if file_extension != '.json':
             sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {inputs[1]}")
 
-def get_values_from_input(inputs):
+def get_values_from_input(inputs, csso: bool = False):
     """Return pandas DataFrame of values from appropriate data source."""
     input_type = inputs[0]
 
     if input_type == 'parasol':
-       response = get_parasol_values(*inputs[1:])
+       response = get_parasol_values(*inputs[1:], csso=csso)
        return create_df_from_parasol(response, inputs[-2]) # -2 is volatility
     elif input_type == 'param_json':
         response = get_param_json_values(*inputs[1:])
@@ -378,6 +392,7 @@ def main():
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
+    parser.add_argument("--csso", action="store_true", help="Pass when Parasol is behind CSSO for OCS DataProducts")
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
@@ -387,8 +402,8 @@ def main():
     validate_input_arguments(args.input2)
     
     # query/load data and conver to pandas DataFrames
-    df1 = get_values_from_input(args.input1)
-    df2 = get_values_from_input(args.input2)
+    df1 = get_values_from_input(args.input1, csso=args.csso)
+    df2 = get_values_from_input(args.input2, csso=args.csso)
 
     # compare parameters
     df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
