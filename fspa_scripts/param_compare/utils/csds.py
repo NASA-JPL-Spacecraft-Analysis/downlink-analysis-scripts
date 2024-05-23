@@ -7,6 +7,7 @@ import os
 import json
 import sys
 import pandas as pd
+import logging
 
 ###############################################################################
 # QUERY STATE DATA STORE
@@ -17,24 +18,26 @@ def get_csds_values(collection_name, env = 'dev'):
     filename = f"./data/csds_responses/{collection_name}_{env}.json"
 
     if os.path.exists(filename):
-        print("Using saved response for CSDS for parameter values.")
+        logging.info("Using saved response for CSDS for parameter values.")
         try:
             with open(filename) as csds_states_values:
                 return json.load(csds_states_values)
         except FileNotFoundError:
-            sys.exit(f"ERROR: file '{filename}' cannot be found. This shouldn't happen.")
+            logging.error("File '{filename}' cannot be found.")
+            sys.exit()
 
     else:
-        print("Making request to State Data Store for states...")
+        logging.info("Making request to State Data Store for states...")
         try:
             response = state_data_store.sds_states.get_states(
                 collection_name=collection_name,
                 env=env
             )
         except:
-            sys.exit(f"ERROR: Could not get states query for collection '{collection_name}'.")
+            logging.error(f"Failed query to CSDS 'get_states' for collection '{collection_name}'.")
+            sys.exit()
 
-        print("Received response from State Data Store.")
+        logging.info("Received response from State Data Store.")
 
         with open(filename, "w") as json_file:
             json.dump(
@@ -42,10 +45,8 @@ def get_csds_values(collection_name, env = 'dev'):
             )
             
         if response is None:
-            sys.exit(f"ERROR: CSDS response for '{collection_name}' is 'None'.")
-        
-        if len(response['data']['states']) == 0:
-            print(f"WARNING: CSDS query response for '{collection_name}' has no parameters.")
+            logging.error(f"CSDS response for '{collection_name}' is 'None'.")
+            sys.exit()
 
         return response
 
@@ -58,6 +59,7 @@ def create_df_from_csds(response):
     
     # if no parameters, return empty dataframe for merge
     if not response['data']['states']:
+        logging.warning(f"No parameters in CSDS query.")
         return pd.DataFrame(columns=['name', 'value'])
 
     return pd.json_normalize(response['data']['states'])
