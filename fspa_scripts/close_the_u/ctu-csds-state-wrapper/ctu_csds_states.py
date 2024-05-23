@@ -1,21 +1,26 @@
 #!/usr/bin/env python
 import argparse
 import json
-
 import os
-import pandas as pd
 import re
+import requests
+import sys
 
-from datetime import datetime
+import pandas as pd
+
 from close_the_u import state_data_store
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+CSDS_REQUIRED_FIELDS = ['name', 'scet', 'value', 'type', 'valueType']
 
 
-def _get_file_type(filename):
+def _get_file_type(filename: str) -> Optional[re.Match]:
     extension_regex = r'[^.]+$'
     return re.search(extension_regex, filename).group()
 
 
-def _write_file_type(response, output):
+def _write_file_type(response: Dict[str, Any], output: str) -> None:
     print(f'Writing states to {output} file for CSDS')
 
     current_time = datetime.now()
@@ -34,84 +39,93 @@ def _write_file_type(response, output):
         df.to_csv(file_path, index=False)
 
 
-def _ensure_required_csds_keys(datum):
-    CSDS_DEFAULTS = {
-        'name': None,
-        'scet': None,
-        'value': -99999,
-        'valueType': 'PREDICTED',
-    }
+def _format_state_data(datum: Dict[str, Any], collection_name: str) -> Dict[str, Any]:
+    state_data = {}
 
-    for key, value in CSDS_DEFAULTS.items():
-        if key not in datum:
-            datum[key] = value
+    for key, value in datum.items():
+        if key != 'id':
+            state_data[key] = value
 
-    return datum
+        if key == 'valueType':
+            state_data[key] = value.upper()
+
+    state_data['collectionName'] = collection_name
+
+    return state_data
 
 
-def _validate_state_data(list_data, collection_name):
+def _create_state_data(list_data: List[Dict[str, Any]], collection_name: str) -> List[Dict[str, Any]]:
     print(f'Validating {len(list_data)} states for CSDS')
 
+    state_data_list = []
     for datum in list_data:
-        # handle required keys for create states
-        datum = _ensure_required_csds_keys(datum)
+        state_data_list.append(_format_state_data(datum, collection_name))
 
-        # set collection name
-        datum['collectionName'] = collection_name
-
-        # remove id before insertion
-        if 'id' in datum:
-            del datum['id']
-
-        # TODO handle CSDS enums
-
-    return list_data
+    return state_data_list
 
 
-def _csv_to_list(filename):
+def _validate_csv_header(headers: List) -> None:
+    if not set(CSDS_REQUIRED_FIELDS).issubset(set(headers)):
+        raise ValueError(f'CSV must include required headers: {CSDS_REQUIRED_FIELDS}')
+
+
+def _csv_to_list(filename: str) -> Dict[str, Any]:
     try:
         data_frame = pd.read_csv(
             filename,
             skipinitialspace=True,
             usecols=lambda x: not x.startswith('Unnamed'),
         )
-        data = data_frame.to_dict(orient='records')
 
+        headers = data_frame.columns.tolist()
+        _validate_csv_header(headers)
+
+        data = data_frame.to_dict(orient='records')
         return data
 
     except Exception as e:
-        print('Exception: _csv_to_array')
-        print(e)
+        print(f'Validation Exception: {e}')
+        sys.exit(1)
 
 
-def _json_to_list(filename):
+def _json_to_list(filename: str) -> Dict[str, Any]:
     try:
         with open(filename, 'r') as json_file:
             data = json.load(json_file)
 
+        for datum in data:
+            headers = datum.keys()
+            _validate_csv_header(headers)
+
         return data
 
     except Exception as e:
-        print('Exception: _json_to_list')
-        print(e)
+        print(f'Validation Exception: {e}')
+        sys.exit(1)
 
 
-def _create_csds_states(states, output):
+def _create_csds_states(states: List[Dict[str, Any]]) -> None:
     print(f'Inserting {len(states)} states for CSDS')
-    response = state_data_store.create_states(states, env='dev')
 
     try:
-        if response['data']['createStates']['success'] == True:
-            print(f'Successfully inserted {len(states)} in CSDS and wrote {output} response')
+        response = state_data_store.create_states(states, env='dev')
+
+        success = response['data']['createStates']['success']
+        if success == True:
+            print(f'Successfully inserted {len(states)} State(s) in CSDS')
+        else:
+            message = response['data']['createStates']['message']
+            print(f'Failed to insert: {message}')
     except Exception as e:
-        print(e)
+        print(f'Error: {e}')
 
 
-def _get_csds_states(collection_name, output):
+def _get_csds_states(collection_name: str, output: str) -> None:
     print(f'Quering {collection_name} in states for CSDS')
-    response = state_data_store.get_states(collection_name, env='dev')
 
     try:
+        response = state_data_store.get_states(collection_name, env='dev')
+
         if response['data']['states']:
             _write_file_type(response['data']['states'], output)
             print(f'Successfully retrieved states in CSDS and wrote {output} response')
@@ -119,7 +133,7 @@ def _get_csds_states(collection_name, output):
         print(e)
 
 
-def setup():
+def setup() -> None:
     try:
         os.mkdir('csv_responses')
         os.mkdir('json_responses')
@@ -143,11 +157,7 @@ def main():
         required=True,
         help='name of the collection in csds (ex: mast-fsw-params)',
     )
-    parser.add_argument(
-        '-i',
-        '--input',
-        help='path to the csv or json input file (ex: ./sample.csv)'
-    )
+    parser.add_argument('-i', '--input', help='path to the csv or json input file (ex: ./sample.csv)')
 
     parser.add_argument(
         '-o',
@@ -172,18 +182,18 @@ def main():
         data = None
         if filetype == 'csv':
             list_data = _csv_to_list(args.input)
-            data = _validate_state_data(list_data, args.collection)
+            data = _create_state_data(list_data, args.collection)
 
         elif filetype == 'json':
             list_data = _json_to_list(args.input)
-            data = _validate_state_data(list_data, args.collection)
+            data = _create_state_data(list_data, args.collection)
 
         else:
             print(f'Please provide a valid .csv or .json file.')
             return
 
         if data is not None:
-            _create_csds_states(data, args.output)
+            _create_csds_states(data)
 
     if args.action == 'QUERY_STATES':
         _get_csds_states(args.collection, args.output)
