@@ -17,7 +17,7 @@ def get_seqgen_fincon_values(path):
         with open(path, "r") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
-        logging.error("File '{file_path}' cannot be found.")
+        logging.error("File '{path}' cannot be found.")
         sys.exit()
     
 ###############################################################################
