@@ -20,6 +20,7 @@ setuptools.setup(
         "eurc-fspa-dplib",
         "jpl_time",
         "pandas",
+        "numpy",
         "XlsxWriter"
     ],
     py_modules=["fspa_scripts"],

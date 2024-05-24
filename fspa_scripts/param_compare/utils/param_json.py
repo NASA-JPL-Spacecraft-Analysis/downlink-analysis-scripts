@@ -18,7 +18,8 @@ def get_param_json_values(path):
         with open(path, "r") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
-        sys.exit(f"ERROR: file '{path}' cannot be found.")
+        logging.error(f"File '{path}' cannot be found.")
+        sys.exit()
     
 ###############################################################################
 # PARAM.JSON TO PANDAS

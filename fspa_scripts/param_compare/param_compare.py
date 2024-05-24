@@ -248,7 +248,8 @@ def compare(
         return_type: str = None,
         output: str = None,
         debug: bool = True,
-        csso: bool = False
+        csso: bool = False,
+        sigfigs: int = 8
     ):
     """
     CLI for comparing parameters from several formats: parasol, csds, param.json, seqgen_fincon.json.
@@ -276,17 +277,19 @@ def compare(
                 intersect_only = True,
                 return_type = 'xlsx',
                 output = '/my/output/folder',
-                csso = False
+                csso = False,
+                sigfigs = 8
             )
 
     ARGS:
-
         type (enum): **[REQUIRED]** 'parasol', 'param_json', 'seqgen_fincon', 'csds' (default: None)
         verbose (bool): Include all data from compared files in output (default: False)
         diff_only (bool): Only output parameters that do not match (default: False)
         intersect_only (bool): Only output parameters that exist in both inputs (default: False)
         return_type (enum): Save output file as JSON (options: 'xlsx', 'json') (default: None)
         output (str): Path to desired output location (default: None)
+        csso (bool): Add this CSSO flag when Parasol is behind CSSO for OCS Data Products
+        sigfigs (int): Number of significant figures to use while comparing value fields for float values (default: 8)
 
     INPUT TYPE ARGS:
         parasol:
@@ -324,7 +327,7 @@ def compare(
     df2 = get_values_from_input_library(input2, csso=csso)
 
     # compare parameters
-    df = compare_parameters(df1, df2, verbose, intersect_only, diff_only)
+    df = compare_parameters(df1, df2, verbose, intersect_only, diff_only, sigfigs)
 
     # print statistics from comparison
     total, match_count, non_match_count = _return_stats(df)
@@ -399,6 +402,7 @@ def main():
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
     parser.add_argument("--csso", action="store_true", help="Add this CSSO flag when Parasol is behind CSSO for OCS Data Products")
+    parser.add_argument("--sigfigs", type=int, default=8, help="Number of significant figures to use while comparing value fields for float values (default: 8).")
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
@@ -412,7 +416,7 @@ def main():
     df2 = get_values_from_input(args.input2, csso=args.csso)
 
     # compare parameters
-    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
+    df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only, args.sigfigs)
 
     # print statistics from comparison
     total, match_count, non_match_count = _return_stats(df)
