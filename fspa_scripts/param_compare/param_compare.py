@@ -249,7 +249,7 @@ def compare(
         output: str = None,
         debug: bool = True,
         csso: bool = False,
-        sigfigs: int = 8
+        sigfigs: int = 10
     ):
     """
     CLI for comparing parameters from several formats: parasol, csds, param.json, seqgen_fincon.json.
@@ -278,7 +278,7 @@ def compare(
                 return_type = 'xlsx',
                 output = '/my/output/folder',
                 csso = False,
-                sigfigs = 8
+                sigfigs = 10
             )
 
     ARGS:
@@ -289,7 +289,7 @@ def compare(
         return_type (enum): Save output file as JSON (options: 'xlsx', 'json') (default: None)
         output (str): Path to desired output location (default: None)
         csso (bool): Add this CSSO flag when Parasol is behind CSSO for OCS Data Products
-        sigfigs (int): Number of significant figures to use while comparing value fields for float values (default: 8)
+        sigfigs (int): Number of significant figures to use while comparing value fields for float values (default: 10)
 
     INPUT TYPE ARGS:
         parasol:
@@ -402,7 +402,7 @@ def main():
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
     parser.add_argument("--csso", action="store_true", help="Add this CSSO flag when Parasol is behind CSSO for OCS Data Products")
-    parser.add_argument("--sigfigs", type=int, default=8, help="Number of significant figures to use while comparing value fields for float values (default: 8).")
+    parser.add_argument("--sigfigs", type=int, default=8, help="Number of significant figures to use while comparing value fields for float values (default: 10).")
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
