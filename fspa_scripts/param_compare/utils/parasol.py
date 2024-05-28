@@ -30,10 +30,9 @@ def _get_env_venue(env):
 # QUERY PARASOL
 ###############################################################################
 
-
 def get_parasol_values(host, session, scet, vcid, volatility, env, csso: bool = False):
     """Get and return parasol query based on provided CLI arguments."""
-    filename = f"./data/parasol_responses/{host}_{session}_{scet}_{vcid}.json"
+    filename = f"data/parasol_responses/{host}_{session}_{scet}_{vcid}.json"
 
     if os.path.exists(filename):
         logging.info("Using saved response for Parasol for parameter values.")

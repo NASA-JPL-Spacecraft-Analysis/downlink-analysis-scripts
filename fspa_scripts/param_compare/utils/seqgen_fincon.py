@@ -11,13 +11,13 @@ import logging
 # GET SEQGEN FINCONS
 ###############################################################################
 
-def get_seqgen_fincon_values(file_path):
+def get_seqgen_fincon_values(path):
     """Return seqgen_fincon data from file path."""
     try:
-        with open(file_path, "r") as json_file:
+        with open(path, "r") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
-        logging.error("File '{file_path}' cannot be found.")
+        logging.error("File '{path}' cannot be found.")
         sys.exit()
     
 ###############################################################################

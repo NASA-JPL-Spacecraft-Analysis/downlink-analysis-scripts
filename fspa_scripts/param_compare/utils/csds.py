@@ -15,8 +15,8 @@ import logging
 
 def get_csds_values(collection_name, env = 'dev'):
     """Get and return state data store query based on provided CLI arguments."""
-    filename = f"./data/csds_responses/{collection_name}_{env}.json"
-
+    filename = f"data/csds_responses/{collection_name}_{env}.json"
+    
     if os.path.exists(filename):
         logging.info("Using saved response for CSDS for parameter values.")
         try:

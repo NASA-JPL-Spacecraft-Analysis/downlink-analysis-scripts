@@ -19,6 +19,7 @@ setuptools.setup(
         "lxml==5.1.0",
         "eurc-fspa-dplib",
         "jpl_time",
+        "pandas",
         "XlsxWriter"
     ],
     py_modules=["fspa_scripts"],
