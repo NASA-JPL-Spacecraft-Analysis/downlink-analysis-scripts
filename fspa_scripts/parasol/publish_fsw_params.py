@@ -16,7 +16,7 @@ GROUP = "no_group"
 COPY = "COPY_0"
 
 
-def _getEnvVenue(env: str, auth_type: str) -> Tuple:
+def _get_env_venue(env: str, auth_type: str) -> Tuple:
     venue = None
 
     if env == "dev":
@@ -35,7 +35,7 @@ def _getEnvVenue(env: str, auth_type: str) -> Tuple:
 
 
 def _configure_parasol(env: Dict[str, Any], auth_type: str) -> None:
-    host, cookie = _getEnvVenue(env, auth_type)
+    host, cookie = _get_env_venue(env, auth_type)
 
     print(f"Configuring Parasol for {env} with auth type {auth_type}: {host}")
     parasol.configure(parasol_host=host, cookie_name=cookie, auth_type=auth_type, phase="cruise")
