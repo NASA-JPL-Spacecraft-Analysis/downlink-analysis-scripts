@@ -40,7 +40,7 @@ def load_json_file(path):
         with open(path, "r") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
-        logging.error("File '{path}' cannot be found.")
+        logging.error(f"File '{path}' cannot be found.")
         sys.exit()
 
 ###############################################################################
@@ -89,10 +89,10 @@ def build_param_json_states(collection_name, scet, data) -> None:
                 "collectionName": collection_name,
                 "hexId": parameter["id"],
                 "name": parameter["name"],
-                "version": parameter["version"],
+                "version": str(parameter["version"]),
                 "type": TYPE,
                 "value": value if isinstance(value, numbers.Number) else -99999, # using same logic as publish_fsw_params.py
-                "value_type": VALUE_TYPE, # this should always be 'predicted' but it exists in param_json (parameter["value_type"].upper())
+                "valueType": VALUE_TYPE, # this should always be 'predicted' but it exists in param_json (parameter["value_type"].upper())
                 "metadata": metadata
             }
         except ValueError as err:
@@ -132,10 +132,10 @@ def build_seqgen_fincon_states(collection_name, scet, data) -> None:
                 "collectionName": collection_name,
                 "hexId": parameter["id"],
                 "name": parameter["name"],
-                "version": parameter["version"],
+                "version": str(parameter["version"]),
                 "type": TYPE,
-                "value": parameter["value"] if isinstance(parameter["value"], numbers.Number) else -99999, # using same logic as publish_fsw_params.py
-                "value_type": VALUE_TYPE, # this should always be 'predicted'
+                "value": parameter["value"] if isinstance(parameter["value"], numbers.Number) else -99999, # Float! using same logic as publish_fsw_params.py
+                "valueType": VALUE_TYPE, # this should always be 'predicted'
                 "metadata": metadata
             }
         except ValueError as err:
