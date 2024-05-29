@@ -304,16 +304,15 @@ def main():
     OUTPUT_TIME = datetime.now()
     metadata = _get_metadata_from_args(args)
     metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
-    # metadata["Parameters"] = total
-    # metadata["Changes"] = change_count
-    # metadata["Non-Changes"] = non_change_count
-
 
     if args.format == 'matrix':
         # generate history
         df = generate_history_matrix(df, args.intersect_only, args.end_value, args.change_only)
         # print statistics from history
         total, change_count, non_change_count = _return_stats(df)
+        metadata["Parameters"] = total
+        metadata["Changes"] = change_count
+        metadata["Non-Changes"] = non_change_count
     else:
         # generate history
         df = generate_history_list(df, args.intersect_only, args.end_value, args.change_only, args.verbose)
