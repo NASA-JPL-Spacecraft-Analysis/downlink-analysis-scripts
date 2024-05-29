@@ -54,8 +54,10 @@ def _insert_states(venue: str, states: List[Dict]) -> None:
                 len(states)
             )
         )
+    else:
+        print (str(response))
 
-def build_param_json_states(collection_name, scet, data) -> None:
+def build_param_json_states(collection_name, scet, data, vol) -> None:
     """Build list of state data store objects from param_json parameters list."""
     # if incorrect JSON foramt, log and error
     if not 'parameter_file' in data or not 'parameter_list' in data['parameter_file']:
@@ -105,7 +107,7 @@ def build_param_json_states(collection_name, scet, data) -> None:
     return states
 
 
-def build_seqgen_fincon_states(collection_name, scet, data) -> None:
+def build_seqgen_fincon_states(collection_name, scet, data, vol) -> None:
     """Build list of state data store objects from seqgen_fincon JSON."""
     # if incorrect JSON foramt, log and error
     if not isinstance(data, list):
@@ -132,6 +134,7 @@ def build_seqgen_fincon_states(collection_name, scet, data) -> None:
                 "collectionName": collection_name,
                 "hexId": parameter["id"],
                 "name": parameter["name"],
+                "volatility": vol,
                 "version": str(parameter["version"]),
                 "type": TYPE,
                 "value": parameter["value"] if isinstance(parameter["value"], numbers.Number) else -99999, # Float! using same logic as publish_fsw_params.py
@@ -159,6 +162,8 @@ def main():
     parser.add_argument("--scet", required=True, type=str, help="A SCET formatted time this input file was generated with that will be published to CSDS.")
     parser.add_argument("-c", "--collection", required=True, help="Name of the data store collection to publish parasol data (ex: eurcits001-578).")
     parser.add_argument("--env", default="dev", help="Venue for retrieving parameter values and publishing (ex: dev)")
+    parser.add_argument("--vol", type=str, default="VOLATILE", choices=['VOLATILE','NON_VOLATILE'], help="Volatility (VOLATILE or NON_VOLATILE)")
+    
     args = parser.parse_args()
 
     # validate file path is .json
@@ -169,9 +174,9 @@ def main():
 
     states = []
     if args.type == 'param_json':
-        states = build_param_json_states(args.collection, args.scet, data)
+        states = build_param_json_states(args.collection, args.scet, data, args.vol)
     elif args.type == 'seqgen_fincon':
-        states = build_seqgen_fincon_states(args.collection, args.scet, data)
+        states = build_seqgen_fincon_states(args.collection, args.scet, data, args.vol)
     else:
         logging.error("Unrecognized 'type'. Please see 'param_incons_to_ctu -h' for help.")
         sys.exit()
