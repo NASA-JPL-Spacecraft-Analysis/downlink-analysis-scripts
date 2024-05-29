@@ -339,9 +339,9 @@ def compare(
     metadata["Non-Matches"] = non_match_count
     
     # return in user-designated format
+    # output_filename = "output"
     #output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{input1['type']}_{input2['type']}'
-    #output_filename = f"{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{input1["type"]}_{input2["type"]}"
-    output_filename = "output"
+    output_filename = f"{OUTPUT_TIME.strftime('%Y_%m_%dT%H_%M_%S')}_{input1['type']}_{input2['type']}"
     output_filepath = _get_output_path(output).joinpath(output_filename)
     
     if return_type == 'json':
@@ -429,7 +429,7 @@ def main():
     metadata["Non-Matches"] = non_match_count
     
     # return in user-designated format
-    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.input1[0]}_{args.input2[0]}'
+    output_filename = f"{OUTPUT_TIME.strftime('%Y_%m_%dT%H_%M_%S')}_{args.input1[0]}_{args.input2[0]}"
     output_filepath = _get_output_path(args.output).joinpath(output_filename)
     if args.to_json:
         create_json(df, f"{output_filepath}.json", metadata = dict())

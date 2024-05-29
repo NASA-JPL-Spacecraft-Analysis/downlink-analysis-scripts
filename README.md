@@ -96,7 +96,7 @@ $ param_compare --input1 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev --in
 $ param_compare --input1 param_json "./data/parm_json/017_success_active_only_260_nvm.parm.json" --input2 seqgen_fincon "./data/seqgen_fincon/Active_Falseactive_params.json"
 
 # csds to parasol
-$ param_compare --input1 csds "eurcits001-collection-690" dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 dev
+$ param_compare --input1 csds "eurcits001-collection-690" dev --input2 parasol eurcits001 830 2026-082T17:19:46 0 nvm dev
 ```
 
 Additional flags:
