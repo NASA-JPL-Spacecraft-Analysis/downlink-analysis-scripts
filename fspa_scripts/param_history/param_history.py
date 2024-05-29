@@ -20,13 +20,13 @@ if __name__ == "__main__":
     # This will be used if someone is running `python fspa_scripts/param_history/param_history.py ...`
     from utils.parasol import get_parasol_values, create_df_from_parasol
     from utils.csds import get_csds_values, create_df_from_csds
-    from utils.history import generate_history
+    from utils.history import generate_history_matrix, generate_history_list 
     from utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
 else:
     # This will be used if someone is running `param_comapre ...`
     from .utils.parasol import get_parasol_values, create_df_from_parasol
     from .utils.csds import get_csds_values, create_df_from_csds
-    from .utils.history import generate_history
+    from .utils.history import generate_history_matrix, generate_history_list
     from .utils.constants import INPUT_TYPES, INPUT_TYPE_ARG_COUNTS
 
 # setup logging
@@ -108,7 +108,7 @@ def add_metadata_worksheet(workbook, metadata = dict()):
         i += 1
     return workbook
 
-def create_xlsx(df, filename, metadata = dict()):
+def create_xlsx_matrix(df, filename, metadata = dict()):
     """Create XLSX file from pandas dataframe."""
     # Create a Pandas Excel writer using XlsxWriter as the engine.
     logging.info('Creating excel workbook...')
@@ -184,6 +184,64 @@ def create_xlsx(df, filename, metadata = dict()):
     # Close the Pandas Excel writer and output the Excel file.
     writer.close()
 
+def create_xlsx_list(df, filename, metadata = dict()):
+    """Create XLSX file from pandas dataframe."""
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    logging.info('Creating excel workbook...')
+    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
+    
+    # Sort rows with matches first; then alphabetical by parameter name
+    df.sort_values(by=['name', 'scet'], ascending=[True, True], inplace=True)
+    
+    # Convert the dataframe to an XlsxWriter Excel object.
+    df.to_excel(writer, sheet_name="history")
+    
+    # Get the xlsxwriter workbook and worksheet objects.
+    workbook = writer.book
+    history_worksheet = writer.sheets["history"]
+    
+    # make cell formats to use in conditional formatting, metadata
+    green_format = workbook.add_format({'bg_color': '#C6EFCE','font_color': '#006100'})
+    yellow_format = workbook.add_format({'bg_color': '#FFEB9C', 'font_color': '#9C6500'})
+    gray_format = workbook.add_format({'bg_color': '#EEEEEE','font_color': '#000000'})
+    
+    # set better column widths for compare
+    name_col = 1 + df.columns.get_loc("name")
+    # status_col = 1 + df.columns.get_loc("status")
+
+    # Get the dimensions of the dataframe.
+    (max_row, max_col) = df.shape
+    history_worksheet.set_column(1, max_col, 20) # 'name'
+    history_worksheet.set_column(name_col, name_col, 45) # 'name'
+
+    logging.info('Formatting excel workbook...')
+
+    # Apply conditional formatting to 'change' column
+    # history_worksheet.conditional_format(1, status_col, max_row, status_col, {
+    #     "type": "cell",
+    #     "criteria": "equal to",
+    #     "value": '"INITIAL"',
+    #     "format": gray_format
+    # })
+    # history_worksheet.conditional_format(1, status_col, max_row, status_col, {
+    #     "type": "cell",
+    #     "criteria": "equal to",
+    #     "value": '"CHANGE"',
+    #     "format": yellow_format
+    # })
+    # history_worksheet.conditional_format(1, status_col, max_row, status_col, {
+    #     "type": "cell",
+    #     "criteria": "equal to",
+    #     "value": '"FINAL"',
+    #     "format": green_format
+    # })
+
+    add_metadata_worksheet(workbook, metadata)
+
+    # Close the Pandas Excel writer and output the Excel file.
+    writer.close()
+
+
 def create_json(df, filename, metadata = dict()):
     """Create JSON file from pandas dataframe."""
     data = json.loads(df.to_json(orient='records'))
@@ -223,12 +281,12 @@ def main():
         formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("--input", required=True, nargs='+', type=str, help=PARSER_INPUT_HELP)
-    parser.add_argument("--verbose", action='store_true', help="Include all data from compared files in output.")
-    parser.add_argument("--format", default='row', const='row', nargs='?', choices=('column','row'), help="Format parameter output as 'row' or 'column'.")
+    parser.add_argument("--verbose", action='store_true', help="Include all data from query in output. NOTE: Only applies to 'list' format.")
+    parser.add_argument("--format", default='matrix', const='matrix', nargs='?', choices=('list','matrix'), help="Format parameter output as 'matrix' or 'list'.")
     parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
     parser.add_argument("--change-only", dest="change_only", action='store_true', help="Only output parameters that changed in given history.")
     parser.add_argument("--end-value", dest="end_value", default='all', const='all', nargs='?', choices=('same', 'different','all'), help="Only output parameters that are the 'same' or 'different' (default: %(default)s).")
-    parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
+    parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.")
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_history processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
     parser.add_argument("--csso", action="store_true", help="Add this CSSO flag when Parasol is behind CSSO for OCS Data Products")
@@ -242,27 +300,36 @@ def main():
     # query/load data and conver to pandas DataFrames
     df = get_values_from_input(args.input, csso=args.csso)
 
-    # generate history
-    df = generate_history(df, args.verbose, args.format, args.intersect_only, args.end_value, args.change_only)
-
-    # print statistics from history
-    total, change_count, non_change_count = _return_stats(df)
-
-    # get metadata
+     # get metadata
     OUTPUT_TIME = datetime.now()
     metadata = _get_metadata_from_args(args)
     metadata["Workbook created"] = OUTPUT_TIME.strftime("%Y-%m-%dT%H:%M:%S.%f")
-    metadata["Parameters"] = total
-    metadata["Changes"] = change_count
-    metadata["Non-Changes"] = non_change_count
-    
+    # metadata["Parameters"] = total
+    # metadata["Changes"] = change_count
+    # metadata["Non-Changes"] = non_change_count
+
+
+    if args.format == 'matrix':
+        # generate history
+        df = generate_history_matrix(df, args.intersect_only, args.end_value, args.change_only)
+        # print statistics from history
+        total, change_count, non_change_count = _return_stats(df)
+    else:
+        # generate history
+        df = generate_history_list(df, args.intersect_only, args.end_value, args.change_only, args.verbose)
+        # print statistics from history
+        # total, change_count, non_change_count = _return_stats(df)
+   
     # return in user-designated format
     output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.input[0]}'
     output_filepath = _get_output_path(args.output).joinpath(output_filename)
     if args.to_json:
         create_json(df, f"{output_filepath}.json", metadata = dict())
     else:
-        create_xlsx(df, f"{output_filepath}.xlsx", metadata)
+        if args.format == 'matrix':
+            create_xlsx_matrix(df, f"{output_filepath}.xlsx", metadata)
+        else:
+            create_xlsx_list(df, f"{output_filepath}.xlsx", metadata)
 
 if __name__ == "__main__":
     main()
