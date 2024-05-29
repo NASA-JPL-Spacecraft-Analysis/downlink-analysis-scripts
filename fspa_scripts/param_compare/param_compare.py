@@ -113,9 +113,9 @@ def _get_metadata_from_args_library(input1, input2):
     """Create CLI argument dictionary with string values for XLSX metadata."""
     metadata = dict()
     for i in input1.keys():
-        metadata[f'{input1['type']}_{i}'] = str(input1[i])
+        metadata["{input1['type']}_{i}"] = str(input1[i])
     for i in input2.keys():
-        metadata[f'{input2['type']}_{i}'] = str(input2[i])
+        metadata["{input2['type']}_{i}"] = str(input2[i])
     return metadata
  
 def add_metadata_worksheet(workbook, metadata = dict()):
@@ -209,7 +209,8 @@ def validate_input_arguments_library(input_args):
     if input_type in ['param_json', 'seqgen_fincon']:
         file_extension = Path(os.path.basename(input_args["path"])).suffix
         if file_extension != '.json':
-            sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {input_args["path"]}")
+            #sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {input_args["path"]}")
+            sys.exit(f"Input type '{input_type}' expects JSON file. ")
 
 def get_values_from_input_library(input_args, csso: bool = False):
     """Return pandas DataFrame of values from appropriate data source."""
@@ -338,7 +339,9 @@ def compare(
     metadata["Non-Matches"] = non_match_count
     
     # return in user-designated format
-    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{input1['type']}_{input2['type']}'
+    # output_filename = "output"
+    #output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{input1['type']}_{input2['type']}'
+    output_filename = f"{OUTPUT_TIME.strftime('%Y_%m_%dT%H_%M_%S')}_{input1['type']}_{input2['type']}"
     output_filepath = _get_output_path(output).joinpath(output_filename)
     
     if return_type == 'json':
@@ -426,7 +429,7 @@ def main():
     metadata["Non-Matches"] = non_match_count
     
     # return in user-designated format
-    output_filename = f'{OUTPUT_TIME.strftime("%Y_%m_%dT%H_%M_%S")}_{args.input1[0]}_{args.input2[0]}'
+    output_filename = f"{OUTPUT_TIME.strftime('%Y_%m_%dT%H_%M_%S')}_{args.input1[0]}_{args.input2[0]}"
     output_filepath = _get_output_path(args.output).joinpath(output_filename)
     if args.to_json:
         create_json(df, f"{output_filepath}.json", metadata = dict())
