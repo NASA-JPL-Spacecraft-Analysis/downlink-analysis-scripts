@@ -11,7 +11,7 @@ import sys
 import subprocess
 import datetime
 
-# todo, allow these to be passed in via commnad line, ENV, and a transpire_dps.config file
+# todo, allow these to be passed in via commnad line, ENV, and a parasol.config file
 ocs_env = "dev" #default to dev if nothing passed in
 ocs_configs = {
     "ccgds": {
@@ -292,7 +292,7 @@ def build_ocs_metadata_from_emd(emd_file):
 
 def main():
     hostname = socket.gethostname()
-    print("Start of transpire_process_dps script, running on host {}".format(hostname))
+    print("Start of parasol_process_dps script, running on host {}".format(hostname))
 
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
     parser.add_argument('-K', '--session', help='session number to query on')
