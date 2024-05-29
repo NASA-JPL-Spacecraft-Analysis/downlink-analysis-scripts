@@ -178,7 +178,11 @@ def main():
 
     _configure_parasol(args.env, args.auth_type)
     parasol_response = _get_parameter_values(args)
-    _compose_states_and_insert(args, parasol_response)
+
+    if parasol_response:
+        _compose_states_and_insert(args, parasol_response)
+    else:
+        print(f"No data found for: Host: {args.host} | Session: {args.session} | SCET: {args.scet}")
 
 
 if __name__ == "__main__":
