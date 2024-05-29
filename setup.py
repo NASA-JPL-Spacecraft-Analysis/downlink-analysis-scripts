@@ -30,6 +30,7 @@ setuptools.setup(
             "param_incons_to_ctu = fspa_scripts.conversions.param_incons_to_ctu:main",
             "transpire_process_dps = fspa_scripts.transpire.transpire_process_dps:main",
             "publish_fsw_params = fspa_scripts.parasol.publish_fsw_params:main",
+            "parasol_process_dps = fspa_scripts.parasol.parasol_process_dps:main",
             "param_compare = fspa_scripts.param_compare.param_compare:main",
             "param_history = fspa_scripts.param_history.param_history:main",
             "ctu_csds_states = fspa_scripts.close_the_u.ctu_csds_states:main",
