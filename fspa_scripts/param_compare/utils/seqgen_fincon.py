@@ -26,6 +26,7 @@ def get_seqgen_fincon_values(path):
 
 def create_df_from_seqgen_fincon(data):
     """Return pandas DataFrame from param.json data."""
+    rows_list = []
 
     if not isinstance(data, list):
         logging.error("seqgen_fincon JSON file is not a list.")
@@ -36,4 +37,13 @@ def create_df_from_seqgen_fincon(data):
         logging.warning(f"No parameters in seqgen_fincon file.")
         return pd.DataFrame(columns=['name', 'value'])
     
-    return pd.json_normalize(data)
+    for parameter in data:
+        rows_list.append({
+            "name": parameter['name'],
+            "id": parameter['id'],
+            "version": parameter['version'],
+            "fincon_name": parameter['fincon_name'],
+            "value": str(parameter['value']),
+        })
+    
+    return pd.DataFrame(rows_list)

@@ -129,7 +129,7 @@ def create_df_from_parasol(response, vol):
 
                 rows_list.append({
                     "name": parameter_name, 
-                    "value": parameter[volatility]['value'],
+                    "value": str(parameter[volatility]['value']),
                     "module": module_name,
                     "group": group_name,
                     "copy": PARASOL_COPY,
