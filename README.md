@@ -154,6 +154,62 @@ response = compare(
 response = compare(input1={'type': 'parasol','host': 'eurcits001','session': 830,'scet': '2026-082T17:19:46','vcid': 0,'volatility': 'nvm','env': 'dev'}, input2={'type': 'parasol','host': 'eurcits001','session': 830,'scet': '2026-082T17:19:46','vcid': 0,'volatility': 'nvm','env': 'dev'})
 ```
 
+### param_history
+
+Compare parameter history from CSDS or Parasol and view a human-readable output (XLSX or JSON).
+
+NOTE: Requires CSSO or cam-login. Run `credss` for CSSO, or `cam-login` in your terminal before trying the param_history script.
+
+#### Input Schemas
+
+```
+input types: {parasol, csds}
+
+required arguments:
+
+parasol:
+    host        Session host on parasol (ex: eurcits001)
+    session     Session id on parasol (ex: 830)
+    start_time  A SCET formatted start time for parasol history (ex: 2023-136T22:08:51.038)
+    end_time    A SCET formatted end time for parasol history (ex: 2023-136T22:08:51.038)
+    vcid        VCID 0 or 32 (ex: 0)
+    volatility  Use parasol volatile values (options: 'vol' or 'nvm')
+    env         Venue for retrieving parameter values (ex: dev)
+    auth_type   Authenticate with 'csso' (Parasol with Chillax) or 'cam' (Parasol with MCWS) (default: csso)
+
+csds:
+    collection  Collection Name for state data store (ex: 'eurcits001-collection-690')
+    env         Venue for retrieving parameter values (ex: dev)
+```
+
+#### CLI
+
+Enter `param_history -h` for help details.
+
+##### Examples
+
+After building the fspa-scripts libraries in the root directory with `pip install .` and running `make setup`, you should be able to run the script without prefixing `python` or adding the `.py` extension.
+
+```shell
+# parasol to parasol
+$ param_history --input parasol eurcits001 831 2024-001T00:00:00 2026-001T00:00:00 0 vol dev
+
+# parasol to param.json
+$ param_history --input csds fsw-params-eurcits001-844 dev
+```
+
+Additional flags:
+
+- `--output` Path to desired output location.
+- `--verbose` Include all data from query in output. NOTE: Only applies to 'list' format.
+- `--format` Format parameter output as 'matrix' or 'list' (default: 'matrix')
+- `--intersect-only` Only output parameters that exist in every timestamp in parameter history.
+- `--change-only` Only output parameters that changed in given history.
+- `--end-value` Only output parameters that are the 'same' or 'different' (default: 'all').
+- `--to-json` Output history as JSON.
+- `--debug` Log param_history processing information to console.
+- `--auth-type` Authenticate with 'csso' (Parasol with Chillax) or 'cam' (Parasol with MCWS) (default: csso)
+
 ### transpire
 
 #### transpire_process_dps.py

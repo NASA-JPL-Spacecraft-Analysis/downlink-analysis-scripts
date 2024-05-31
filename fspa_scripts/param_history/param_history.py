@@ -43,7 +43,8 @@ required arguments:
     parasol:
         host        Session host on parasol (ex: eurcits001)
         session     Session id on parasol (ex: 830)
-        scet        A SCET formatted time for parasol query 1 (ex: 2023-136T22:08:51.038)
+        start_time  A SCET formatted start time for parasol history (ex: 2023-136T22:08:51.038)
+        end_time    A SCET formatted end time for parasol history (ex: 2023-136T22:08:51.038)
         vcid        VCID 0 or 32 (ex: 0)
         volatility  Use parasol volatile values (options: 'vol' or 'nvm')
         env         Venue for retrieving parameter values (ex: dev)
@@ -112,7 +113,7 @@ def create_xlsx_matrix(df, filename, metadata = dict()):
     """Create XLSX file from pandas dataframe."""
     # Create a Pandas Excel writer using XlsxWriter as the engine.
     logging.info('Creating excel workbook...')
-    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
+    writer = pd.ExcelWriter(filename, engine="xlsxwriter") # options={'strings_to_numbers': False}
     
     # Sort rows with matches first; then alphabetical by parameter name
     df.sort_values(by=['change', 'end value', 'name'], ascending=[False, False, True], inplace=True)
@@ -235,12 +236,11 @@ def create_xlsx_list(df, filename, metadata = dict()):
     #     "value": '"FINAL"',
     #     "format": green_format
     # })
-
+    
     add_metadata_worksheet(workbook, metadata)
 
     # Close the Pandas Excel writer and output the Excel file.
     writer.close()
-
 
 def create_json(df, filename, metadata = dict()):
     """Create JSON file from pandas dataframe."""
@@ -263,12 +263,12 @@ def validate_input_arguments(inputs):
         sys.exit(f"Input type {input_type} expects {INPUT_TYPE_ARG_COUNTS[input_type]} arguments. You provided {input_arg_count}. Read '-h' for help.")
 
 
-def get_values_from_input(inputs, csso: bool = False):
+def get_values_from_input(inputs, auth_type):
     """Return pandas DataFrame of values from appropriate data source."""
     input_type = inputs[0]
 
     if input_type == 'parasol':
-       response = get_parasol_values(*inputs[1:], csso=csso)
+       response = get_parasol_values(*inputs[1:], auth_type=auth_type)
        return create_df_from_parasol(response, inputs[-2]) # -2 is volatility
     elif input_type == 'csds':
         response = get_csds_values(*inputs[1:])
@@ -283,13 +283,14 @@ def main():
     parser.add_argument("--input", required=True, nargs='+', type=str, help=PARSER_INPUT_HELP)
     parser.add_argument("--verbose", action='store_true', help="Include all data from query in output. NOTE: Only applies to 'list' format.")
     parser.add_argument("--format", default='matrix', const='matrix', nargs='?', choices=('list','matrix'), help="Format parameter output as 'matrix' or 'list'.")
-    parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in both inputs.")
+    parser.add_argument("--intersect-only", dest="intersect_only",action='store_true', help="Only output parameters that exist in every timestamp in parameter history.")
     parser.add_argument("--change-only", dest="change_only", action='store_true', help="Only output parameters that changed in given history.")
     parser.add_argument("--end-value", dest="end_value", default='all', const='all', nargs='?', choices=('same', 'different','all'), help="Only output parameters that are the 'same' or 'different' (default: %(default)s).")
-    parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.")
+    parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output history as JSON.")
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_history processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
-    parser.add_argument("--csso", action="store_true", help="Add this CSSO flag when Parasol is behind CSSO for OCS Data Products")
+    parser.add_argument("--auth-type", default="csso", help="Authenticate with 'csso' (Parasol with Chillax) or 'cam' (Parasol with MCWS) (default: csso)")
+    
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
@@ -298,7 +299,7 @@ def main():
     validate_input_arguments(args.input)
     
     # query/load data and conver to pandas DataFrames
-    df = get_values_from_input(args.input, csso=args.csso)
+    df = get_values_from_input(args.input, auth_type=args.auth_type)
 
      # get metadata
     OUTPUT_TIME = datetime.now()

@@ -134,7 +134,7 @@ def add_metadata_worksheet(workbook, metadata = dict()):
 def create_xlsx(df, filename, metadata = dict()):
     """Create XLSX file from pandas dataframe."""
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
+    writer = pd.ExcelWriter(filename, engine="xlsxwriter") # options={'strings_to_numbers': False}
     
     # Sort rows with matches first; then alphabetical by parameter name
     df.sort_values(by=['match', 'name'], ascending=[False, True], inplace=True)
