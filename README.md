@@ -48,7 +48,7 @@ $ python publish_fsw_params.py --host eurcits001 --session 578 --collection 'eur
 
 Compare parasol, param.json, seqgen_fincon.json, or CSDS parameters and return results in human-readable output (Excel report or JSON).
 
-NOTE: Requires cam-login. Run `cam-login` in your terminal before trying the param_compare script. This may require CSSO in future updates, and a flag is provided for when that happens.
+NOTE: Requires CSSO or cam-login. Run `credss` for CSSO, or `cam-login` in your terminal before trying the param_history script.
 
 #### Input Schemas
 
@@ -64,7 +64,6 @@ parasol:
     vcid        VCID 0 or 32 (ex: 0)
     volatility  Use parasol volatile values (options: 'vol' or 'nvm')
     env         Venue for retrieving parameter values (ex: dev)
-    csso        Add this CSSO flag when Parasol is behind CSSO for OCS Data Products (default: false)
 
 param_json:
     path        Path to json file.
@@ -107,7 +106,7 @@ Additional flags:
 - `--diff-only` Only output parameters that do not match.
 - `--to-json` Output results in JSON at desired output path.
 - `--debug` Log param_compare processing information to console.
-- `--csso` Flag to pass when Parasol is behind CSSO for OCS Data Product
+- `--auth-type` Authenticate with 'csso' (Parasol with Chillax) or 'cam' (Parasol with MCWS) (default: csso)
 
 #### param_compare library
 
@@ -147,7 +146,7 @@ response = compare(
     return_type = 'xlsx', # optional file to write results
     output = '/my/output/folder', # optional file path to write results
     debug = True,
-    csso = False
+    auth_type = 'csso'
 )
 
 # parasol-parasol basic example
@@ -175,7 +174,6 @@ parasol:
     vcid        VCID 0 or 32 (ex: 0)
     volatility  Use parasol volatile values (options: 'vol' or 'nvm')
     env         Venue for retrieving parameter values (ex: dev)
-    auth_type   Authenticate with 'csso' (Parasol with Chillax) or 'cam' (Parasol with MCWS) (default: csso)
 
 csds:
     collection  Collection Name for state data store (ex: 'eurcits001-collection-690')

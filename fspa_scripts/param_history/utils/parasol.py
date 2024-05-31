@@ -52,8 +52,6 @@ def get_parasol_values(host, session, start_time, end_time, vcid, volatility, en
     """Get and return parasol query based on provided CLI arguments."""
     filename = f"data/parasol_responses/{host}_{session}_{start_time}_{end_time}_{vcid}_{volatility}_{env}.json"
 
-    _configure_parasol(env, auth_type)
-
     if os.path.exists(filename):
         logging.info("Using saved response for Parasol for parameter values.")
         try:
