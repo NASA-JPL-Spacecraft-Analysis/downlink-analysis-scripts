@@ -107,6 +107,8 @@ def _get_parameter_values(args: Dict[str, Any]) -> Dict[str, Any]:
             with open(filename, "w") as json_file:
                 json.dump(response, json_file, indent=4, sort_keys=False, separators=(",", ": "))
 
+            json_file.close()
+
             return response
         except parasol.exceptions.ParasolAuthException as exc:
             auth_helper = "credss" if args.auth_type == 'csso' else "cam-login"
@@ -132,7 +134,7 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                 for volatility, data in parameter.items():
                     csds_volatility = volatility.replace("-", "_").upper()
                     if csds_volatility in [member.value for member in state_data_store.enum_classes["volatility"]]:
-
+                            
                         try:
                             if isinstance(data, list):
                                 data = data[0]
@@ -193,7 +195,7 @@ def main():
 
     _configure_parasol(args.env, args.auth_type)
     parasol_response = _get_parameter_values(args)
-    print (parasol_response)
+
     if parasol_response:
         _compose_states_and_insert(args, parasol_response)
     else:
