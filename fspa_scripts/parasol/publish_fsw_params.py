@@ -135,18 +135,22 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                     csds_volatility = volatility.replace("-", "_").upper()
                     if csds_volatility in [member.value for member in state_data_store.enum_classes["volatility"]]:
                             
-                        try:
-                            if isinstance(data, list):
-                                data = data[0]
+                        param_history = data['history']
 
-                            state = _compose_state(args, parameter_name, csds_volatility, data)
+                        for data in param_history:
 
-                            if state is not None:
-                                states.append(state)
+                            try:
+                                if isinstance(data, list):
+                                    data = data[0]
 
-                        except ValueError as err:
-                            print(err)
-                            pass
+                                state = _compose_state(args, parameter_name, csds_volatility, data)
+
+                                if state is not None:
+                                    states.append(state)
+
+                            except ValueError as err:
+                                print(err)
+                                pass
 
         print("Composed {} states for module: {}".format(len(states), module_name))
         _insert_states(args.env, states)
