@@ -74,7 +74,7 @@ def _compose_state(
 
 
 def _get_parameter_values(args: Dict[str, Any]) -> Dict[str, Any]:
-    filename = "./parasol_responses/{}_{}_{}_{}.json".format(args.host, args.session, args.scet, args.vcid)
+    filename = "./parasol_responses/{}_{}_{}_{}.json".format(args.host, args.session, args.start_scet, args.vcid)
 
     if os.path.exists(filename):
         print("Using saved response for Parasol for parameter values")
@@ -84,12 +84,22 @@ def _get_parameter_values(args: Dict[str, Any]) -> Dict[str, Any]:
     else:
         try:
             print("Making request to Parasol for parameter values")
-            response = parasol.get_parameter_values(
+            # response = parasol.get_parameter_values(
+            #     phase="cruise",
+            #     time_str=args.start_scet,
+            #     time_type="scet",
+            #     session_host=args.host,
+            #     session_id=args.session,
+            #     vcid=args.vcid,
+            # )
+            response = parasol.get_parameter_values_history(
                 phase="cruise",
-                time_str=args.scet,
-                time_type="scet",
-                session_host=args.host,
-                session_id=args.session,
+                session_host = args.host, 
+                session_id = args.session, 
+                end_time = args.end_scet, 
+                end_time_type="scet",
+                start_time = args.start_scet, 
+                start_time_type="scet",
                 vcid=args.vcid,
             )
             print("Received response from Parasol")
@@ -154,7 +164,12 @@ def main():
     parser.add_argument("--host", required=True, help="session host on parasol (ex: eurcits001)")
     parser.add_argument("--session", required=True, help="session id on parasol (ex: 578)")
     parser.add_argument(
-        "--scet",
+        "--start-scet",
+        required=True,
+        help="a scet formatted time (ex: 2023-136T22:08:51.038)",
+    )
+    parser.add_argument(
+        "--end-scet",
         required=True,
         help="a scet formatted time (ex: 2023-136T22:08:51.038)",
     )
@@ -178,11 +193,11 @@ def main():
 
     _configure_parasol(args.env, args.auth_type)
     parasol_response = _get_parameter_values(args)
-
+    print (parasol_response)
     if parasol_response:
         _compose_states_and_insert(args, parasol_response)
     else:
-        print(f"No data found for: Host: {args.host} | Session: {args.session} | SCET: {args.scet}")
+        print(f"No data found for: Host: {args.host} | Session: {args.session} | SCET: {args.start_scet}")
 
 
 if __name__ == "__main__":
