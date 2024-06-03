@@ -9,30 +9,48 @@ import json
 import sys
 import pandas as pd
 import logging
+from typing import Any, Dict, Tuple
 
 # CONSTANTS
-from .constants import PARASOL_HOST, PARASOL_PHASE, PARASOL_COPY, COOKIE_NAME
+from .constants import PARASOL_PHASE, PARASOL_COPY
 
 ###############################################################################
 # HELPERS
 ###############################################################################
 
-def _get_env_venue(env):
+def _get_env_venue(env: str, auth_type: str) -> Tuple:
     """Get venue to query parasol by environment."""
-    if env == "dev":
-        return {
-            "parasol_host": PARASOL_HOST,
-            "cookie_name": COOKIE_NAME,
-        }
+    venue = None
 
+    if env == "dev":
+        venue = {"parasol_host": "parasol.eurc-dev.jpl.nasa.gov", "cookie_name": "ecDevRhel8Sso"}
+
+    if env == "testbed":
+        venue = {"parasol_host": "parasol.ectb.awsgw1.jpl.nasa.gov", "cookie_name": "ecProdRhel8Sso"}
+
+    if env == "gdsit":
+        venue = {"parasol_host": "parasol.gdsit.eurc.jpl.nasa.gov", "cookie_name": "ecTestCloudSso"}
+
+    if auth_type == 'csso':
+        return (venue["parasol_host"], "ssosession")
+    else:
+        return (venue["parasol_host"], venue["cookie_name"])
+
+
+def _configure_parasol(env: Dict[str, Any], auth_type: str) -> None:
+    host, cookie = _get_env_venue(env, auth_type)
+    
+    logging.debug(f"Configuring Parasol for {env} with auth type {auth_type}: {host}")
+    
+    parasol.configure(parasol_host=host, cookie_name=cookie, auth_type=auth_type, phase=PARASOL_PHASE)
 
 ###############################################################################
 # QUERY PARASOL
 ###############################################################################
 
-def get_parasol_values(host, session, scet, vcid, volatility, env, csso: bool = False):
+def get_parasol_values(host, session, start_time, end_time, vcid, volatility, env, auth_type):
     """Get and return parasol query based on provided CLI arguments."""
-    filename = f"data/parasol_responses/{host}_{session}_{scet}_{vcid}.json"
+    filename = f"data/parasol_responses/{host}_{session}_{start_time}_{end_time}_{vcid}_{volatility}_{env}.json"
 
     if os.path.exists(filename):
         logging.info("Using saved response for Parasol for parameter values.")
@@ -44,34 +62,26 @@ def get_parasol_values(host, session, scet, vcid, volatility, env, csso: bool = 
             sys.exit()
 
     else:
-        logging.info("Making request to Parasol for parameter values...")
-        venue = _get_env_venue(env)
-        if venue:
-            parasol.configure(
-                parasol_host=venue["parasol_host"],
-                auth_type="cam" if not csso else "csso",
-                phase=PARASOL_PHASE,
-                cookie_name=venue["cookie_name"] if not csso else "ssosession",
-            )
+        logging.info("Making request to Parasol for parameter value history...")
+        _configure_parasol(env, auth_type)
         try:
-            response = parasol.get_parameter_values(
-                time_str=scet,
-                time_type="scet",
-                session_host=host,
-                session_id=session,
+            response = parasol.get_parameter_values_history(
+                session_host = host, 
+                session_id = session, 
+                end_time = end_time, 
+                end_time_type="scet",
+                start_time = start_time, 
+                start_time_type="scet",
                 vcid=vcid,
             )
         except parasol.exceptions.ParasolAuthException as exc:
-            logging.error(
-                "Please run %r in your terminal.", "cam-login" if not csso else "credss"
-            )
+            auth_helper = "credss" if auth_type == 'csso' else "cam-login"
+            logging.error(f"Please run {auth_helper} in your terminal.")
             sys.exit()
 
         except parasol.exceptions.ParasolBaseException as exc:
-            logging.error(
-                "Parasol exception. Run %r in your terminal and try again. Otherwise ask for support.",
-                "cam-login" if not csso else "credss",
-            )
+            auth_helper = "credss" if auth_type == 'csso' else "cam-login"
+            logging.error(f"Parasol exception. Run {auth_helper} in your terminal and try again. Otherwise ask for support.")
             sys.exit()
 
         logging.info("Received response from Parasol.")
@@ -82,7 +92,7 @@ def get_parasol_values(host, session, scet, vcid, volatility, env, csso: bool = 
             )
             
         if response is None:
-            logging.error(f"ERROR: parasol response for '{scet}' is 'None'.")
+            logging.error(f"ERROR: parasol response for start: '{start_time}', end: '{end_time}' is 'None'.")
             sys.exit()
 
         return response
@@ -119,15 +129,17 @@ def create_df_from_parasol(response, vol):
                     logging.warning(f"Parameter '{parameter_name}' has no {volatility} value. Using {new_vol} value instead.")
                     volatility = new_vol
 
-                rows_list.append({
-                    "name": parameter_name, 
-                    "value": parameter[volatility]['value'],
-                    "module": module_name,
-                    "group": group_name,
-                    "copy": PARASOL_COPY,
-                    "evidence":parameter[volatility]['evidence'],
-                    "evidence_status": parameter[volatility]['evidence_status']
-                })
+                for item in parameter[volatility]["history"]:
+                    rows_list.append({
+                        "name": parameter_name, 
+                        "value": item['value'],
+                        "scet": item['evidence'][0]['scet'],
+                        "module": module_name,
+                        "group": group_name,
+                        "copy": PARASOL_COPY,
+                        "evidence":item['evidence'],
+                        "evidence_status": item['evidence_status']
+                    })
 
     # if no parameters, return empty dataframe for merge
     if not rows_list:

@@ -134,7 +134,7 @@ def add_metadata_worksheet(workbook, metadata = dict()):
 def create_xlsx(df, filename, metadata = dict()):
     """Create XLSX file from pandas dataframe."""
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter(filename, engine="xlsxwriter")
+    writer = pd.ExcelWriter(filename, engine="xlsxwriter", options={'strings_to_numbers': False})
     
     # Sort rows with matches first; then alphabetical by parameter name
     df.sort_values(by=['match', 'name'], ascending=[False, True], inplace=True)
@@ -212,7 +212,7 @@ def validate_input_arguments_library(input_args):
             #sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {input_args["path"]}")
             sys.exit(f"Input type '{input_type}' expects JSON file. ")
 
-def get_values_from_input_library(input_args, csso: bool = False):
+def get_values_from_input_library(input_args, auth_type):
     """Return pandas DataFrame of values from appropriate data source."""
     input_type = input_args['type']
 
@@ -224,7 +224,7 @@ def get_values_from_input_library(input_args, csso: bool = False):
             vcid=input_args['vcid'], 
             volatility=input_args['volatility'], 
             env=input_args['env'],
-            csso=csso
+            auth_type=auth_type
         )
        return create_df_from_parasol(response, input_args['volatility'])
     elif input_type == 'param_json':
@@ -249,7 +249,7 @@ def compare(
         return_type: str = None,
         output: str = None,
         debug: bool = True,
-        csso: bool = False
+        auth_type: str = 'csso'
     ):
     """
     CLI for comparing parameters from several formats: parasol, csds, param.json, seqgen_fincon.json.
@@ -277,7 +277,7 @@ def compare(
                 intersect_only = True,
                 return_type = 'xlsx',
                 output = '/my/output/folder',
-                csso = False
+                auth_type = 'csso'
             )
 
     ARGS:
@@ -321,8 +321,8 @@ def compare(
     validate_input_arguments_library(input2)
     
     # query/load data and conver to pandas DataFrames
-    df1 = get_values_from_input_library(input1, csso=csso)
-    df2 = get_values_from_input_library(input2, csso=csso)
+    df1 = get_values_from_input_library(input1, auth_type=auth_type)
+    df2 = get_values_from_input_library(input2, auth_type=auth_type)
 
     # compare parameters
     df = compare_parameters(df1, df2, verbose, intersect_only, diff_only)
@@ -370,12 +370,12 @@ def validate_input_arguments(inputs):
         if file_extension != '.json':
             sys.exit(f"Input type '{input_type}' expects JSON file. You provided: {inputs[1]}")
 
-def get_values_from_input(inputs, csso: bool = False):
+def get_values_from_input(inputs, auth_type):
     """Return pandas DataFrame of values from appropriate data source."""
     input_type = inputs[0]
 
     if input_type == 'parasol':
-       response = get_parasol_values(*inputs[1:], csso=csso)
+       response = get_parasol_values(*inputs[1:], auth_type=auth_type)
        return create_df_from_parasol(response, inputs[-2]) # -2 is volatility
     elif input_type == 'param_json':
         response = get_param_json_values(*inputs[1:])
@@ -401,7 +401,7 @@ def main():
     parser.add_argument("--to-json", dest="to_json", action='store_true', help="Output comparison as JSON.") # TODO: consider choices with 'xlsx', 'json', or 'pandas'
     parser.add_argument("--output", type=pathlib.Path, metavar='PATH', help="Path to desired output location.")
     parser.add_argument("--debug", help="Log param_compare processing information to console.", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.WARNING)
-    parser.add_argument("--csso", action="store_true", help="Add this CSSO flag when Parasol is behind CSSO for OCS Data Products")
+    parser.add_argument("--auth-type", default="csso", help="Authenticate with 'csso' (Parasol with Chillax) or 'cam' (Parasol with MCWS) (default: csso)")
     args = parser.parse_args()
 
     logging.basicConfig(format=FORMAT, level=args.loglevel, datefmt='%Y-%m-%d %H:%M:%S')
@@ -411,8 +411,8 @@ def main():
     validate_input_arguments(args.input2)
     
     # query/load data and conver to pandas DataFrames
-    df1 = get_values_from_input(args.input1, csso=args.csso)
-    df2 = get_values_from_input(args.input2, csso=args.csso)
+    df1 = get_values_from_input(args.input1, auth_type=args.auth_type)
+    df2 = get_values_from_input(args.input2, auth_type=args.auth_type)
 
     # compare parameters
     df = compare_parameters(df1, df2, args.verbose, args.intersect_only, args.diff_only)
