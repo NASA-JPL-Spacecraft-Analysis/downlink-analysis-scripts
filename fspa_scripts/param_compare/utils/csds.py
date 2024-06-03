@@ -23,7 +23,7 @@ def get_csds_values(collection_name, env = 'dev'):
             with open(filename) as csds_states_values:
                 return json.load(csds_states_values)
         except FileNotFoundError:
-            logging.error("File '{filename}' cannot be found.")
+            logging.error(f"File '{filename}' cannot be found.")
             sys.exit()
 
     else:

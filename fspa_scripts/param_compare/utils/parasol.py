@@ -58,7 +58,7 @@ def get_parasol_values(host, session, scet, vcid, volatility, env, auth_type):
             with open(filename) as parasol_parameter_values:
                 return json.load(parasol_parameter_values)
         except FileNotFoundError as exc:
-            logging.error("File '{filename}' cannot be found.")
+            logging.error(f"File '{filename}' cannot be found.")
             sys.exit()
 
     else:
