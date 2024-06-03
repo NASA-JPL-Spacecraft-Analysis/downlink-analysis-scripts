@@ -55,7 +55,7 @@ def _insert_states(venue: str, states: List[Dict]) -> None:
             )
         )
     else:
-        print (str(response))
+        logging.error(str(response))
 
 def build_param_json_states(collection_name, scet, data, vol) -> None:
     """Build list of state data store objects from param_json parameters list."""
@@ -70,9 +70,9 @@ def build_param_json_states(collection_name, scet, data, vol) -> None:
 
     # start building states
     states = []
-    for parameter in data['parameter_file']['parameter_list']:
-        logging.info("Composing states for parameters from 'param_json'...")
+    logging.info("Composing states for parameters from 'param_json'...")
 
+    for parameter in data['parameter_file']['parameter_list']:
         state = None
         metadata = dict()
         metadata.update({"friendly_type": parameter["friendly_type"]})
@@ -119,10 +119,9 @@ def build_seqgen_fincon_states(collection_name, scet, data, vol) -> None:
         logging.warning(f"No parameters in seqgen_fincon file.")
 
     # start building states
+    logging.info("Composing states for parameters from 'seqgen_fincon'...")
     states = []
     for parameter in data:
-        logging.info("Composing states for parameters from 'seqgen_fincon'...")
-
         state = None
         metadata = dict()
         metadata.update({"fincon_name": parameter["fincon_name"]})
@@ -148,7 +147,7 @@ def build_seqgen_fincon_states(collection_name, scet, data, vol) -> None:
         if state is not None:
             states.append(state)
 
-        return states
+    return states
 ###############################################################################
 # RUN MAIN
 ###############################################################################

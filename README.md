@@ -34,6 +34,27 @@ Converts a chill .csv output to CTU .csv input
 
 Converts a RadMon .csv output to CTU .csv input
 
+#### param_ioncons_to_ctu.py
+
+Converts and uploads a SEQGEN fincon .json file's output parameters to CTU.
+
+```
+Arguments:
+
+-t          Type of file input (default: seqgen_fincon)
+-i          Input file path
+-c          CDSS collection to insert parameters
+--scet      A SCET formatted time to insert parameters (ex: 2023-136T22:08:51.038)
+--env       Venue for retrieving parameter values (ex: dev)
+--vol       CSDS volatile values (options: 'VOLATILE' or 'NON-VOLATILE') (default: VOLATILE)
+```
+
+##### Examples
+
+```shell
+$ python3 param_incons_to_ctu.py -t seqgen_fincon -i /path/to/seqgen_fincon/vm_10.3.0.0.json -c param_incon_1 --scet 2025-001T00:00:00 --env dev --vol VOLATILE
+```
+
 ### parasol
 
 #### publish_fsw_params.py
