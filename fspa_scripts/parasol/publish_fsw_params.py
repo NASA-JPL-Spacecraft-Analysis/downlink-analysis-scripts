@@ -54,6 +54,12 @@ def _compose_state(
     state = None
 
     value = data["value"]
+    floatVal = -99999
+    try:
+        floatVal = float(value)
+    except:
+        print ("bad float" + value)
+        
     evidence = data["evidence"][0]
 
     state = {
@@ -63,7 +69,8 @@ def _compose_state(
         "scet": evidence["scet"],
         "volatility": volatility,
         "cpu": str(args.vcid),
-        "value": value if isinstance(value, numbers.Number) else -99999,
+        "value": floatVal
+        #"value": value if isinstance(value, numbers.Number) else -99999,
     }
 
     if state is not None:
@@ -142,6 +149,9 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                             try:
                                 if isinstance(data, list):
                                     data = data[0]
+
+                                if parameter_name == "SFP_SYS_RSP_STANDBY_TIMEOUT":
+                                    print (data)
 
                                 state = _compose_state(args, parameter_name, csds_volatility, data)
 
