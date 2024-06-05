@@ -58,7 +58,8 @@ def _compose_state(
     try:
         floatVal = float(value)
     except:
-        print ("bad float" + value)
+        # print ("bad float" + value)
+        i = 1
         
     evidence = data["evidence"][0]
 
@@ -144,19 +145,32 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                             
                         param_history = data['history']
 
+                        param_history.reverse()
+
+                        last_value = None
                         for data in param_history:
 
                             try:
                                 if isinstance(data, list):
                                     data = data[0]
 
-                                if parameter_name == "SFP_SYS_RSP_STANDBY_TIMEOUT":
-                                    print (data)
+                                value = data["value"]
 
+                                if last_value is None:
+                                    last_value = value
+                                elif last_value == value:
+                                    continue
+                               
                                 state = _compose_state(args, parameter_name, csds_volatility, data)
 
                                 if state is not None:
+    
+                                    if parameter_name == "SFP_SYS_RSP_STANDBY_COOLDOWN":
+                                        print("appending")
                                     states.append(state)
+                                    last_value = value
+                                    # else:
+                                    #    print("skipped " + str(value))
 
                             except ValueError as err:
                                 print(err)
