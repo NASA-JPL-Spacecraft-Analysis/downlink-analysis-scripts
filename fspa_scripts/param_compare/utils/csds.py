@@ -15,40 +15,23 @@ import logging
 
 def get_csds_values(collection_name, env = 'dev'):
     """Get and return state data store query based on provided CLI arguments."""
-    filename = f"data/csds_responses/{collection_name}_{env}.json"
-    
-    if os.path.exists(filename):
-        logging.info("Using saved response for CSDS for parameter values.")
-        try:
-            with open(filename) as csds_states_values:
-                return json.load(csds_states_values)
-        except FileNotFoundError:
-            logging.error(f"File '{filename}' cannot be found.")
-            sys.exit()
+    logging.info("Making request to State Data Store for states...")
+    try:
+        response = state_data_store.sds_states.get_states(
+            collection_name=collection_name,
+            env=env
+        )
+    except:
+        logging.error(f"Failed query to CSDS 'get_states' for collection '{collection_name}'.")
+        sys.exit()
 
-    else:
-        logging.info("Making request to State Data Store for states...")
-        try:
-            response = state_data_store.sds_states.get_states(
-                collection_name=collection_name,
-                env=env
-            )
-        except:
-            logging.error(f"Failed query to CSDS 'get_states' for collection '{collection_name}'.")
-            sys.exit()
+    logging.info("Received response from State Data Store.")
+        
+    if response is None:
+        logging.error(f"CSDS response for '{collection_name}' is 'None'.")
+        sys.exit()
 
-        logging.info("Received response from State Data Store.")
-
-        with open(filename, "w") as json_file:
-            json.dump(
-                response, json_file, indent=4, sort_keys=False, separators=(",", ": ")
-            )
-            
-        if response is None:
-            logging.error(f"CSDS response for '{collection_name}' is 'None'.")
-            sys.exit()
-
-        return response
+    return response
 
 ###############################################################################
 # STATE DATA STORE QUERY TO PANDAS
