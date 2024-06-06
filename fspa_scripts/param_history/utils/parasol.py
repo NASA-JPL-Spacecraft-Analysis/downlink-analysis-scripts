@@ -50,52 +50,35 @@ def _configure_parasol(env: Dict[str, Any], auth_type: str) -> None:
 
 def get_parasol_values(host, session, start_time, end_time, vcid, volatility, env, auth_type):
     """Get and return parasol query based on provided CLI arguments."""
-    filename = f"data/parasol_responses/{host}_{session}_{start_time}_{end_time}_{vcid}_{volatility}_{env}.json"
+    logging.info("Making request to Parasol for parameter value history...")
+    _configure_parasol(env, auth_type)
+    try:
+        response = parasol.get_parameter_values_history(
+            session_host = host, 
+            session_id = session, 
+            end_time = end_time, 
+            end_time_type="scet",
+            start_time = start_time, 
+            start_time_type="scet",
+            vcid=vcid,
+        )
+    except parasol.exceptions.ParasolAuthException as exc:
+        auth_helper = "credss" if auth_type == 'csso' else "cam-login"
+        logging.error(f"Please run {auth_helper} in your terminal.")
+        sys.exit()
 
-    if os.path.exists(filename):
-        logging.info("Using saved response for Parasol for parameter values.")
-        try:
-            with open(filename) as parasol_parameter_values:
-                return json.load(parasol_parameter_values)
-        except FileNotFoundError as exc:
-            logging.error("File '{filename}' cannot be found.")
-            sys.exit()
+    except parasol.exceptions.ParasolBaseException as exc:
+        auth_helper = "credss" if auth_type == 'csso' else "cam-login"
+        logging.error(f"Parasol exception. Run {auth_helper} in your terminal and try again. Otherwise ask for support.")
+        sys.exit()
 
-    else:
-        logging.info("Making request to Parasol for parameter value history...")
-        _configure_parasol(env, auth_type)
-        try:
-            response = parasol.get_parameter_values_history(
-                session_host = host, 
-                session_id = session, 
-                end_time = end_time, 
-                end_time_type="scet",
-                start_time = start_time, 
-                start_time_type="scet",
-                vcid=vcid,
-            )
-        except parasol.exceptions.ParasolAuthException as exc:
-            auth_helper = "credss" if auth_type == 'csso' else "cam-login"
-            logging.error(f"Please run {auth_helper} in your terminal.")
-            sys.exit()
+    logging.info("Received response from Parasol.")
+        
+    if response is None:
+        logging.error(f"ERROR: parasol response for start: '{start_time}', end: '{end_time}' is 'None'.")
+        sys.exit()
 
-        except parasol.exceptions.ParasolBaseException as exc:
-            auth_helper = "credss" if auth_type == 'csso' else "cam-login"
-            logging.error(f"Parasol exception. Run {auth_helper} in your terminal and try again. Otherwise ask for support.")
-            sys.exit()
-
-        logging.info("Received response from Parasol.")
-
-        with open(filename, "w") as json_file:
-            json.dump(
-                response, json_file, indent=4, sort_keys=False, separators=(",", ": ")
-            )
-            
-        if response is None:
-            logging.error(f"ERROR: parasol response for start: '{start_time}', end: '{end_time}' is 'None'.")
-            sys.exit()
-
-        return response
+    return response
 
 ###############################################################################
 # PARASOL QUERY TO PANDAS
