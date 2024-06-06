@@ -54,6 +54,13 @@ def _compose_state(
     state = None
 
     value = data["value"]
+    floatVal = -99999
+    try:
+        floatVal = float(value)
+    except:
+        # print ("bad float" + value)
+        i = 1
+        
     evidence = data["evidence"][0]
 
     state = {
@@ -63,7 +70,8 @@ def _compose_state(
         "scet": evidence["scet"],
         "volatility": volatility,
         "cpu": str(args.vcid),
-        "value": value if isinstance(value, numbers.Number) else -99999,
+        "value": floatVal
+        #"value": value if isinstance(value, numbers.Number) else -99999,
     }
 
     if state is not None:
@@ -74,7 +82,7 @@ def _compose_state(
 
 
 def _get_parameter_values(args: Dict[str, Any]) -> Dict[str, Any]:
-    filename = "./parasol_responses/{}_{}_{}_{}.json".format(args.host, args.session, args.scet, args.vcid)
+    filename = "./parasol_responses/{}_{}_{}_{}.json".format(args.host, args.session, args.start_scet, args.vcid)
 
     if os.path.exists(filename):
         print("Using saved response for Parasol for parameter values")
@@ -84,18 +92,30 @@ def _get_parameter_values(args: Dict[str, Any]) -> Dict[str, Any]:
     else:
         try:
             print("Making request to Parasol for parameter values")
-            response = parasol.get_parameter_values(
+            # response = parasol.get_parameter_values(
+            #     phase="cruise",
+            #     time_str=args.start_scet,
+            #     time_type="scet",
+            #     session_host=args.host,
+            #     session_id=args.session,
+            #     vcid=args.vcid,
+            # )
+            response = parasol.get_parameter_values_history(
                 phase="cruise",
-                time_str=args.scet,
-                time_type="scet",
-                session_host=args.host,
-                session_id=args.session,
+                session_host = args.host, 
+                session_id = args.session, 
+                end_time = args.end_scet, 
+                end_time_type="scet",
+                start_time = args.start_scet, 
+                start_time_type="scet",
                 vcid=args.vcid,
             )
             print("Received response from Parasol")
 
             with open(filename, "w") as json_file:
                 json.dump(response, json_file, indent=4, sort_keys=False, separators=(",", ": "))
+
+            json_file.close()
 
             return response
         except parasol.exceptions.ParasolAuthException as exc:
@@ -122,19 +142,39 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                 for volatility, data in parameter.items():
                     csds_volatility = volatility.replace("-", "_").upper()
                     if csds_volatility in [member.value for member in state_data_store.enum_classes["volatility"]]:
+                            
+                        param_history = data['history']
 
-                        try:
-                            if isinstance(data, list):
-                                data = data[0]
+                        param_history.reverse()
 
-                            state = _compose_state(args, parameter_name, csds_volatility, data)
+                        last_value = None
+                        for data in param_history:
 
-                            if state is not None:
-                                states.append(state)
+                            try:
+                                if isinstance(data, list):
+                                    data = data[0]
 
-                        except ValueError as err:
-                            print(err)
-                            pass
+                                value = data["value"]
+
+                                if last_value is None:
+                                    last_value = value
+                                elif last_value == value:
+                                    continue
+                               
+                                state = _compose_state(args, parameter_name, csds_volatility, data)
+
+                                if state is not None:
+    
+                                    if parameter_name == "SFP_SYS_RSP_STANDBY_COOLDOWN":
+                                        print("appending")
+                                    states.append(state)
+                                    last_value = value
+                                    # else:
+                                    #    print("skipped " + str(value))
+
+                            except ValueError as err:
+                                print(err)
+                                pass
 
         print("Composed {} states for module: {}".format(len(states), module_name))
         _insert_states(args.env, states)
@@ -154,7 +194,12 @@ def main():
     parser.add_argument("--host", required=True, help="session host on parasol (ex: eurcits001)")
     parser.add_argument("--session", required=True, help="session id on parasol (ex: 578)")
     parser.add_argument(
-        "--scet",
+        "--start-scet",
+        required=True,
+        help="a scet formatted time (ex: 2023-136T22:08:51.038)",
+    )
+    parser.add_argument(
+        "--end-scet",
         required=True,
         help="a scet formatted time (ex: 2023-136T22:08:51.038)",
     )
@@ -182,7 +227,7 @@ def main():
     if parasol_response:
         _compose_states_and_insert(args, parasol_response)
     else:
-        print(f"No data found for: Host: {args.host} | Session: {args.session} | SCET: {args.scet}")
+        print(f"No data found for: Host: {args.host} | Session: {args.session} | SCET: {args.start_scet}")
 
 
 if __name__ == "__main__":
