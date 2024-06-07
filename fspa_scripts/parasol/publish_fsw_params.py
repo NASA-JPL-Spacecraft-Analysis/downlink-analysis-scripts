@@ -152,9 +152,7 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                                 state = _compose_state(args, parameter_name, csds_volatility, data)
 
                                 if state is not None:
-    
-                                    if parameter_name == "SFP_SYS_RSP_STANDBY_COOLDOWN":
-                                        print("appending")
+  
                                     states.append(state)
                                     last_value = value
                                     # else:
