@@ -133,6 +133,9 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                             
                         param_history = data['history']
 
+                        # The history values come in newest to oldest, so 
+                        # reverse and then only publish changed values from
+                        # one value to another
                         param_history.reverse()
 
                         last_value = None
@@ -152,7 +155,7 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
                                 state = _compose_state(args, parameter_name, csds_volatility, data)
 
                                 if state is not None:
-  
+
                                     states.append(state)
                                     last_value = value
                                     # else:
