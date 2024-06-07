@@ -262,8 +262,14 @@ def build_ocs_metadata_from_emd(emd_file):
         "session_fsw_dictionary_version": fsw_ver,
         "sclk_coarse": sclk_coarse,
         "sclk_fine": sclk_fine,
-        "scet": scet,
-        "ert": ert,
+        "scet": {
+            "gte": scet,
+            "lte": scet
+        },
+        "ert": {
+            "gte": ert,
+            "lte": ert
+        },
         "vcid": vcid,
         "apid": apid,
         "dat_file_name": dat_file_name
@@ -272,7 +278,7 @@ def build_ocs_metadata_from_emd(emd_file):
     print("metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
-def query_ocs(expression, sort="scet:desc", max_results=1):
+def query_ocs(expression, sort="sclk_coarse:desc", max_results=1):
     print("Querying OCS with search expression: {}".format(expression))
     global ocs_env
     client = build_ocs_client(ocs_env)
