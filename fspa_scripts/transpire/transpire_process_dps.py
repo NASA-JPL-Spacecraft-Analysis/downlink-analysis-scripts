@@ -278,7 +278,7 @@ def build_ocs_metadata_from_emd(emd_file):
     print("metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
-def query_ocs(expression, sort="scet:desc", max_results=1):
+def query_ocs(expression, sort="sclk_coarse:desc", max_results=1):
     print("Querying OCS with search expression: {}".format(expression))
     global ocs_env
     client = build_ocs_client(ocs_env)
