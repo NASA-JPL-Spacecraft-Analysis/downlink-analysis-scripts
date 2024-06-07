@@ -82,51 +82,39 @@ def _compose_state(
 
 
 def _get_parameter_values(args: Dict[str, Any]) -> Dict[str, Any]:
-    filename = "./parasol_responses/{}_{}_{}_{}.json".format(args.host, args.session, args.start_scet, args.vcid)
+    try:
+        print("Making request to Parasol for parameter values")
+        # response = parasol.get_parameter_values(
+        #     phase="cruise",
+        #     time_str=args.start_scet,
+        #     time_type="scet",
+        #     session_host=args.host,
+        #     session_id=args.session,
+        #     vcid=args.vcid,
+        # )
+        response = parasol.get_parameter_values_history(
+            phase="cruise",
+            session_host = args.host, 
+            session_id = args.session, 
+            end_time = args.end_scet, 
+            end_time_type="scet",
+            start_time = args.start_scet, 
+            start_time_type="scet",
+            vcid=args.vcid,
+        )
+        print("Received response from Parasol")
 
-    if os.path.exists(filename):
-        print("Using saved response for Parasol for parameter values")
-        with open(filename) as parasol_parameter_values:
-            return json.load(parasol_parameter_values)
+        return response
 
-    else:
-        try:
-            print("Making request to Parasol for parameter values")
-            # response = parasol.get_parameter_values(
-            #     phase="cruise",
-            #     time_str=args.start_scet,
-            #     time_type="scet",
-            #     session_host=args.host,
-            #     session_id=args.session,
-            #     vcid=args.vcid,
-            # )
-            response = parasol.get_parameter_values_history(
-                phase="cruise",
-                session_host = args.host, 
-                session_id = args.session, 
-                end_time = args.end_scet, 
-                end_time_type="scet",
-                start_time = args.start_scet, 
-                start_time_type="scet",
-                vcid=args.vcid,
-            )
-            print("Received response from Parasol")
+    except parasol.exceptions.ParasolAuthException as exc:
+        auth_helper = "credss" if args.auth_type == 'csso' else "cam-login"
+        print(f"Please run {auth_helper} in your terminal.")
+        sys.exit()
 
-            with open(filename, "w") as json_file:
-                json.dump(response, json_file, indent=4, sort_keys=False, separators=(",", ": "))
-
-            json_file.close()
-
-            return response
-        except parasol.exceptions.ParasolAuthException as exc:
-            auth_helper = "credss" if args.auth_type == 'csso' else "cam-login"
-            print(f"Please run {auth_helper} in your terminal.")
-            sys.exit()
-
-        except parasol.exceptions.ParasolBaseException as exc:
-            auth_helper = "credss" if args.auth_type == 'csso' else "cam-login"
-            print(f"Parasol exception. Run {auth_helper} in your terminal and try again. Otherwise ask for support.")
-            sys.exit()
+    except parasol.exceptions.ParasolBaseException as exc:
+        auth_helper = "credss" if args.auth_type == 'csso' else "cam-login"
+        print(f"Parasol exception. Run {auth_helper} in your terminal and try again. Otherwise ask for support.")
+        sys.exit()
 
 
 def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -> None:
@@ -179,17 +167,7 @@ def _compose_states_and_insert(args: Dict[str, Any], response: Dict[str, Any]) -
         print("Composed {} states for module: {}".format(len(states), module_name))
         _insert_states(args.env, states)
 
-
-def setup():
-    try:
-        os.mkdir("parasol_responses")
-    except:
-        pass
-
-
 def main():
-    setup()
-
     parser = argparse.ArgumentParser(description="Publish FSW Parameters from Parasol to Clipper State Data Store")
     parser.add_argument("--host", required=True, help="session host on parasol (ex: eurcits001)")
     parser.add_argument("--session", required=True, help="session id on parasol (ex: 578)")
