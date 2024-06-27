@@ -10,12 +10,31 @@ import pandas as pd
 
 from close_the_u import state_data_store
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Match, Optional
 
-CSDS_REQUIRED_FIELDS = ['name', 'scet', 'value', 'type', 'valueType']
+CSDS_REQUIRED_FIELDS = ['name', 'scet', 'type', 'value', 'valueType']
+CSDS_VALID_FIELDS = [
+    'collectionName',
+    'cpu',
+    'ert',
+    'fswParamVersion',
+    'hexId',
+    'metadata',
+    'name',
+    'planId',
+    'runId',
+    'scet',
+    'scetEnd',
+    'sessionId',
+    'type',
+    'value',
+    'valueType',
+    'version',
+    'volatility',
+]
 
 
-def _get_file_type(filename: str) -> Optional[re.Match]:
+def _get_file_type(filename: str) -> Optional[Match[str]]:
     extension_regex = r'[^.]+$'
     return re.search(extension_regex, filename).group()
 
@@ -43,11 +62,14 @@ def _format_state_data(datum: Dict[str, Any], collection_name: str) -> Dict[str,
     state_data = {}
 
     for key, value in datum.items():
-        if key != 'id':
-            state_data[key] = value
+        if key in CSDS_VALID_FIELDS:
+            state_data[key] = str(value)
 
         if key == 'valueType':
             state_data[key] = value.upper()
+
+        if key == 'value':
+            state_data[key] = float(value)
 
     state_data['collectionName'] = collection_name
 
