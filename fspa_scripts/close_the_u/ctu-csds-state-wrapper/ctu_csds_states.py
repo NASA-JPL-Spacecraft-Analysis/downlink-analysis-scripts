@@ -3,7 +3,6 @@ import argparse
 import json
 import os
 import re
-import requests
 import sys
 
 import pandas as pd
@@ -13,25 +12,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Match, Optional
 
 CSDS_REQUIRED_FIELDS = ['name', 'scet', 'type', 'value', 'valueType']
-CSDS_VALID_FIELDS = [
-    'collectionName',
-    'cpu',
-    'ert',
-    'fswParamVersion',
-    'hexId',
-    'metadata',
-    'name',
-    'planId',
-    'runId',
-    'scet',
-    'scetEnd',
-    'sessionId',
-    'type',
-    'value',
-    'valueType',
-    'version',
-    'volatility',
-]
+CSDS_FIELDS = state_data_store.fields.STATE
 
 
 def _get_file_type(filename: str) -> Optional[Match[str]]:
@@ -61,23 +42,28 @@ def _write_file_type(response: Dict[str, Any], output: str) -> None:
 def _format_state_data(datum: Dict[str, Any], collection_name: str) -> Dict[str, Any]:
     state_data = {}
 
-    for key, value in datum.items():
-        if key in CSDS_VALID_FIELDS:
-            state_data[key] = str(value)
+    try:
+        for key, value in datum.items():
+            if key in CSDS_FIELDS and key != 'id':
+                state_data[key] = str(value)
 
-        if key == 'valueType':
-            state_data[key] = value.upper()
+            if key == 'valueType':
+                state_data[key] = value.upper()
 
-        if key == 'value':
-            state_data[key] = float(value)
+            if key == 'value':
+                state_data[key] = float(value)
 
-    state_data['collectionName'] = collection_name
+        state_data['collectionName'] = collection_name
 
-    return state_data
+        return state_data
+
+    except Exception as e:
+        print(f'Format Exception: {e}')
+        sys.exit(1)
 
 
 def _create_state_data(list_data: List[Dict[str, Any]], collection_name: str) -> List[Dict[str, Any]]:
-    print(f'Validating {len(list_data)} states for CSDS')
+    print(f'Formatting {len(list_data)} states for CSDS')
 
     state_data_list = []
     for datum in list_data:
@@ -86,9 +72,19 @@ def _create_state_data(list_data: List[Dict[str, Any]], collection_name: str) ->
     return state_data_list
 
 
-def _validate_csv_header(headers: List) -> None:
+def _validate_header_fields(headers: List) -> None:
+    # validate the required fields for CSDS
     if not set(CSDS_REQUIRED_FIELDS).issubset(set(headers)):
         raise ValueError(f'CSV must include required headers: {CSDS_REQUIRED_FIELDS}')
+
+    # validate the optional fields for CSDS
+    skipped = []
+    for header in headers:
+        if header not in CSDS_FIELDS:
+            skipped.append(header)
+
+    if len(skipped):
+        print(f'Skipped headers: {skipped}. Not a recognized field in CSDS.')
 
 
 def _csv_to_list(filename: str) -> Dict[str, Any]:
@@ -100,7 +96,7 @@ def _csv_to_list(filename: str) -> Dict[str, Any]:
         )
 
         headers = data_frame.columns.tolist()
-        _validate_csv_header(headers)
+        _validate_header_fields(headers)
 
         data = data_frame.to_dict(orient='records')
         return data
@@ -117,7 +113,7 @@ def _json_to_list(filename: str) -> Dict[str, Any]:
 
         for datum in data:
             headers = datum.keys()
-            _validate_csv_header(headers)
+            _validate_header_fields(headers)
 
         return data
 
