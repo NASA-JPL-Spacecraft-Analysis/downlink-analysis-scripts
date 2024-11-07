@@ -169,35 +169,47 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
     print("Pushing file with data size {} to OCS at {}{}/{}".format(
         len(data), ocs_package_name, ocs_path, ocs_filename))
 
-    #todo: add in logic to check if a file exists and if not cast into StringIO
-    local_object = StringIO(data)
+    try:
+        #todo: add in logic to check if a file exists and if not cast into StringIO
+        local_object = StringIO(data)
 
-    global ocs_env
-    client = build_ocs_client(ocs_env)
-    session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
+        global ocs_env
+        client = build_ocs_client(ocs_env)
+        session_token = client.get_csso_session_token()  # Retrieve csso session token after logging into credss
 
-    # describe_all_packages to find the package_id
-    response = client.describe_all_packages(SessionToken=session_token)
-    #print(json.dumps(response, indent=4))
-    package_id = [item['package_id'] for item in response['data'] if item['name'] == ocs_package_name][0]
+        # describe_all_packages to find the package_id
+        response = client.describe_all_packages(SessionToken=session_token)
+        #print(json.dumps(response, indent=4))
+        package_id = [item['package_id'] for item in response['data'] if item['name'] == ocs_package_name][0]
 
-    #todo: create new object type
-    object_type = 'eurc-fspa-dp-parsed'
-    #object_type = 'eurc-idms-ampcs-dp'
+        #todo: create new object type
+        object_type = 'eurc-fspa-dp-parsed'
+        #object_type = 'eurc-idms-ampcs-dp'
 
-    response = client.index_local_object(
-        PackageId=package_id,
-        ObjectTypeName=object_type,
-        OcsPath=ocs_path,
-        OcsName=ocs_filename,
-        Metadata=ocs_metadata,
-        LocalObject=local_object,
-        MimeType='application/json',
-        SessionToken=session_token,
-        Overwrite=True
-    )
+        response = client.index_local_object(
+            PackageId=package_id,
+            ObjectTypeName=object_type,
+            OcsPath=ocs_path,
+            OcsName=ocs_filename,
+            Metadata=ocs_metadata,
+            LocalObject=local_object,
+            MimeType='application/json',
+            SessionToken=session_token,
+            Overwrite=True
+        )
 
-    print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
+        print('Successfully uploaded to OCS.  OCS dataset_id is: {}'.format(response['data']['dataset_id']))
+
+    except ocs.exceptions.OCSError as e:
+        print("Error occurred writing file to OCS {}: {}".format(ocs_filename, e))
+
+    except ocs.exceptions.HTTPError as e:
+        print(e)
+
+        if 'HTTP Error: 403' in e.args[0]:
+            raise Exception('User is forbidden from accessing OCS resources.')
+        elif 'HTTP Error: 401' in e.args[0]:
+            raise Exception('User is not authorized to access OCS resources.')
 
 def build_ocs_metadata_from_emd(emd_file):
     print("Building metadata from emd file {}".format(emd_file))
@@ -373,37 +385,48 @@ def main():
         sys.exit()
 
     for dp in data_products:
-        #cmd_data = parse_command_dat("/home/fhy/0100_0498009603-0073007-1.dat")
-        dat_file = dp['dat_file']
-        print("Parsing data product for commands: {}".format(dat_file))
-        cmd_data = parse_command_dat(dat_file)
-        data = json.dumps(cmd_data, indent=4)
+        try:
+            #cmd_data = parse_command_dat("/home/fhy/0100_0498009603-0073007-1.dat")
+            dat_file = dp['dat_file']
 
-        emd_file = dat_file.replace(".dat", ".emd")
-        metadata = build_ocs_metadata_from_emd(emd_file)
+            # skip compressed data product file
+            if '.lzo' in dat_file:
+                print("Skipping compressed data product: {}".format(dat_file))
+                continue
 
-        filename = dp['dat_file'].split("/")[-1]
-        filename = filename.replace(".dat", ".json")
-        filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
+            print("Parsing data product for commands: {}".format(dat_file))
+            cmd_data = parse_command_dat(dat_file)
+            data = json.dumps(cmd_data, indent=4)
 
-        # write files to ocs
-        if not output or output.lower() == "ocs":
-            push_to_ocs(data=data,
-                        ocs_package_name=ocs_package_name,
-                        ocs_path=ocs_path,
-                        ocs_filename=filename,
-                        ocs_metadata=metadata)
+            emd_file = dat_file.replace(".dat", ".emd")
+            metadata = build_ocs_metadata_from_emd(emd_file)
 
-            # try to query out the data we just pushed to make sure it got in
-            print("Verifying data made it to OCS")
-            query_from_ocs(metadata['session_host'], metadata['session_id'])
+            filename = dp['dat_file'].split("/")[-1]
+            filename = filename.replace(".dat", ".json")
+            filename = "{}-{}-{}".format(metadata['session_host'], metadata['session_id'], filename)
 
-        # write json files to disk
-        else:
-            file_path = "{}/{}".format(output, filename)
-            with open(file_path, "w") as f:
-                f.write(data)
-                print("Wrote file to {}".format(file_path))
+            # write files to ocs
+            if not output or output.lower() == "ocs":
+                push_to_ocs(data=data,
+                            ocs_package_name=ocs_package_name,
+                            ocs_path=ocs_path,
+                            ocs_filename=filename,
+                            ocs_metadata=metadata)
+
+                # try to query out the data we just pushed to make sure it got in
+                print("Verifying data made it to OCS")
+                query_from_ocs(metadata['session_host'], metadata['session_id'])
+
+            # write json files to disk
+            else:
+                file_path = "{}/{}".format(output, filename)
+                with open(file_path, "w") as f:
+                    f.write(data)
+                    print("Wrote file to {}".format(file_path))
+
+        # log the exception and move on to next iteration
+        except Exception as e:
+            print("Error occurred at with data product {}: {}".format(dat_file, e))
 
 if __name__ == "__main__":
     main()
