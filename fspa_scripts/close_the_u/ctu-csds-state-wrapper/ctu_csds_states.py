@@ -53,6 +53,9 @@ def _format_state_data(datum: Dict[str, Any], collection_name: str) -> Dict[str,
             if key == 'value':
                 state_data[key] = float(value)
 
+            if key == 'scet':
+                state_data[key] = f"{state_data[key]}.000" if '.' not in state_data[key] else state_data[key]
+
         state_data['collectionName'] = collection_name
 
         return state_data
@@ -122,11 +125,11 @@ def _json_to_list(filename: str) -> Dict[str, Any]:
         sys.exit(1)
 
 
-def _create_csds_states(states: List[Dict[str, Any]]) -> None:
+def _create_csds_states(states: List[Dict[str, Any]], env: str) -> None:
     print(f'Inserting {len(states)} states for CSDS')
 
     try:
-        response = state_data_store.create_states(states, env='dev')
+        response = state_data_store.create_states(states, env=env)
 
         success = response['data']['createStates']['success']
         if success == True:
@@ -138,11 +141,27 @@ def _create_csds_states(states: List[Dict[str, Any]]) -> None:
         print(f'Error: {e}')
 
 
-def _get_csds_states(collection_name: str, output: str) -> None:
-    print(f'Quering {collection_name} in states for CSDS')
+def _replace_csds_states(collection_name: str, states: List[Dict[str, Any]], env: str) -> None:
+    print(f'Performing replace on {len(states)} states for CSDS')
 
     try:
-        response = state_data_store.get_states(collection_name, env='dev')
+        response = state_data_store.replace_states(collection_name, states, env=env)
+
+        success = response['data']['createStates']['success']
+        if success == True:
+            print(f'Successfully republished {len(states)} State(s) in CSDS')
+        else:
+            message = response['data']['createStates']['message']
+            print(f'Failed to insert: {message}')
+    except Exception as e:
+        print(f'Except Error: {e}')
+
+
+def _get_csds_states(collection_name: str, output: str, env: str) -> None:
+    print(f'Querying {collection_name} in states for CSDS')
+
+    try:
+        response = state_data_store.get_states(collection_name, env=env)
 
         if response['data']['states']:
             _write_file_type(response['data']['states'], output)
@@ -162,31 +181,41 @@ def setup() -> None:
 def main():
     setup()
 
-    parser = argparse.ArgumentParser(description='Publish or Query States from Clipper State Data Store')
+    parser = argparse.ArgumentParser(description='Publish, Replace or Query States from Clipper State Data Store')
     parser.add_argument(
         '-a',
         '--action',
         required=True,
-        help='session id on parasol (ex: LOAD_STATES or QUERY_STATES)',
+        help='action to perform (ex: REPLACE_STATES, LOAD_STATES or QUERY_STATES)',
     )
     parser.add_argument(
         '-c',
         '--collection',
         required=True,
-        help='name of the collection in csds (ex: mast-fsw-params)',
+        help='name of the collection in CSDS (ex: mast-fsw-params)',
     )
-    parser.add_argument('-i', '--input', help='path to the csv or json input file (ex: ./sample.csv)')
+    parser.add_argument(
+        '-i',
+        '--input',
+        help='path to the csv or json input file (ex: ./sample.csv)')
 
     parser.add_argument(
         '-o',
         '--output',
         default='JSON',
-        help='format to write output response (ex: CSV or JSON',
+        help='format to write output response (ex: CSV or JSON)',
+    )
+
+    parser.add_argument(
+        '-e',
+        '--env',
+        default='dev',
+        help='environment for CSDS (ex: dev)',
     )
 
     args = parser.parse_args()
 
-    if args.action == 'LOAD_STATES':
+    if args.action == 'LOAD_STATES' or args.action == 'REPLACE_STATES':
         if args.input is None:
             print('Please pass in a valid path to a .csv or .json file')
             return
@@ -211,7 +240,11 @@ def main():
             return
 
         if data is not None:
-            _create_csds_states(data)
+            if args.action == 'LOAD_STATES':
+                _create_csds_states(data, args.env)
+
+            if args.action == 'REPLACE_STATES':
+                _replace_csds_states(args.collection, data, args.env)
 
     if args.action == 'QUERY_STATES':
         _get_csds_states(args.collection, args.output)
