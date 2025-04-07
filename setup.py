@@ -7,7 +7,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires=">=3.6.8",
     install_requires=[
-        "m20-operational-cloud-store==7.7.1",
+        "m20-operational-cloud-store==9.1.0",
         "close-the-u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git",
         "eas-parasol>=8.0.0",
         "aerie_cli @ git+https://github.com/NASA-AMMOS/aerie-cli.git@main",
