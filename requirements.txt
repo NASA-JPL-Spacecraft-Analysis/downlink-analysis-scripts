@@ -9,7 +9,7 @@ eas-parasol>=8.0.0
 eurc-fspa-dplib
 jpl_time
 lxml==5.1.0
-m20-operational-cloud-store==7.7.1
+m20-operational-cloud-store==9.1.0
 pandas
 pytest==7.0.0
 XlsxWriter
