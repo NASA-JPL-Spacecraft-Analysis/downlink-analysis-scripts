@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="eurc-gds-fspa-scripts",
-    version="4.2.1",
+    version="4.2.2",
     url="https://github.jpl.nasa.gov/Europa-PESS/fspa-scripts",
     packages=setuptools.find_packages(),
     python_requires=">=3.6.8",
@@ -17,7 +17,7 @@ setuptools.setup(
         "click==8.0.4",
         "bs4==0.0.2",
         "lxml==5.1.0",
-        "eurc-fspa-dplib",
+        "eurc-fspa-dplib==8.2.2",
         "jpl_time",
         "pandas",
         "numpy",

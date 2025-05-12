@@ -6,7 +6,7 @@ click==8.0.4
 close_the_u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git
 dataclasses-json
 eas-parasol>=8.0.0
-eurc-fspa-dplib
+eurc-fspa-dplib==8.2.2
 jpl_time
 lxml==5.1.0
 m20-operational-cloud-store==9.1.0
