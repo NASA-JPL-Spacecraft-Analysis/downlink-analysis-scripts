@@ -74,37 +74,43 @@ def parse_command_dat(dat_file, dict_loc=None):
 def find_data_products(hostname=None, session=None, begin_time=None, end_time=None):
     print("Attempting to find data products")
 
-    cmd = 'chill_get_products'
-    cmd += ' -p {}'.format(APID)
+    cmd = ['chill_get_products']
+
+    cmd.append('-p')
+    cmd.append(str(APID))
 
     if hostname:
-        cmd += ' -j {}'.format(hostname)
+        cmd.append('-j')
+        cmd.append(hostname)
 
     if session:
-        cmd += ' -K {}'.format(session)
+        cmd.append('-K')
+        cmd.append(session)
 
     if begin_time:
-        cmd += ' -b {}'.format(begin_time)
+        cmd.append('-b')
+        cmd.append(begin_time)
 
     if end_time:
-        cmd += ' -e {}'.format(end_time)
+        cmd.append('-e')
+        cmd.append(end_time)
 
 
-    print("running chill command {}".format(cmd))
+    print("Running Chill Command: {}".format(' '.join(cmd)))
     try:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
-
         if err:
             output = err.decode()
             print('--Error--\n', err.decode())
             raise DpOcsPusherException("Error running chill_get_products: {}".format(output))
         else:
             output = out.decode()
-            parse_chill_get_products(output)
+            return output
 
     except Exception as e:
-        print("Unable to find chill_get_products, attempting to use: {}".format(cmd))
+        print(e)
+        print("Unable to find chill_get_products, attempting to use: {}".format(' '.join(cmd)))
 
 
 def parse_chill_get_products(output: Any) -> list:
@@ -371,7 +377,8 @@ def main():
 
     # we need to find the dat and emd files using chill and the session OR begin_time and end_time
     if session or (begin_time and end_time):
-        data_products = find_data_products(hostname=hostname, session=session, begin_time=begin_time, end_time=end_time)
+        chill_output = find_data_products(hostname=hostname, session=session, begin_time=begin_time, end_time=end_time)
+        data_products = parse_chill_get_products(chill_output)
 
     # we were given a dat file and emd file, just shove it in the data_products list for the loop below to handle
     else:
