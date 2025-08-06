@@ -11,7 +11,8 @@ setuptools.setup(
         "bs4==0.0.2",
         "click==8.0.4",
         "dataclasses-json",
-        "eas-parasol>=8.0.0",
+        "eas-parasol==8.1.0",
+        "eas-rounds==8.1.0",
         "eurc-fspa-close-the-u==3.1.1",
         "eurc-fspa-dplib==8.2.2",
         "jpl_time",
@@ -19,8 +20,8 @@ setuptools.setup(
         "m20-operational-cloud-store==9.1.0",
         "numpy",
         "pandas",
-        "XlsxWriter"
-        "xmltodict == 0.13.0",
+        "XlsxWriter",
+        "xmltodict==0.13.0",
     ],
     py_modules=["fspa_scripts"],
     entry_points={
