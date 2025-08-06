@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="eurc-gds-fspa-scripts",
-    version="4.2.3",
+    version="4.3.0",
     url="https://github.jpl.nasa.gov/Europa-PESS/fspa-scripts",
     packages=find_packages(),
     python_requires=">=3.9",
