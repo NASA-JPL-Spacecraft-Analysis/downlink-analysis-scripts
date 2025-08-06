@@ -5,18 +5,18 @@
 
 # sample test command to run WITHOUT ocs and chill calls:
 # python3 transpire_process_dps.py -d ./input_files/0100_0498009603-0073007-1.dat -e ./input_files/0100_0498009603-0073007-1.emd -o ./output_files
-
-from io import StringIO
-
 import argparse
+import json
 import socket
+import subprocess
+import sys
+import xmltodict
+
 import ocs
 import ocs.exceptions
-import json
-import xmltodict
-#import os
-import sys
-import subprocess
+
+from typing import Any
+from io import StringIO
 
 from fspa_scripts.transpire.command import Command
 
@@ -30,6 +30,10 @@ ocs_configs = {
     "dev": {
         "ocs_endpoint_host": "ocs.eurc-dev.jpl.nasa.gov",
         "ocs_api": "/dev"
+    },
+    "testbed": {
+        "ocs_endpoint_host": "ocs.ectb.awsgw1.jpl.nasa.gov",
+        "ocs_api": "/test"
     },
     "gdsit": {
         "ocs_endpoint_host": "ocs.gdsit.eurc.jpl.nasa.gov",
@@ -62,44 +66,30 @@ def parse_command_dat(dat_file, dict_loc=None):
 
     return commands
 
+
 #just an os system call to chill_get_products
-def find_data_products(session=None, apid=None, cmd_path=None):
+def find_data_products(hostname=None, session=None, begin_time=None, end_time=None, apid=None):
     print("Attempting to find data products")
-    #
-    # if cmd_path:
-    #     cmd = cmd_path
-    # else:
-    #     cmd = "chill_get_products"
-    #
-    # if session:
-    #     cmd += " -K {}".format(session)
-    #
-    # if apid:
-    #     cmd += " -p {}".format(apid)
 
-    # chill_get_products -K 620 -p 100
-    # print("Running command: {}".format(cmd))
-    # process = os.popen(cmd)
-    # output = process.read()
-    # print("output from chill command is: " + output)
-    # process.close()
+    cmd = 'chill_get_products'
 
-    cmd = []
-    if cmd_path:
-        cmd.append(cmd_path)
-    else:
-        cmd.append("chill_get_products")
+    if hostname:
+        cmd += ' -j {}'.format(hostname)
 
     if session:
-        cmd.append("-K")
-        cmd.append(session)
+        cmd += ' -K {}'.format(session)
 
     if apid:
-        cmd.append("-p")
-        cmd.append(str(apid))
-    print("running chill command {}".format(cmd))
+        cmd += ' -p {}'.format(apid)
 
-    output = None
+    if begin_time:
+        cmd += ' -b {}'.format(begin_time)
+
+    if end_time:
+        cmd += ' -e {}'.format(end_time)
+
+
+    print("running chill command {}".format(cmd))
     try:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
@@ -110,45 +100,49 @@ def find_data_products(session=None, apid=None, cmd_path=None):
             raise DpOcsPusherException("Error running chill_get_products: {}".format(output))
         else:
             output = out.decode()
-            # print('--No errors--\n', out.decode())
-    except FileNotFoundError as e:
-        #if a hard command path was provided and we got nothing we should exit
-        if cmd_path:
-            raise DpOcsPusherException("Unable to execute chill_get_products command");
-        else:
-            # try this known location of chill_get_products in case the path got messed up
-            default_cmd = "/ammos/ampcs/mpcs/eurc/current/bin/chill_get_products"
-            print("Unable to find chill_get_products, attempting to use: {}".format(default_cmd))
+            parse_chill_get_products(output)
 
-            return find_data_products(session, apid, default_cmd)
+    except Exception as e:
+        print("Unable to find chill_get_products, attempting to use: {}".format(cmd))
 
-    print("Parsing output for dat files")
-    dps = []
-    for line in output.splitlines():
-        dps.append(parse_chill_csv_line(line))
 
-    return dps
+def parse_chill_get_products(output: Any) -> list:
+    '''
+    Parses chill_get_products std out into a list of dicts
 
-def parse_chill_csv_line(line):
-    # sample csv line from chill_get_products(broken up on multiple lines for readability)
-    # "Product","620","eurcits001","1","100",
-    # "DP_CMD_COMMAND_HISTORY","2023-164T22:06:44.327","2025-286T00:00:00.06961","2023-164T22:06:42.762","0498009603.0696249",
-    # "/really/long/path/to/dat/file/0100_0498009603-0073007-1.dat",
-    # "0","498009603","73007","0","0",
-    # "0","2138934958277980360","2320","3930033554","COMPLETE_CHECKSUM_PASS","1.000"
+    :param output: std out from chill
+    :return: List of dicts with the dp data
+    '''
+    print('Parsing chill std out for data products.')
 
-    csv = line.split(",")
-    for i in range(0, len(csv)):
-        csv[i] = csv[i].replace("\"", "")
+    try:
+        dps = []
+        for line in output.splitlines():
+            # sample csv line from chill_get_products (broken up on multiple lines for readability)
+            # 'Product','620','eurcits001','1','100',
+            # 'DP_CMD_COMMAND_HISTORY','2023-164T22:06:44.327','2025-286T00:00:00.06961','2023-164T22:06:42.762','0498009603.0696249',
+            # '/really/long/path/to/dat/file/0100_0498009603-0073007-1.dat',
+            # '0','498009603','73007','0','0',
+            # '0','2138934958277980360','2320','3930033554','COMPLETE_CHECKSUM_PASS','1.000'
 
-    chill_record = {
-        "session": csv[1],
-        "host": csv[2],
-        "apid": csv[4],
-        "dat_file": csv[10]
-    }
+            csv = line.split(',')
+            for i in range(0, len(csv)):
+                csv[i] = csv[i].replace('\'', '')
+                csv[i] = csv[i].strip('"')
 
-    return chill_record
+            chill_record = {
+                'session': csv[1],
+                'host': csv[2],
+                'apid': csv[4],
+                'dat_file': csv[10]
+            }
+
+            dps.append(chill_record)
+
+        return dps
+    except Exception as e:
+        print(f'Error: Failed to parse chill std out with error {e}')
+
 
 def build_ocs_client(venue):
     # SETUP OCS
@@ -210,6 +204,7 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
             raise Exception('User is forbidden from accessing OCS resources.')
         elif 'HTTP Error: 401' in e.args[0]:
             raise Exception('User is not authorized to access OCS resources.')
+
 
 def build_ocs_metadata_from_emd(emd_file):
     print("Building metadata from emd file {}".format(emd_file))
@@ -290,6 +285,7 @@ def build_ocs_metadata_from_emd(emd_file):
     print("metadata is {}".format(json.dumps(meta, indent=4)))
     return meta
 
+
 def query_ocs(expression, sort="sclk_coarse:desc", max_results=1):
     print("Querying OCS with search expression: {}".format(expression))
     global ocs_env
@@ -312,6 +308,7 @@ def query_ocs(expression, sort="sclk_coarse:desc", max_results=1):
     except ocs.exceptions.RequestError as r:
         print(r)
 
+
 def query_from_ocs(session_host, session_id):
     # expression = "ocs_type_name:{} AND ocs_name:{} AND scet:[{} TO {}]".format(
     #     ocs_type, pcfg_name, start_scet, end_scet)
@@ -327,24 +324,31 @@ def query_from_ocs(session_host, session_id):
 
     query_ocs(expression)
 
+
 def main():
     hostname = socket.gethostname()
     print("Start of transpire_process_dps script, running on host {}".format(hostname))
 
     parser = argparse.ArgumentParser(description='Query Data Products from a session and publish json format to OCS')
     parser.add_argument('-p', '--apid', default=100, help='apid to query(only supports apid 100 atm)')
-    parser.add_argument('-K', '--session', help='session number to query on')
+    parser.add_argument('-j', '--hostname', dest='host', required=False, help='The host that the database to query resides on')
+    parser.add_argument('-K', '--session', dest='session', required=False, help='The unique numeric identifier for a session')
+    parser.add_argument('-b', '--beginTime', dest='begin_time', required=False, help='Begin time of range in SCET e.g. 2023-001T00:00:00')
+    parser.add_argument('-e', '--endTime', dest='end_time', required=False, help='End time of range in SCET e.g. 2023-001T00:00:00')
     parser.add_argument('-t', '--ocs_path', default='/transpire', help='The ocs directory to publish to')
     parser.add_argument('-g', '--ocs_package', default='eurc-dev-fspa', help='The ocs package to publish as')
     parser.add_argument('-c', '--ocs_env', default='dev', help='the ocs environment to use(e.g. dev, test, prod, etc')
     #todo add ocs_endpoint_host as a command line arg as well
-    parser.add_argument('-d', '--dat_file', default=None, help='file path to dat file to parse')
-    parser.add_argument('-e', '--emd_file', default=None, help='file path to emd file to parse')
+    parser.add_argument('--dat_file', dest='dat_file', default=None, help='file path to dat file to parse')
+    parser.add_argument('--emd_file', dest='emd_file', default=None, help='file path to emd file to parse')
     parser.add_argument('-o', '--output', default="ocs", help="Location to write json files OR 'ocs'(default) to push to ocs")
 
     args = parser.parse_args()
 
+    hostname = args.hostname
     session = args.session
+    begin_time = args.begin_time
+    end_time = args.end_time
     apid = args.apid
     ocs_path = args.ocs_path
     ocs_package_name = args.ocs_package
@@ -368,7 +372,7 @@ def main():
 
     # we need to find the dat and emd files using chill and the session + apid
     if session and apid:
-        data_products = find_data_products(session=session, apid=apid)
+        data_products = find_data_products(hostname=hostname, session=session, begin_time=begin_time, end_time=end_time, apid=apid)
     # we were given a dat file and emd file, just shove it in the data_products list for the loop below to handle
     else:
         # data_products from find_data_products() also has extra things like session, host, and apid, but we do not
