@@ -1,10 +1,10 @@
-import setuptools
+from setuptools import setup, find_packages
 
-setuptools.setup(
+setup(
     name="eurc-gds-fspa-scripts",
-    version="4.2.2",
+    version="4.2.3",
     url="https://github.jpl.nasa.gov/Europa-PESS/fspa-scripts",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     python_requires=">=3.9",
     install_requires=[
         "aerie_cli @ git+https://github.com/NASA-AMMOS/aerie-cli.git@main",
