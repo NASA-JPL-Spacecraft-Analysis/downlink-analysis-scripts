@@ -100,6 +100,7 @@ def find_data_products(hostname=None, session=None, begin_time=None, end_time=No
     try:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
+
         if err:
             output = err.decode()
             print('--Error--\n', err.decode())
@@ -180,7 +181,6 @@ def push_to_ocs(data, ocs_package_name, ocs_path, ocs_filename, ocs_metadata):
 
         # describe_all_packages to find the package_id
         response = client.describe_all_packages(SessionToken=session_token)
-        #print(json.dumps(response, indent=4))
         package_id = [item['package_id'] for item in response['data'] if item['name'] == ocs_package_name][0]
 
         #todo: create new object type
@@ -221,7 +221,6 @@ def build_ocs_metadata_from_emd(emd_file):
 
     # turn it into a Dict
     emd_dict = xmltodict.parse(read_emd)
-    # print("emd dict {}".format(json.dumps(emd_dict, indent=4)))
 
     session_info = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:SessionInformation"]
     product_metadata = emd_dict["mm-emd:EarthProductMetadata"]["mm-emd:ProductMetadata"]
@@ -423,10 +422,6 @@ def main():
                             ocs_path=ocs_path,
                             ocs_filename=filename,
                             ocs_metadata=metadata)
-
-                # try to query out the data we just pushed to make sure it got in
-                print("Verifying data made it to OCS")
-                query_from_ocs(metadata['session_host'], metadata['session_id'])
 
             # write json files to disk
             else:
