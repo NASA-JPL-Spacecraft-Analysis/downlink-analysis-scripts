@@ -3,9 +3,10 @@ aerie_cli @ git+https://github.com/NASA-AMMOS/aerie-cli.git
 black==22.8.0
 bs4==0.0.2
 click==8.0.4
-close_the_u @ git+https://github.jpl.nasa.gov/Europa-PESS/close-the-u-py.git
 dataclasses-json
 eas-parasol>=8.0.0
+eas-rounds>=8.0.0
+eurc-fspa-close-the-u==3.1.1
 eurc-fspa-dplib==8.2.2
 jpl_time
 lxml==5.1.0
