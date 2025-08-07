@@ -1,3 +1,4 @@
+# DEPRECATED - THESE ARE NOW PUBLISHED BY THE S3PT EOP SCRIPT
 from io import StringIO
 
 import argparse
