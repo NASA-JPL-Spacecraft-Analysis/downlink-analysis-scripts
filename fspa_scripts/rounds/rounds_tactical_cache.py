@@ -35,7 +35,7 @@ def _configure_rounds(venue: str) -> None:
 def _run_rounds_evaluate(session_host: str = None, session_id: str = None, start_scet: str = None, end_scet: str = None) -> Dict:
 
     print(f"Running Rounds Evaluate Values for: Host: {session_host} | Session: {session_id} | START SCET: {start_scet} | END SCET: {end_scet}")
-    print(f"This process does not runs async and will return immediately.")
+    print(f"This process runs async in Rounds Server and a response will be returned immediately.")
     try:
         run_id = rounds.evaluate(
             session_host=session_host,
