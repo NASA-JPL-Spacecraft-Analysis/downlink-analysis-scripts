@@ -1,4 +1,4 @@
-# fspa-scripts
+# downlink-analysis-scripts
 
 Repo for scripts to be delivered through the GDS.
 
